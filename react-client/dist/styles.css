@@ -22,8 +22,13 @@ body {
 
 .LeftPanel {
     background-color: #212121;
-    width: 12.5%;
+    width: 15%;
     height: 100%;
     float: left;
     color: #BDBDBD;
+}
+
+.HomePage {
+    padding: 10px 10px;
+    display: inline-block;
 }
