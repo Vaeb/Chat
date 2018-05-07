@@ -2,8 +2,7 @@ body {
     background-color: #FA8072;
 }
 
-LeftPanel {
-    display: block;
+leftPanel {
     background-color: #212121;
     width: 12.5%;
     height: 100%;
