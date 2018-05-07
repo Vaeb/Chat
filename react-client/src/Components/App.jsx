@@ -7,9 +7,10 @@ import NavBar from './HeaderComponent/NavBar';
 class App extends Component {
     render() {
         return (
-            <Router>
+            <div>
+                <p>qq</p>
                 <LeftPanel /> // q
-            </Router>
+            </div>
         )
     }
 }
