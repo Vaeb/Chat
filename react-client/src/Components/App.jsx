@@ -7,9 +7,13 @@ import NavBar from './HeaderComponent/NavBar';
 class App extends Component {
     render() {
         return (
-            <div>
-                <p>qq</p>
-                <LeftPanel />
+            <div className="shopping-list">
+                <h1>qq</h1>
+                <ul>
+                    <li>Instagram</li>
+                    <li>WhatsApp</li>
+                    <li>Oculus</li>
+                </ul>
             </div>
         )
     }
