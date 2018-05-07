@@ -8,12 +8,14 @@ import LeftPanel from './leftPanel/leftPanel.js';
 class App extends Component {
     render() {
         return (
-            <Router>
-                <div>
-                    <LeftPanel />
-                    <Route name="home" exact path="/" component={HomePage} />
-                </div>
-            </Router>
+            <div class="max">
+                <Router>
+                    <div class="max">
+                        <LeftPanel />
+                        <Route name="home" exact path="/" component={HomePage} />
+                    </div>
+                </Router>
+            </div>
         )
     }
 }

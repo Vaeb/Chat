@@ -2,6 +2,11 @@ body {
     background-color: #FA8072;
 }
 
+.max {
+    width: 100%;
+    height: 100%;
+}
+
 leftPanel {
     background-color: #212121;
     width: 12.5%;
