@@ -1,4 +1,6 @@
 body {
+    margin: 0;
+    padding: 0;
     background-color: #FA8072;
 }
 
@@ -7,7 +9,7 @@ body {
     height: 100%;
 }
 
-leftPanel {
+.LeftPanel {
     background-color: #212121;
     width: 12.5%;
     height: 100%;
