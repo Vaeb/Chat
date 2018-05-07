@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import { browserHistory } from 'react-router';
 import HomePage from './pages/homePage.js';
 import NavBar from './headerComponent/navBar.js';
-import LeftPanel from './footerComponent/leftPanel.js';
+import LeftPanel from './leftPanel/leftPanel.js';
 
 class App extends Component {
   render() {
