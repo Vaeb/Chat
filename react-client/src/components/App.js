@@ -9,7 +9,7 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <div>
+                <div class="max">
                     <LeftPanel />
                     <Route name="home" exact path="/" component={HomePage} />
                 </div>
