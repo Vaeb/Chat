@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import { browserHistory } from 'react-router';
 import HomePage from './pages/homePage.js';
 import NavBar from './headerComponent/navBar.js';
-import Footer from './footerComponent/footer.js';
+import LeftPanel from './footerComponent/leftPanel.js';
 
 class App extends Component {
   render() {
@@ -11,8 +11,8 @@ class App extends Component {
       <Router>
         <div>
           <NavBar />
+          <LeftPanel />
           <Route name="home" exact path="/" component={HomePage} />
-          <Footer />
         </div>
       </Router>
     )
