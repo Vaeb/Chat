@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 class LeftPanel extends Component {
     render() {
         return (
-            <div></div>
+            <div class="LeftPanel"></div>
         )
     }
 }
