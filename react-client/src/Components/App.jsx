@@ -9,7 +9,7 @@ class App extends Component {
         return (
             <div>
                 <p>qq</p>
-                <LeftPanel /> // q
+                <LeftPanel />
             </div>
         )
     }
