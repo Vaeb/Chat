@@ -1,5 +1,5 @@
 export default {
     Query: {
-        test: () => 'pong',
+        ping: () => 'pong',
     },
 };
