@@ -8,7 +8,7 @@ export default `
     }
 
     type Mutation {
-        createRole(name: String!, color: String, position: Int): Role!
+        createRole(name: String!, color: String="#FFFFFF", position: Int): Int!
     }
 
 `;

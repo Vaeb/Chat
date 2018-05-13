@@ -7,4 +7,8 @@ export default `
         roles: [Role!]!
     }
 
+    type Mutation {
+        createChannel(name: String!): Int!
+    }
+
 `;

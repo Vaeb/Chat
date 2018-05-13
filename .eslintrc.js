@@ -14,7 +14,7 @@ module.exports = {
         // "max-len": "off",
         // "no-bitwise": "off",
         // "no-cond-assign": "off",
-        // "no-console": "off",
+        "no-console": "off",
         // "no-continue": "off",
         // "no-control-regex": "off",
         // "no-eval": "off",

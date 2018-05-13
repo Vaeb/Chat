@@ -23,6 +23,9 @@ app.use(graphqlEndpoint, bodyParser.json(), graphqlExpress({
     schema,
     context: {
         models,
+        user: {
+            id: 1,
+        },
     },
 }));
 
