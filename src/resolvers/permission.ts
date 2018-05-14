@@ -11,7 +11,7 @@ export default {
     createPermission: async (parent: any, args: { [argument: string]: any }, { models }: SequelizeContext) => {
       try {
         const permission = await models.Permission.create(args);
-        return permission.dataValues.id;
+        return permission.get('id');
       } catch (err) {
         console.log(err);
         return -1;
