@@ -23,8 +23,8 @@ app.use(graphqlEndpoint, bodyParser.json(), graphqlExpress({
     schema,
     context: {
         models,
-        user: {
-            id: 1,
+        get user() {
+            return { id: 1 };
         },
     },
 }));
