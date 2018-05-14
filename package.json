@@ -4,8 +4,8 @@
   "description": "Chat with React",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node -r ts-node/register --inspect=9164 index.js",
-    "monitor": "nodemon --exec 'tsc && node -r ts-node/register --inspect=9164 index.js'",
+    "start": "tsc && node -r ts-node/register --inspect=9164 lib/index.js",
+    "monitor": "nodemon --exec 'tsc && node -r ts-node/register --inspect=9164 lib/index.js'",
     "compile": "tsc",
     "watch": "tsc -w"
   },
