@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Models } from '.';
 
 export interface Role {
+  id: number;
   name: string;
   position: number;
   color: string;

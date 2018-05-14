@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Models } from '.';
 
 export interface Channel {
+  id: number;
   name: string;
 }
 

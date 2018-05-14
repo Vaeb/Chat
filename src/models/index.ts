@@ -16,11 +16,11 @@ const sequelizeInstance = new sequelize('chat', 'postgres', '1248', {
 const models = {
   sequelize: sequelizeInstance,
   Sequelize: sequelizeInstance,
-  User: sequelizeInstance.import<User, any>('./user'),
-  Channel: sequelizeInstance.import<Channel, any>('./channel'),
-  Message: sequelizeInstance.import<Message, any>('./message'),
-  Role: sequelizeInstance.import<Role, any>('./role'),
-  Permission: sequelizeInstance.import<Permission, any>('./permission'),
+  User: sequelizeInstance.import<sequelize.Instance<User>, any>('./user'),
+  Channel: sequelizeInstance.import<sequelize.Instance<Channel>, any>('./channel'),
+  Message: sequelizeInstance.import<sequelize.Instance<Message>, any>('./message'),
+  Role: sequelizeInstance.import<sequelize.Instance<Role>, any>('./role'),
+  Permission: sequelizeInstance.import<sequelize.Instance<Permission>, any>('./permission'),
 };
 
 Object.keys(models).forEach((modelName) => {

@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Models } from '.';
 
 export interface Message {
+  id: number;
   text: string;
 }
 

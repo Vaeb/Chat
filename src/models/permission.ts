@@ -3,6 +3,7 @@ import { DataTypes, Model, Sequelize } from 'sequelize';
 import { Models } from '.';
 
 export interface Permission {
+  id: number;
   name: string;
 }
 
