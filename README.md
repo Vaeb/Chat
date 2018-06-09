@@ -24,8 +24,9 @@
 8. Start the nodemon server: `npm start`
 
 
-###### Postgresql Key Commands:
+###### PostgreSQL Key Commands:
 
+- `psql -U postgres`: Connect to postgres
 - `\c chat`: Connect to `chat` database
 - `\d`: List tables
 - `\d table_name`: Describe table `table_name`
