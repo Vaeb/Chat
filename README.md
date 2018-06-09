@@ -1,6 +1,6 @@
 # Vashtalk
 
-###### Setup:
+#### Setup:
 
 1. `npm install`
 2. Install nodemon module: `npm i -g nodemon`
@@ -24,7 +24,7 @@
 8. Start the nodemon server: `npm start`
 
 
-###### PostgreSQL Key Commands:
+#### PostgreSQL Key Commands:
 
 - `psql -U postgres`: Connect to postgres
 - `\c chat`: Connect to `chat` database
