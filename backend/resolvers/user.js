@@ -8,7 +8,7 @@ export default {
     Mutation: {
         register: async (parent, { password, ...otherArgs }, { models }) => {
             try {
-                const hashedPassword = await bcrypt.hash(password, 10);
+                const hashedPassword = await bcrypt.hash(password, 8);
                 const user = await models.User.create({ ...otherArgs, password: hashedPassword });
                 return user.dataValues.id;
             } catch (err) {

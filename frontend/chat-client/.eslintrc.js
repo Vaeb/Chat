@@ -1,4 +1,10 @@
 module.exports = {
+    parser: 'babel-eslint',
+    parserOptions: {
+        ecmaFeatures: {
+            jsx: true,
+        },
+    },
     extends: 'airbnb',
     plugins: ['react', 'jsx-a11y', 'import'],
     rules: {
@@ -28,10 +34,7 @@ module.exports = {
         'no-prototype-builtins': 'off',
         // "no-restricted-syntax": "off",
         // "no-underscore-dangle": "off",
-        'no-unused-vars': [
-            'warn',
-            { vars: 'all', args: 'after-used', ignoreRestSiblings: true },
-        ],
+        'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
         // "object-curly-newline": "off",
         /* "prefer-destructuring": ["error", {
             "array": false,
@@ -42,7 +45,7 @@ module.exports = {
         'react/jsx-indent': ['error', 4],
         'react/jsx-indent-props': ['error', 4],
         'react/no-unused-state': 'warn',
-        // 'react/prop-types': 'off',
+        'react/prop-types': 'off',
     },
     globals: {
         document: 1,
