@@ -10,7 +10,7 @@ import Routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
 const client = new ApolloClient({
-    link: createHttpLink({ uri: 'http://localhost:8080' }),
+    link: createHttpLink({ uri: 'http://localhost:8080/graphql' }),
     cache: new InMemoryCache(),
 });
 
