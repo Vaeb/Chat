@@ -5,6 +5,7 @@ const sequelize = new Sequelize('chat', 'postgres', '1248', {
     define: {
         underscored: true,
     },
+    logging: false,
 });
 
 const models = {

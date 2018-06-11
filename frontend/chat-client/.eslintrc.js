@@ -18,7 +18,7 @@ module.exports = {
         // "import/prefer-default-export": "off",
         // "jsx-a11y/href-no-hash": "off",
         // "linebreak-style": "off",
-        // "max-len": "off",
+        'max-len': ['error', 150, 4],
         // "no-bitwise": "off",
         // "no-cond-assign": "off",
         'no-console': 'off',
