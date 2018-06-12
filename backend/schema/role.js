@@ -13,7 +13,7 @@ export default `
     }
 
     type Mutation {
-        createRole(name: String!, color: String="#FFFFFF", position: Int): CreateRoleResponse!
+        createRole(name: String!, color: String="#FFFFFF", position: String): CreateRoleResponse!
     }
 
 `;

@@ -28,9 +28,16 @@ class CreateRole extends React.Component {
 
         if (position == 0) position = undefined;
 
-        const response = await this.props.mutate({
-            variables: { name, position, color },
-        });
+        /* if (position !== undefined) {
+            if (!this.isInt(position)) {
+                this.errors = { positionError: 'The position must be an integer' };
+                return;
+            }
+
+            position = parseInt(position, 10);
+        } */
+
+        const response = await this.props.mutate({ variables: { name, position, color } });
 
         console.log(response);
 
@@ -50,6 +57,8 @@ class CreateRole extends React.Component {
             this.errors = err;
         }
     };
+
+    isInt = value => !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10));
 
     render() {
         const {
@@ -92,7 +101,7 @@ class CreateRole extends React.Component {
 }
 
 const createRoleMutation = gql`
-    mutation($name: String!, $color: String, $position: Int) {
+    mutation($name: String!, $color: String, $position: String) {
         createRole(name: $name, color: $color, position: $position) {
             ok
             errors {

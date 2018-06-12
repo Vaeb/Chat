@@ -22,9 +22,14 @@ export default (sequelize, DataTypes) => {
                     args: true,
                     msg: 'The position must be an integer',
                 },
-                min: {
+                /* min: {
                     args: 0,
                     msg: 'The position must be at least 0',
+                }, */
+                checkMin(value) {
+                    if (parseInt(value, 10) < 0) {
+                        throw new Error('The position must be at least 0');
+                    }
                 },
             },
         },

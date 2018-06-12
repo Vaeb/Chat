@@ -35,6 +35,7 @@ module.exports = {
         'no-param-reassign': 'off',
         // "no-plusplus": "off",
         'no-prototype-builtins': 'off',
+        'no-restricted-globals': 'off',
         // "no-restricted-syntax": "off",
         // "no-underscore-dangle": "off",
         'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
