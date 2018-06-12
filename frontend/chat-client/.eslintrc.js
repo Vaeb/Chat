@@ -13,7 +13,7 @@ module.exports = {
     rules: {
         // "class-methods-use-this": "off",
         // "default-case": "off",
-        // "eqeqeq": "off",
+        eqeqeq: 'off',
         // "import/no-dynamic-require": "off",
         indent: ['error', 4],
         // "func-names": "off",

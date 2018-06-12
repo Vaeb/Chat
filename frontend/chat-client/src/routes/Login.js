@@ -37,10 +37,12 @@ class Login extends React.Component {
         if (ok) {
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
+            this.props.history.push('/');
         } else {
             const err = {};
 
             errors.forEach(({ path, message }) => {
+                // path is column name
                 err[`${path}Error`] = message.charAt(0).toUpperCase() + message.slice(1);
             });
 

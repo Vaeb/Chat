@@ -3,12 +3,40 @@ export default (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             unique: true,
+            validate: {
+                isAlphanumeric: {
+                    args: true,
+                    msg: 'The role name can only contain letters and numbers',
+                },
+                len: {
+                    args: [1, 25],
+                    msg: 'The role name needs to be between 1 and 25 characters long',
+                },
+            },
         },
         position: {
             type: DataTypes.INTEGER,
             unique: true,
+            validate: {
+                isInt: {
+                    args: true,
+                    msg: 'The position must be an integer',
+                },
+                min: {
+                    args: 0,
+                    msg: 'The position must be at least 0',
+                },
+            },
         },
-        color: DataTypes.STRING,
+        color: {
+            type: DataTypes.STRING,
+            validate: {
+                is: {
+                    args: /^#[0-9a-f]{6}$/i,
+                    msg: 'The color must be a valid hex string in the format #FF019A',
+                },
+            },
+        },
     });
 
     Role.associate = (models) => {

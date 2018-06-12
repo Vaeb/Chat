@@ -1,12 +1,22 @@
+import formatErrors from '../formatErrors';
+
 export default {
     Mutation: {
         createRole: async (parent, args, { models }) => {
             try {
-                const role = await models.Role.create(args);
-                return role.dataValues.id;
+                await models.Role.create(args);
+
+                return {
+                    ok: true,
+                    errors: [],
+                };
             } catch (err) {
                 console.log(err);
-                return -1;
+
+                return {
+                    ok: false,
+                    errors: formatErrors(err, models),
+                };
             }
         },
     },

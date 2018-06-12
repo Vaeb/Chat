@@ -39,6 +39,7 @@ class Register extends React.Component {
             const err = {};
 
             errors.forEach(({ path, message }) => {
+                // path is column name
                 err[`${path}Error`] = message.charAt(0).toUpperCase() + message.slice(1);
             });
 
