@@ -8,6 +8,9 @@ import cors from 'cors';
 
 import models from './models';
 
+const SECRET = 'afjefyu3235fuahf8421d';
+const SECRET2 = 'gfjhslafhga342ghhj1248f';
+
 const typeDefs = mergeTypes(fileLoader(path.join(__dirname, './schema')));
 const resolvers = mergeResolvers(fileLoader(path.join(__dirname, './resolvers')));
 
@@ -21,15 +24,21 @@ app.use(cors('*'));
 
 const graphqlEndpoint = '/graphql';
 
-app.use(graphqlEndpoint, bodyParser.json(), graphqlExpress({
-    schema,
-    context: {
-        models,
-        get user() {
-            return { id: 1 };
+app.use(
+    graphqlEndpoint,
+    bodyParser.json(),
+    graphqlExpress({
+        schema,
+        context: {
+            models,
+            get user() {
+                return { id: 1 };
+            },
+            SECRET,
+            SECRET2,
         },
-    },
-}));
+    }),
+);
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 

@@ -5,6 +5,9 @@ module.exports = {
             jsx: true,
         },
     },
+    env: {
+        browser: 1,
+    },
     extends: 'airbnb',
     plugins: ['react', 'jsx-a11y', 'import'],
     rules: {
@@ -49,5 +52,6 @@ module.exports = {
     },
     globals: {
         document: 1,
+        localStorage: 1,
     },
 };
