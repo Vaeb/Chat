@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 
 export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
+        // normal token for sensitive information or information that might change
         {
             user: _.pick(user, ['id']), // id and other fields wanted
         },
@@ -16,6 +17,7 @@ export const createTokens = async (user, secret, secret2) => {
     );
 
     const createRefreshToken = jwt.sign(
+        // refresh token used for general information to identify the user when the normal token expires and it needs to generate a new one
         {
             user: _.pick(user, 'id'),
         },
@@ -30,8 +32,8 @@ export const createTokens = async (user, secret, secret2) => {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const refreshTokens = async (token, refreshToken, models, SECRET) => {
-    let userId = -1;
+export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2) => {
+    let userId = 0;
     try {
         const {
             user: { id },
@@ -51,13 +53,15 @@ export const refreshTokens = async (token, refreshToken, models, SECRET) => {
         return {};
     }
 
+    const refreshTokenSecret = user.password + SECRET2;
+
     try {
-        jwt.verify(refreshToken, user.refreshSecret);
+        jwt.verify(refreshToken, refreshTokenSecret);
     } catch (err) {
         return {};
     }
 
-    const [newToken, newRefreshToken] = await createTokens(user, SECRET, user.refreshSecret);
+    const [newToken, newRefreshToken] = await createTokens(user, SECRET, refreshTokenSecret);
 
     return {
         token: newToken,
