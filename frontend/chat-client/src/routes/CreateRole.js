@@ -5,6 +5,10 @@ import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-rea
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+/* function isInt(value) {
+    return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10));
+} */
+
 class CreateRole extends React.Component {
     constructor(props) {
         super(props);
@@ -29,7 +33,7 @@ class CreateRole extends React.Component {
         if (position == 0) position = undefined;
 
         /* if (position !== undefined) {
-            if (!this.isInt(position)) {
+            if (!isInt(position)) {
                 this.errors = { positionError: 'The position must be an integer' };
                 return;
             }
@@ -37,7 +41,14 @@ class CreateRole extends React.Component {
             position = parseInt(position, 10);
         } */
 
-        const response = await this.props.mutate({ variables: { name, position, color } });
+        let response;
+
+        try {
+            response = await this.props.mutate({ variables: { name, position, color } });
+        } catch (err) {
+            this.props.history.push('/login');
+            return;
+        }
 
         console.log(response);
 
@@ -57,8 +68,6 @@ class CreateRole extends React.Component {
             this.errors = err;
         }
     };
-
-    isInt = value => !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10));
 
     render() {
         const {

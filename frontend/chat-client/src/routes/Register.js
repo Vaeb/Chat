@@ -45,8 +45,6 @@ class Register extends React.Component {
 
             this.setState(err);
         }
-
-        console.log(response);
     };
 
     render() {

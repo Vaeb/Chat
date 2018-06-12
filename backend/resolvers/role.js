@@ -1,8 +1,9 @@
 import formatErrors from '../formatErrors';
+import { requiresAuth } from '../permissions';
 
 export default {
     Mutation: {
-        createRole: async (parent, args, { models }) => {
+        createRole: requiresAuth.createResolver(async (parent, args, { models }) => {
             try {
                 await models.Role.create(args);
 
@@ -18,6 +19,6 @@ export default {
                     errors: formatErrors(err, models),
                 };
             }
-        },
+        }),
     },
 };
