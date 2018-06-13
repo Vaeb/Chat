@@ -9,7 +9,12 @@ import Input from '../components/Input';
 
 export default () => (
     <AppLayout>
-        <Channels>Channels</Channels>
+        <Channels
+            chatName="Vashta"
+            username=""
+            channels={[{ id: 1, name: 'general' }, { id: 2, name: 'staff' }]}
+            // users={[{ id: 1, name: 'vaeb' }, { id: 2, name: 'user1' }]}
+        />
         <Header>Header</Header>
         <Messages>
             <ul className="message-list">
@@ -17,9 +22,7 @@ export default () => (
                 <li />
             </ul>
         </Messages>
-        <Input>
-            <input type="text" placeholder="Message chat" />
-        </Input>
+        <Input />
         <Roles>Roles</Roles>
     </AppLayout>
 );
