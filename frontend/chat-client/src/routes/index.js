@@ -6,6 +6,7 @@ import Home from './Home';
 import Register from './Register';
 import Login from './Login';
 import CreateRole from './CreateRole';
+import ViewChat from './ViewChat';
 
 const isAuthenticated = () => {
     const token = localStorage.getItem('token');
@@ -45,6 +46,7 @@ export default () => (
             <Route path="/" exact component={Home} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />
+            <Route path="/view-chat" exact component={ViewChat} />
             <PrivateRoute path="/create-role" exact component={CreateRole} />
         </Switch>
     </BrowserRouter>
