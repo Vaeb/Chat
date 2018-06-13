@@ -25,13 +25,17 @@ const UseStyle = () => (
         {`
             .input {
                 padding: 0.5em;
-                color: hsla(0, 0%, 100%, 0.7);
                 border: none;
                 height: 100%;
             }
 
             .input input {
                 background-color: hsla(218, 5%, 47%, 0.3) !important;
+                color: hsla(0, 0%, 100%, 0.7) !important;
+            }
+
+            .input input::selection {
+                color: hsla(0, 0%, 100%, 0.3) !important;
             }
         `}
     </style>

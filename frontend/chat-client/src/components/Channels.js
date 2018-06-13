@@ -8,7 +8,7 @@ const ChannelWrapper = styled.div`
     color: #72767d;
 `;
 
-const ChannelHeader = styled.div`
+const ChannelHead = styled.div`
     margin-top: 12px;
     padding-left: 10px;
 `;
@@ -37,10 +37,10 @@ const channel = ({ id, name }) => <ChannelListItem key={`channel-${id}`}># {name
 
 export default ({ chatName, username, channels }) => (
     <ChannelWrapper>
-        <ChannelHeader>
+        <ChannelHead>
             <ChatNameHeader>{chatName}</ChatNameHeader>
             {username}
-        </ChannelHeader>
+        </ChannelHead>
         <div>
             <ChannelList>{channels.map(channel)}</ChannelList>
         </div>
