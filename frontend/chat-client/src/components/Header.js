@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import { Header, Divider } from 'semantic-ui-react';
+import { Header } from 'semantic-ui-react';
 
 const HeaderWrapper = styled.div`
     grid-column: 2;
@@ -8,14 +8,13 @@ const HeaderWrapper = styled.div`
     background-color: #36393e;
     color: #fff;
     border-width: 0px;
-    border-bottom-width: 1px;
-    border-bottom-color: #202225;
-    border-bottom-style: solid;
+    border-bottom: 1px solid #202225;
+    border-bottom-color: hsla(0, 0%, 100%, 0.04);
 `;
 
 const style = {
-    channelName: {
-        marginTop: '0.5em',
+    header: {
+        marginTop: '0.66em',
         marginLeft: '10px',
         height: '100%',
     },
@@ -23,7 +22,7 @@ const style = {
 
 export default ({ channelName }) => (
     <HeaderWrapper>
-        <Header inverted style={style.channelName}>
+        <Header inverted style={style.header}>
             # {channelName}
         </Header>
     </HeaderWrapper>
