@@ -14,7 +14,7 @@ const HeaderWrapper = styled.div`
 
 const style = {
     header: {
-        marginTop: '0.66em',
+        marginTop: '12px',
         marginLeft: '10px',
         height: '100%',
     },

@@ -20,10 +20,6 @@ const RoleTitle = styled.li`
     margin-left: 8px;
     padding-left: 7px;
     font-size: 16px;
-    background-color: transparent;
-    &:hover {
-        background-color: #36393e;
-    }
 `;
 
 const RoleListItem = styled.li`
@@ -34,9 +30,9 @@ const RoleListItem = styled.li`
     padding-left: 7px;
     align-items: center;
     font-size: 16px;
-    background-color: transparent;
     &:hover {
         background-color: #36393e;
+        color: #fff;
     }
 `;
 

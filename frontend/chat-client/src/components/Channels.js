@@ -8,17 +8,41 @@ const ChannelWrapper = styled.div`
     color: #72767d;
 `;
 
-const channel = ({ id, name }) => <li key={`channel-${id}`}># {name}</li>;
+const ChannelHeader = styled.div`
+    margin-top: 12px;
+    padding-left: 10px;
+`;
+
+const ChatNameHeader = styled.h1`
+    color: #fff;
+    font-size: 20px;
+`;
+
+const ChannelList = styled.ul`
+    width: 100%;
+    list-style: none;
+    padding-left: 0px;
+`;
+
+const ChannelListItem = styled.li`
+    padding: 8px 2px 8px 10px;
+    font-size: 16px;
+    &:hover {
+        background-color: #42464d;
+        color: #fff;
+    }
+`;
+
+const channel = ({ id, name }) => <ChannelListItem key={`channel-${id}`}># {name}</ChannelListItem>;
 
 export default ({ chatName, username, channels }) => (
     <ChannelWrapper>
-        <div>{chatName}</div>
-        <div>{username}</div>
+        <ChannelHeader>
+            <ChatNameHeader>{chatName}</ChatNameHeader>
+            {username}
+        </ChannelHeader>
         <div>
-            <ul>
-                <li>Channels</li>
-                {channels.map(channel)}
-            </ul>
+            <ChannelList>{channels.map(channel)}</ChannelList>
         </div>
     </ChannelWrapper>
 );
