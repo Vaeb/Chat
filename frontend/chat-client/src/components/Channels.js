@@ -8,14 +8,12 @@ const ChannelWrapper = styled.div`
     color: #72767d;
 `;
 
-const channel = ({ id, name }) => <li key={`channel-${id}`}>{`#${name}`}</li>;
+const channel = ({ id, name }) => <li key={`channel-${id}`}># {name}</li>;
 
 export default ({ chatName, username, channels }) => (
     <ChannelWrapper>
-        <div>
-            {chatName}
-            {username}
-        </div>
+        <div>{chatName}</div>
+        <div>{username}</div>
         <div>
             <ul>
                 <li>Channels</li>
