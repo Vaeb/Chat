@@ -23,6 +23,6 @@ export default () => (
             </ul>
         </Messages>
         <SendMessage channelName="general" />
-        <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'Online' }]} />
+        <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'User' }]} />
     </AppLayout>
 );

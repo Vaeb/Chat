@@ -41,7 +41,7 @@ const role = ({ id, name }) => <RoleListItem key={`role-${id}`}>{name}</RoleList
 export default ({ roles }) => (
     <RoleWrapper>
         <RoleList>
-            <RoleTitle>Roles</RoleTitle>
+            <RoleTitle>Online</RoleTitle>
             {roles.map(role)}
         </RoleList>
     </RoleWrapper>
