@@ -37,9 +37,9 @@ const UseStyle = () => (
     </style>
 );
 
-export default () => (
+export default ({ channelName }) => (
     <SendMessageWrapper>
         <UseStyle />
-        <Input inverted fluid placeholder="Message chat" />
+        <Input inverted fluid placeholder={`Message #${channelName}`} />
     </SendMessageWrapper>
 );
