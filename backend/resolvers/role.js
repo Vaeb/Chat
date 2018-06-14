@@ -11,7 +11,7 @@ import { requiresAuth } from '../permissions';
 export default {
     Query: {
         // allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ id: 1 }, { raw: true })),
-        allRoles: async (parent, args, { models }) => models.Role.findAll({ id: 1 }, { raw: true }),
+        allRoles: async (parent, args, { models }) => models.Role.findAll({ raw: true }),
     },
     Mutation: {
         createRole: requiresAuth.createResolver(async (parent, args, { models }) => {
@@ -50,7 +50,7 @@ export default {
                     const userId = userIds[i];
 
                     for (let j = 0; j < roleIds.length; j++) {
-                        addRows.push({ user_id: userId, roleId: roleIds[j] });
+                        addRows.push({ userId, roleId: roleIds[j] });
                     }
                 }
 
@@ -73,17 +73,17 @@ export default {
         }),
     },
     Role: {
-        channels: ({ id }, args, { models }) =>
+        channels: ({ id: roleId }, args, { models }) =>
             models.Channel.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': id } }],
+                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
             }),
-        members: ({ id }, args, { models }) =>
+        members: ({ id: roleId }, args, { models }) =>
             models.User.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': id } }],
+                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
             }),
-        permissions: ({ id }, args, { models }) =>
+        permissions: ({ id: roleId }, args, { models }) =>
             models.Permission.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': id } }],
+                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
             }),
     },
 };

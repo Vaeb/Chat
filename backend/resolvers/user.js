@@ -25,4 +25,10 @@ export default {
             }
         },
     },
+    User: {
+        roles: ({ id: userId }, args, { models }) =>
+            models.Role.findAll({
+                include: [{ model: models.User, where: { '$users.id$': userId } }],
+            }),
+    },
 };
