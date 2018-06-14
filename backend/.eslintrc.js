@@ -23,7 +23,7 @@ module.exports = {
         // "no-mixed-operators": "off",
         // "no-multi-spaces": "off",
         'no-param-reassign': 'off',
-        // "no-plusplus": "off",
+        'no-plusplus': 'off',
         'no-prototype-builtins': 'off',
         // "no-restricted-syntax": "off",
         // "no-underscore-dangle": "off",

@@ -6,6 +6,7 @@ import Home from './Home';
 import Register from './Register';
 import Login from './Login';
 import CreateRole from './CreateRole';
+import AddUsersToRoles from './AddUsersToRoles';
 import ViewChat from './ViewChat';
 
 const isAuthenticated = () => {
@@ -48,6 +49,7 @@ export default () => (
             <Route path="/login" exact component={Login} />
             <Route path="/view-chat" exact component={ViewChat} />
             <PrivateRoute path="/create-role" exact component={CreateRole} />
+            <PrivateRoute path="/add-user-to-role" exact component={AddUsersToRoles} />
         </Switch>
     </BrowserRouter>
 );

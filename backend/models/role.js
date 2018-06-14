@@ -46,21 +46,21 @@ export default (sequelize, DataTypes) => {
 
     Role.associate = (models) => {
         Role.belongsToMany(models.User, {
-            through: 'rank',
+            through: models.RoleUser,
             foreignKey: {
                 name: 'roleId',
                 field: 'role_id',
             },
         });
         Role.belongsToMany(models.Permission, {
-            through: 'perm',
+            through: models.RolePermission,
             foreignKey: {
                 name: 'roleId',
                 field: 'role_id',
             },
         });
         Role.belongsToMany(models.Channel, {
-            through: 'access',
+            through: models.RoleChannel,
             foreignKey: {
                 name: 'roleId',
                 field: 'role_id',

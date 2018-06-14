@@ -15,6 +15,9 @@ const models = {
     Message: sequelize.import('./message'),
     Role: sequelize.import('./role'),
     Permission: sequelize.import('./permission'),
+    RoleUser: sequelize.import('./roleUser'),
+    RolePermission: sequelize.import('./rolePermission'),
+    RoleChannel: sequelize.import('./roleChannel'),
 };
 
 Object.keys(models).forEach((modelName) => {

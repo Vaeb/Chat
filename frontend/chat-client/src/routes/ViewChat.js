@@ -9,6 +9,7 @@ import SendMessage from '../components/SendMessage';
 
 export default () => (
     <AppLayout>
+        <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'User' }]} />
         <Channels
             chatName="Vashta"
             username="Vaeb"
@@ -23,6 +24,5 @@ export default () => (
             </ul>
         </Messages>
         <SendMessage channelName="general" />
-        <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'User' }]} />
     </AppLayout>
 );
