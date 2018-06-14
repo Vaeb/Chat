@@ -8,7 +8,7 @@ import SideBars from '../containers/SideBars';
 
 export default () => (
     <AppLayout>
-        <SideBars />
+        <SideBars currentChannelId={1} />
         <Header channelName="general" />
         <Messages>
             <ul className="message-list">
