@@ -2,14 +2,20 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import _ from 'lodash';
+import decode from 'jwt-decode';
 
 import Channels from '../components/Channels';
 import Roles from '../components/Roles';
 
 /*
 
-    -Public channels: If a channel just has the `Everyone` role then display all roles because all users will be able to view that channel
-    -Private channels: If a channel has more than one role (has a role other than `Everyone`) then only display those roles that have access
+    -Channel should have a private attribute
+        -If channel is private, only connected Roles can view it
+        -If channel is not private, connected Roles are ignored
+
+    -Old:
+        -Public channels: If a channel just has the `Everyone` role then display all roles because all users will be able to view that channel
+        -Private channels: If a channel has more than one role (has a role other than `Everyone`) then only display those roles that have access
 
 */
 
@@ -18,14 +24,26 @@ const sortRoles = roles => roles.sort((a, b) => (a.name == 'everyone' ? 1 : b.po
 const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
     if (loading) return null;
 
-    const channelArr = allChannels.map(({ id, name }) => ({ id, name }));
-    const currentChannel = allChannels.find(({ id }) => id == currentChannelId);
+    const channelIdx = _.findIndex(allChannels, ['id', currentChannelId]);
+    const channel = allChannels[channelIdx];
 
-    let roleArr = currentChannel.roles.map(({ id, name, position }) => ({ id, name, position }));
+    let username = '';
+
+    try {
+        const token = localStorage.getItem('token');
+        const { user } = decode(token);
+        ({ username } = user);
+    } catch (err) {
+        console.log('ERROR:', err);
+    }
+
+    const channelArr = allChannels.map(({ id, name }) => ({ id, name }));
+
+    let roleArr = channel.roles.map(({ id, name, position }) => ({ id, name, position }));
 
     if (roleArr.length > 1) {
         // Private channel
-        roleArr = currentChannel.map(({ roles }) => roles.map(({ id, name, position }) => ({ id, name, position })));
+        roleArr = channel.map(({ roles }) => roles.map(({ id, name, position }) => ({ id, name, position })));
     } else {
         // Public channel
         roleArr = allChannels.map(({ roles }) => roles.map(({ id, name, position }) => ({ id, name, position })));
@@ -42,7 +60,7 @@ const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
             <Roles roles={roleArr} />
             <Channels
                 chatName="Vashta"
-                username="Vaeb"
+                username={username}
                 currentChannelId={currentChannelId}
                 // channels={[{ id: 1, name: 'general' }, { id: 2, name: 'staff' }]}
                 channels={channelArr}

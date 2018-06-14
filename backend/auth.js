@@ -8,7 +8,7 @@ export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
         // normal token for sensitive information or information that might change
         {
-            user: _.pick(user, ['id']), // id and other fields wanted
+            user: _.pick(user, ['id', 'username']), // id and other fields wanted
         },
         secret,
         {
