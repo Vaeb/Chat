@@ -50,7 +50,7 @@ export default (sequelize, DataTypes) => {
 
     User.associate = (models) => {
         User.belongsToMany(models.Role, {
-            through: 'rank',
+            through: models.RoleUser,
             foreignKey: {
                 name: 'userId',
                 field: 'user_id',

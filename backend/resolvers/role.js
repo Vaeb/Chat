@@ -50,20 +50,20 @@ export default {
                     const userId = userIds[i];
 
                     for (let j = 0; j < roleIds.length; j++) {
-                        addRows.push({ userId, roleId: roleIds[i] });
+                        addRows.push({ user_id: userId, roleId: roleIds[j] });
                     }
                 }
 
                 await models.RoleUser.bulkCreate(addRows);
-
-                console.log(111);
 
                 return {
                     ok: true,
                     errors: [],
                 };
             } catch (err) {
-                console.log(err);
+                console.log('++++++++++++++++++++++++++++++++');
+                console.log('ERROR:', err);
+                console.log('--------------------------------');
 
                 return {
                     ok: false,
@@ -73,12 +73,17 @@ export default {
         }),
     },
     Role: {
-        // channels: ({ id }, args, { models }) => models.RoleChannel.findAll({ roleId: id }),
+        channels: ({ id }, args, { models }) =>
+            models.Channel.findAll({
+                include: [{ model: models.Role, where: { '$roles.id$': id } }],
+            }),
         members: ({ id }, args, { models }) =>
             models.User.findAll({
-                include: [{ model: models.Role }],
-                where: { id },
+                include: [{ model: models.Role, where: { '$roles.id$': id } }],
             }),
-        // permissions: ({ id }, args, { models }) => models.RolePermissions.findAll({ roleId: id }),
+        permissions: ({ id }, args, { models }) =>
+            models.Permission.findAll({
+                include: [{ model: models.Role, where: { '$roles.id$': id } }],
+            }),
     },
 };

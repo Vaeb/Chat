@@ -8,7 +8,7 @@ export default (sequelize, DataTypes) => {
 
     Channel.associate = (models) => {
         Channel.belongsToMany(models.Role, {
-            through: 'access',
+            through: models.RoleChannel,
             foreignKey: {
                 name: 'channelId',
                 field: 'channel_id',

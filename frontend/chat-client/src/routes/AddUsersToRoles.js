@@ -24,8 +24,8 @@ class AddUsersToRoles extends React.Component {
     onSubmit = async () => {
         let { userIds, roleIds } = this;
 
-        userIds = userIds.split(' ');
-        roleIds = roleIds.split(' ');
+        userIds = userIds.split(' ').filter(id => id.length > 0);
+        roleIds = roleIds.split(' ').filter(id => id.length > 0);
 
         let response;
 
@@ -51,6 +51,11 @@ class AddUsersToRoles extends React.Component {
                 console.log('found error:', path, '|', message);
                 err[`${path}Error`] = message.charAt(0).toUpperCase() + message.slice(1);
             });
+
+            console.log('======================');
+            console.log(userIds);
+            console.log(roleIds);
+            console.log('======================');
 
             this.errors = err;
         }

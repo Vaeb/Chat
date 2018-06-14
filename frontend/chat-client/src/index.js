@@ -12,7 +12,10 @@ import 'semantic-ui-css/semantic.min.css';
 import Routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
-const httpLink = createHttpLink({ uri: 'https://chat.vashta.io/graphql' });
+const debugging = false;
+
+const uri = debugging ? 'http://localhost:8080/graphql' : 'https://chat.vashta.io/graphql';
+const httpLink = createHttpLink({ uri });
 
 const middlewareLink = setContext(() => ({
     headers: {
