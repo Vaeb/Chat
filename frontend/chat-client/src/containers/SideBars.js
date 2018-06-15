@@ -27,8 +27,8 @@ const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
     const channelIdx = _.findIndex(allChannels, ['id', currentChannelId]);
 
     if (channelIdx == -1) {
-        return null;
         console.log('Current channel not found');
+        return null;
     }
 
     const channel = allChannels[channelIdx];
