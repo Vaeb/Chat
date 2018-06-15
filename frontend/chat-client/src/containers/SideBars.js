@@ -25,6 +25,9 @@ const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
     if (loading) return null;
 
     const channelIdx = _.findIndex(allChannels, ['id', currentChannelId]);
+
+    if (channelIdx == -1) return console.log('Current channel not found');
+
     const channel = allChannels[channelIdx];
 
     let username = '';
