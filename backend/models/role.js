@@ -35,12 +35,17 @@ export default (sequelize, DataTypes) => {
         },
         color: {
             type: DataTypes.STRING,
+            defaultValue: '#FFFFFF',
             validate: {
                 is: {
                     args: /^#[0-9a-f]{6}$/i,
                     msg: 'The color must be a valid hex string in the format #FF019A',
                 },
             },
+        },
+        view: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
         },
     });
 

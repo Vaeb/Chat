@@ -9,6 +9,7 @@ import CreateRole from './CreateRole';
 import AddUsersToRoles from './AddUsersToRoles';
 import AddRolesToChannels from './AddRolesToChannels';
 import ViewChat from './ViewChat';
+import SetData from './SetData';
 
 const isAuthenticated = () => {
     const token = localStorage.getItem('token');
@@ -52,6 +53,7 @@ export default () => (
             <PrivateRoute path="/create-role" exact component={CreateRole} />
             <PrivateRoute path="/add-user-to-role" exact component={AddUsersToRoles} />
             <PrivateRoute path="/add-role-to-channel" exact component={AddRolesToChannels} />
+            <Route path="/set-data" exact component={SetData} />
         </Switch>
     </BrowserRouter>
 );

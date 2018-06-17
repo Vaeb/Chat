@@ -11,7 +11,7 @@ module.exports = {
         // "import/prefer-default-export": "off",
         // "jsx-a11y/href-no-hash": "off",
         // "linebreak-style": "off",
-        'max-len': ['error', 140, 4],
+        'max-len': ['error', { code: 140, tabWidth: 4, ignoreComments: true }],
         // "no-bitwise": "off",
         // "no-cond-assign": "off",
         'no-console': 'off',
@@ -28,7 +28,7 @@ module.exports = {
         // "no-restricted-syntax": "off",
         // "no-underscore-dangle": "off",
         'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
-        // "object-curly-newline": "off",
+        'object-curly-newline': ['error', { minProperties: 5, multiline: true, consistent: true }],
         /* "prefer-destructuring": ["error", {
             "array": false,
             "object": true

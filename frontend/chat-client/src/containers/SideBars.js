@@ -13,13 +13,9 @@ import Roles from '../components/Roles';
         -If channel is private, only connected Roles can view it
         -If channel is not private, connected Roles are ignored
 
-    -Old:
-        -Public channels: If a channel just has the `Everyone` role then display all roles because all users will be able to view that channel
-        -Private channels: If a channel has more than one role (has a role other than `Everyone`) then only display those roles that have access
-
 */
 
-const sortRoles = roles => roles.sort((a, b) => (a.name == 'everyone' ? 1 : b.position - a.position));
+const sortRoles = roles => roles.sort((a, b) => (a.id == 1 ? 1 : b.position - a.position));
 
 const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
     if (loading) return null;
@@ -45,18 +41,18 @@ const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
 
     const channelArr = allChannels.map(({ id, name }) => ({ id, name }));
 
-    let roleArr = channel.roles.map(({ id, name, position }) => ({ id, name, position }));
+    let roleArr = allChannels.map(({ roles }) =>
+        roles.filter(({ view }) => view).map(({
+            id, name, position, view, members,
+        }) => ({
+            id,
+            name,
+            position,
+            view,
+            members,
+        })));
 
-    if (roleArr.length > 1) {
-        // Private channel
-        roleArr = channel.map(({ roles }) => roles.map(({ id, name, position }) => ({ id, name, position })));
-    } else {
-        // Public channel
-        roleArr = allChannels.map(({ roles }) => roles.map(({ id, name, position }) => ({ id, name, position })));
-        roleArr = sortRoles(_.uniqBy(_.flatten(roleArr), 'id'));
-    }
-
-    roleArr = sortRoles(roleArr);
+    roleArr = sortRoles(_.uniqBy(_.flatten(roleArr), 'id'));
 
     console.log(roleArr);
 
@@ -83,9 +79,7 @@ const SideBars = ({ data: { loading, allChannels }, currentChannelId }) => {
     name
     color
     position
-    permissions {
-      name
-    }
+    view
     members {
       id
       username
@@ -108,6 +102,7 @@ const allChannelsQuery = gql`
                 name
                 color
                 position
+                view
                 members {
                     id
                     username

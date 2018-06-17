@@ -10,6 +10,8 @@ import jwt from 'jsonwebtoken';
 import models from './models';
 import { refreshTokens } from './auth';
 
+const resetDatabase = false; // DANGEROUS
+
 const SECRET = 'afjefyu3235fuahf8421d';
 const SECRET2 = 'gfjhslafhga342ghhj1248f';
 
@@ -64,6 +66,6 @@ app.use(
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 
-models.sequelize.sync({}).then(() => {
+models.sequelize.sync({ force: resetDatabase }).then(() => {
     app.listen(8080);
 });

@@ -3,6 +3,7 @@ export default `
     type Channel {
         id: Int!
         name: String!
+        private: Boolean!
         messages: [Message!]!
         roles: [Role!]!
     }
@@ -12,7 +13,7 @@ export default `
     }
 
     type Mutation {
-        createChannel(name: String!): Int!
+        createChannel(name: String!, private: Boolean=false): Int!
         addRolesToChannels(roleIds: [String!]!, channelIds: [String!]!): CreateRoleResponse!
     }
 

@@ -4,6 +4,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true,
         },
+        private: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     });
 
     Channel.associate = (models) => {
