@@ -14,13 +14,13 @@ export default {
                     { id: 1, name: 'User' },
                     { id: 2, name: 'Suspended', view: false }, // for permissions
                     { id: 3, name: 'Muted', view: false }, // for permissions
-                    { id: 4, name: 'Buyer', position: 40 }, // for permissions
-                    { id: 5, name: 'Support', position: 60 },
+                    { id: 4, name: 'Buyer', color: '#EF5350', position: 40 }, // for permissions
+                    { id: 5, name: 'Support', color: '#00C853', position: 60 },
                     { id: 6, name: 'Staff', position: 100, view: false }, // for permissions
-                    { id: 7, name: 'Moderator', position: 140 },
-                    { id: 8, name: 'Head Moderator', position: 150 },
+                    { id: 7, name: 'Moderator', color: '#FDD835', position: 140 },
+                    { id: 8, name: 'Head Moderator', color: '#F57F17', position: 150 },
                     { id: 9, name: 'Administrator', position: 200, view: false }, // for permissions
-                    { id: 10, name: 'Developer', position: 240 },
+                    { id: 10, name: 'Developer', color: '#42A5F5', position: 240 },
                 ];
 
                 const dataPermission = [
@@ -36,7 +36,7 @@ export default {
                 const dataUser = [
                     { id: 1, username: 'Vaeb', email: 'vaebmail@gmail.com', password: 'vaebmail@gmail.com' },
                     { id: 2, username: 'NewUser1', email: 'new1@gmail.com', password: 'new1@gmail.com' },
-                    { id: 3, username: 'BuyerUser11', email: 'buyer1@gmail.com', password: 'buyer1@gmail.com' },
+                    { id: 3, username: 'BuyerUser1', email: 'buyer1@gmail.com', password: 'buyer1@gmail.com' },
                     { id: 4, username: 'SupportUser1', email: 'support1@gmail.com', password: 'support1@gmail.com' },
                     { id: 5, username: 'SupportUser2', email: 'support2@gmail.com', password: 'support2@gmail.com' },
                     { id: 6, username: 'ModUser1', email: 'mod1@gmail.com', password: 'mod1@gmail.com' },
@@ -45,12 +45,12 @@ export default {
                 ];
 
                 const dataChannel = [
-                    { id: 1, name: 'rules', private: false },
-                    { id: 2, name: 'announcements', private: false },
-                    { id: 3, name: 'general', private: false },
-                    { id: 4, name: 'support', private: false },
-                    { id: 5, name: 'staff', private: true },
-                    { id: 6, name: 'admins', private: true },
+                    { id: 1, name: 'rules' },
+                    { id: 2, name: 'announcements' },
+                    { id: 3, name: 'general' },
+                    { id: 4, name: 'support' },
+                    { id: 5, name: 'staff', locked: true },
+                    { id: 6, name: 'admins', locked: true },
                 ];
 
                 await Promise.all([
@@ -92,20 +92,23 @@ export default {
                 for (let i = 0; i < dataUser.length; i++) dataRoleUser.push({ roleId: 1, userId: dataUser[i].id }); // Get all users from fixed role
 
                 const dataRoleChannel = [
-                    // Which roles can access which private channels (ignored if channel Private=false)
+                    // Which roles can access which private channels (ignored if channel locked=false)
                     { roleId: 6, channelId: 5 }, // Staff - staff
                     { roleId: 9, channelId: 6 }, // Administrator - admins
                 ];
 
-                // Auto ignored when private
-                for (let i = 0; i < dataChannel.length; i++) dataRoleChannel.push({ roleId: 1, channelId: dataChannel[i].id }); // Get all channels from fixed role
+                // You can get all roles from rules channel
 
-                for (let i = 0; i < dataRole.length; i++) {
-                    if (dataRole[i].id != 1) {
+                for (let i = 0; i < dataRole.length; i++) dataRoleChannel.push({ roleId: dataRole[i].id, channelId: 1 }); // Get all roles from fixed channel (rules)
+
+                /* // Auto ignored when private
+                    for (let i = 0; i < dataChannel.length; i++) {
                         // Can't have role_id: 1, channel_id: 1, again (from above query)
-                        dataRoleChannel.push({ roleId: dataRole[i].id, channelId: 1 }); // Get all roles from fixed channel
+                        if (dataChannel[i].id != 1) {
+                            dataRoleChannel.push({ roleId: 1, channelId: dataChannel[i].id }); // Get all channels from fixed role
+                        }
                     }
-                }
+                */
 
                 await Promise.all([
                     models.RolePermission.bulkCreate(dataRolePermission),

@@ -35,7 +35,7 @@ export default (sequelize, DataTypes) => {
         },
         color: {
             type: DataTypes.STRING,
-            defaultValue: '#FFFFFF',
+            defaultValue: '#B9BBBE',
             validate: {
                 is: {
                     args: /^#[0-9a-f]{6}$/i,

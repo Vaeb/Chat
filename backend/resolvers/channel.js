@@ -46,7 +46,7 @@ export default {
         }),
     },
     Channel: {
-        messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ channelId }),
+        messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ where: { channelId } }),
         roles: ({ id: channelId }, args, { models }) =>
             models.Role.findAll({
                 include: [{ model: models.Channel, where: { '$channels.id$': channelId } }],

@@ -24,16 +24,24 @@ const ChannelList = styled.ul`
     padding-left: 0px;
 `;
 
+// prettier-ignore
 const ChannelListItem = styled.li`
     padding: 8px 2px 8px 10px;
     font-size: 16px;
+    color: ${props => (props.current ? '#f6f6f7' : '#72767d')};
+    background-color: ${props => (props.current ? 'rgba(79,84,92,.6)' : 'transparent')};
+    ${props => (!props.current ? `
     &:hover {
-        background-color: #42464d;
-        color: #fff;
-    }
+        background-color: #36393f;
+        color: #b9bbbe;
+    }` : '')};
 `;
 
-const channel = ({ id, name }) => <ChannelListItem key={`channel-${id}`}># {name}</ChannelListItem>;
+const channel = ({ id, name, current }) => (
+    <ChannelListItem current={current || false} key={`channel-${id}`}>
+        # {name}
+    </ChannelListItem>
+);
 
 export default ({ chatName, username, channels }) => (
     <ChannelWrapper>

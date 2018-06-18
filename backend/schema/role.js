@@ -21,7 +21,7 @@ export default `
     }
 
     type Mutation {
-        createRole(name: String!, color: String="#FFFFFF", position: String, view: Boolean=true): CreateRoleResponse!
+        createRole(name: String!, color: String="#B9BBBE", position: String, view: Boolean=true): CreateRoleResponse!
         addUsersToRoles(userIds: [String!]!, roleIds: [String!]!): CreateRoleResponse!
     }
 

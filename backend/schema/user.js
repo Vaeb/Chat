@@ -13,7 +13,18 @@ export default `
         roles: [Role!]!
     }
 
+    type UserView {
+        id: Int!
+        username: String!
+        email: String!
+        roles: [Role!]!
+        openChannels: [Channel!]!
+        allRoles: [Role!]!
+        allUsers: [User!]!
+    }
+
     type Query {
+        chatData: UserView!
         getUser(id: Int!): User!
         allUsers: [User!]!
     }

@@ -1,8 +1,11 @@
 import { tryLogin } from '../auth';
 import formatErrors from '../formatErrors';
+import { requiresAuth } from '../permissions';
 
 export default {
     Query: {
+        chatData: requiresAuth.createResolver((parent, args, { models, user }) => models.User.findOne({ where: { id: user.id } })),
+        // chatData: (parent, args, { models, user }) => models.User.findOne({ where: { id: 1 } }),
         getUser: (parent, { id }, { models }) => models.User.findOne({ where: { id } }),
         allUsers: (parent, args, { models }) => models.User.findAll(),
     },
@@ -30,5 +33,14 @@ export default {
             models.Role.findAll({
                 include: [{ model: models.User, where: { '$users.id$': userId } }],
             }),
+    },
+    UserView: {
+        roles: ({ id: userId }, args, { models }) =>
+            models.Role.findAll({
+                include: [{ model: models.User, where: { '$users.id$': userId } }],
+            }),
+        openChannels: (parent, args, { models }) => models.Channel.findAll({ where: { locked: false } }),
+        allRoles: (parent, args, { models }) => models.Role.findAll(),
+        allUsers: (parent, args, { models }) => models.User.findAll(),
     },
 };

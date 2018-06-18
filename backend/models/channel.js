@@ -4,7 +4,7 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true,
         },
-        private: {
+        locked: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },

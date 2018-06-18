@@ -1,14 +1,14 @@
 // Vaeb note: auth.js methods sourced from graphql github example
 
 import jwt from 'jsonwebtoken';
-import _ from 'lodash';
+import pick from 'lodash/pick';
 import bcrypt from 'bcrypt';
 
 export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
         // normal token for sensitive information or information that might change
         {
-            user: _.pick(user, ['id', 'username']), // id and other fields wanted
+            user: pick(user, ['id', 'username']), // id and other fields wanted
         },
         secret,
         {
@@ -19,7 +19,7 @@ export const createTokens = async (user, secret, secret2) => {
     const createRefreshToken = jwt.sign(
         // refresh token used for general information to identify the user when the normal token expires and it needs to generate a new one
         {
-            user: _.pick(user, 'id'),
+            user: pick(user, 'id'),
         },
         secret2,
         {

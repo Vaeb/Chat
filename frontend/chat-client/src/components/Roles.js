@@ -13,32 +13,54 @@ const RoleList = styled.ul`
     list-style: none;
 `;
 
-const RoleTitle = styled.li`
-    height: 40px;
-    color: hsla(0, 0%, 100%, 0.7);
-    display: flex;
-    margin-left: 8px;
-    padding-left: 7px;
-    font-size: 16px;
-`;
+// const RoleTitle = styled.li`
+//     height: 40px;
+//     color: hsla(0, 0%, 100%, 0.7);
+//     display: flex;
+//     margin-left: 8px;
+//     padding-left: 7px;
+//     font-size: 16px;
+// `;
 
-const RoleListItem = styled.li`
-    height: 40px;
+const RoleListItemName = styled.li`
     color: hsla(0, 0%, 100%, 0.4);
     display: flex;
     margin-left: 8px;
     padding-left: 7px;
     align-items: center;
     font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 5px;
+`;
+
+const RoleListItemUser = styled.li`
+    height: 28px;
+    color: ${props => props.color};
+    display: flex;
+    margin-left: 8px;
+    padding-left: 21px;
+    align-items: center;
+    font-size: 14px;
     &:hover {
-        background-color: #36393e;
-        color: #fff;
+        background-color: #36393f;
+        ${props => props.viewRoleId == 1 && 'color: #fff;'};
     }
 `;
 
-const role = ({ id, name }) => <RoleListItem key={`role-${id}`}>{name}</RoleListItem>;
+const roleUser = ({ id, username, color, viewRoleId }) => (
+    <RoleListItemUser viewRoleId={viewRoleId} color={color} key={`role-user-${id}`}>
+        {username}
+    </RoleListItemUser>
+);
 
-export default ({ roles }) => (
+const role = ({ id, title, members }) => (
+    <React.Fragment key={`role-frag-${id}`}>
+        <RoleListItemName key={`role-name-${id}`}>{title}</RoleListItemName>
+        {members.map(roleUser)}
+    </React.Fragment>
+);
+
+const Roles = ({ roles }) => (
     <RoleWrapper>
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
@@ -46,3 +68,5 @@ export default ({ roles }) => (
         </RoleList>
     </RoleWrapper>
 );
+
+export default Roles;

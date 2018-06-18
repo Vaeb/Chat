@@ -30,6 +30,7 @@ class CreateRole extends React.Component {
         const { name, color } = this;
         let { position } = this;
 
+        // eslint-disable-next-line eqeqeq
         if (position == 0) position = undefined;
 
         /* if (position !== undefined) {
