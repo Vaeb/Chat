@@ -3,6 +3,10 @@
 import jwt from 'jsonwebtoken';
 import pick from 'lodash/pick';
 import bcrypt from 'bcrypt';
+import request from 'request';
+
+const CLIENT_ID = 'localhost';
+const CLIENT_SECRET = 'notReallySecret';
 
 export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
@@ -73,6 +77,7 @@ export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
+
     const user = await models.User.findOne({ where: { email }, raw: true });
     if (!user) {
         // user with provided email not found
@@ -101,3 +106,40 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
         refreshToken,
     };
 };
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function doAuth(path, json, bearer) {
+    return new Promise((resolve, reject) => {
+        request[typeof json ==='object' ? 'post' : 'get'](`https://api.vashta.io/auth/${path}`, { json, auth: bearer && { bearer } }, (error, response, body) => {
+            if (error) return reject(error);
+            if (!body) return reject();
+            if (body.error) {
+                if (body.error === 'invalid_grant') {
+                    return reject(new Error('Invalid credentials'));
+                }
+                return reject(new Error(body.error_description));
+            }
+            resolve(body);
+        });
+    });
+}
+
+export async function tryVashtaAuth(username, password) {
+    try {
+        const token = (await doAuth('token', {
+            username, password,
+            grant_type: 'password',
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+        })).access_token;
+        if (!token) throw new Error('Wrong email/password');
+        const user = await doAuth('user/@me', true, token);
+        if (user && user.username) return user;
+        throw new Error('Couldn\'t fetch user data');
+    } catch (e) {
+        const err = new Error('Something went wrong while logging in');
+        err.cause = e;
+        throw err;
+    }
+}
