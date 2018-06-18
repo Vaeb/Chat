@@ -24,8 +24,8 @@ React-based chat project for Vashta.
 1.  Connect to postgres: `psql -U postgres`
 1.  Create chat database: `create database chat;`
 1.  Exit database: `\q`
-1.  Start the backend-nodemon server in `backend/`: `npm start`
-1.  Using another terminal if necessary, start the frontend-nodemon server in `frontend/chat-client/`: `npm start`
+1.  Start the backend nodemon server in `backend/`: `npm start`
+1.  Using another terminal if necessary, start the frontend nodemon server in `frontend/chat-client/`: `npm start`
 
 ## PostgreSQL Key Commands
 
