@@ -30,14 +30,12 @@ class Login extends React.Component {
 
         console.log(response);
 
-        const {
-            ok, errors, token, refreshToken,
-        } = response.data.login;
+        const { ok, errors, token, refreshToken } = response.data.login;
 
         if (ok) {
             localStorage.setItem('token', token);
             localStorage.setItem('refreshToken', refreshToken);
-            this.props.history.push('/');
+            this.props.history.push('/view-chat/1');
         } else {
             const err = {};
 

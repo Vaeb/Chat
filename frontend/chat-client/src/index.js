@@ -12,7 +12,7 @@ import 'semantic-ui-css/semantic.min.css';
 import Routes from './routes';
 import registerServiceWorker from './registerServiceWorker';
 
-const debugging = false;
+const debugging = true;
 
 const uri = debugging ? 'http://localhost:8080/graphql' : 'https://chat.vashta.io/graphql';
 const httpLink = createHttpLink({ uri });
