@@ -25,14 +25,22 @@ class Register extends React.Component {
     onSubmit = async () => {
         const { username, email, password } = this;
 
-        const response = await this.props.mutate({
-            variables: { username, email, password },
-        });
+        let response;
+
+        try {
+            response = await this.props.mutate({
+                variables: { username, email, password },
+            });
+        } catch (err) {
+            console.log('[BACKEND ERROR - This could be because your submitted data contained incorrect data types] ', err);
+            this.props.history.push('/');
+            return;
+        }
 
         const { ok, errors } = response.data.register;
 
         if (ok) {
-            this.props.history.push('/');
+            this.props.history.push('/login');
         } else {
             const err = {};
 

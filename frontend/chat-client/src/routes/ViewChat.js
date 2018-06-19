@@ -53,6 +53,8 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     const nowChannelIndex = channelId ? findIndex(viewChannels, ['id', channelId]) : 0;
     const nowChannel = nowChannelIndex === -1 ? viewChannels[0] : viewChannels[nowChannelIndex];
 
+    console.log(`=== ${nowChannel.name} (${nowChannel.id}) ===`);
+
     // Set as property
     nowChannel.current = true;
 

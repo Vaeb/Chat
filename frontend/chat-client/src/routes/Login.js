@@ -24,9 +24,17 @@ class Login extends React.Component {
     onSubmit = async () => {
         const { email, password } = this;
 
-        const response = await this.props.mutate({
-            variables: { email, password },
-        });
+        let response;
+
+        try {
+            response = await this.props.mutate({
+                variables: { email, password },
+            });
+        } catch (err) {
+            console.log('[BACKEND ERROR - This could be because your submitted data contained incorrect data types] ', err);
+            this.props.history.push('/');
+            return;
+        }
 
         console.log(response);
 

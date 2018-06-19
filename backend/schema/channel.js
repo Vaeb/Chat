@@ -12,8 +12,14 @@ export default `
         allChannels: [Channel!]!
     }
 
+    type CreateChannelResponse {
+        ok: Boolean!
+        channel: Channel
+        errors: [Error!]
+    }
+
     type Mutation {
-        createChannel(name: String!, locked: Boolean=false): Int!
+        createChannel(name: String!, locked: Boolean=false, roleIds: [Int!]): CreateChannelResponse!
         addRolesToChannels(roleIds: [String!]!, channelIds: [String!]!): CreateRoleResponse!
     }
 

@@ -5,18 +5,14 @@ import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-rea
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
-/* function isInt(value) {
-    return !isNaN(value) && parseInt(Number(value), 10) == value && !isNaN(parseInt(value, 10));
-} */
-
-class CreateRole extends React.Component {
+class CreateChannel extends React.Component {
     constructor(props) {
         super(props);
 
         extendObservable(this, {
             name: '',
-            position: undefined,
-            color: undefined,
+            locked: undefined,
+            roleIds: undefined,
             errors: {},
         });
     }
@@ -27,25 +23,15 @@ class CreateRole extends React.Component {
     };
 
     onSubmit = async () => {
-        const { name, color } = this;
-        let { position } = this;
+        const { name, locked, roleIds } = this;
 
-        // eslint-disable-next-line eqeqeq
-        if (position == 0) position = undefined;
-
-        /* if (position !== undefined) {
-            if (!isInt(position)) {
-                this.errors = { positionError: 'The position must be an integer' };
-                return;
-            }
-
-            position = parseInt(position, 10);
-        } */
+        const lockedReal = locked !== undefined ? locked == 'true' : undefined;
+        const roleIdsReal = roleIds !== undefined ? roleIds.split(' ').filter(id => id.length > 0) : undefined;
 
         let response;
 
         try {
-            response = await this.props.mutate({ variables: { name, position, color } });
+            response = await this.props.mutate({ variables: { name, locked: lockedReal, roleIds: roleIdsReal } });
         } catch (err) {
             console.log('[BACKEND ERROR - This could be because your submitted data contained incorrect data types] ', err);
             this.props.history.push('/login');
@@ -54,10 +40,10 @@ class CreateRole extends React.Component {
 
         console.log(response);
 
-        const { ok, errors } = response.data.createRole;
+        const { ok, errors, channel } = response.data.createChannel;
 
         if (ok) {
-            this.props.history.push('/');
+            this.props.history.push(`/view-chat/${channel.id}`);
         } else {
             const err = {};
 
@@ -74,32 +60,38 @@ class CreateRole extends React.Component {
     render() {
         const {
             name,
-            position,
-            color,
-            errors: { nameError, positionError, colorError },
+            locked,
+            roleIds,
+            errors: { nameError, lockedError, roleIdError },
         } = this;
 
         const errorList = [];
 
         if (nameError) errorList.push(nameError);
-        if (positionError) errorList.push(positionError);
-        if (colorError) errorList.push(colorError);
+        if (lockedError) errorList.push(lockedError);
+        if (roleIdError) errorList.push(roleIdError);
 
-        const positionVal = position === undefined ? '' : position;
-        const colorVal = color === undefined ? '' : color;
+        const lockedVal = locked === undefined ? '' : locked;
+        const roleIdsVal = roleIds === undefined ? '' : roleIds;
 
         return (
             <Container text>
-                <Header as="h2">Create Role</Header>
+                <Header as="h2">Create Channel</Header>
                 <Form>
                     <Form.Field error={!!nameError}>
                         <Input name="name" onChange={this.onChange} value={name} placeholder="Name" fluid />
                     </Form.Field>
-                    <Form.Field error={!!positionError}>
-                        <Input name="position" onChange={this.onChange} value={positionVal} placeholder="Position (Optional)" fluid />
+                    <Form.Field error={!!lockedError}>
+                        <Input name="locked" onChange={this.onChange} value={lockedVal} placeholder="Private (Optional)" fluid />
                     </Form.Field>
-                    <Form.Field error={!!colorError}>
-                        <Input name="color" onChange={this.onChange} value={colorVal} placeholder="Color (Optional)" fluid />
+                    <Form.Field error={!!lockedError}>
+                        <Input
+                            name="roleIds"
+                            onChange={this.onChange}
+                            value={roleIdsVal}
+                            placeholder="Access Role IDs (Optional) (Separated by a single space) (Only affects private channels)"
+                            fluid
+                        />
                     </Form.Field>
 
                     <Button onClick={this.onSubmit}>Submit</Button>
@@ -111,10 +103,13 @@ class CreateRole extends React.Component {
     }
 }
 
-const createRoleMutation = gql`
-    mutation($name: String!, $color: String, $position: String) {
-        createRole(name: $name, color: $color, position: $position) {
+const createChannelMutation = gql`
+    mutation($name: String!, $locked: Boolean, $roleIds: [Int!]) {
+        createChannel(name: $name, locked: $locked, roleIds: $roleIds) {
             ok
+            channel {
+                id
+            }
             errors {
                 path
                 message
@@ -123,4 +118,4 @@ const createRoleMutation = gql`
     }
 `;
 
-export default graphql(createRoleMutation)(observer(CreateRole));
+export default graphql(createChannelMutation)(observer(CreateChannel));

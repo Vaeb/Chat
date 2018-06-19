@@ -11,7 +11,7 @@ import { requiresAuth } from '../permissions';
 export default {
     Query: {
         // allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ id: 1 }, { raw: true })),
-        allRoles: async (parent, args, { models }) => models.Role.findAll({ raw: true }),
+        allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ raw: true })),
     },
     Mutation: {
         createRole: requiresAuth.createResolver(async (parent, args, { models }) => {

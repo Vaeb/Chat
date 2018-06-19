@@ -6,6 +6,7 @@ import Home from './Home';
 import Register from './Register';
 import Login from './Login';
 import CreateRole from './CreateRole';
+import CreateChannel from './CreateChannel';
 import AddUsersToRoles from './AddUsersToRoles';
 import AddRolesToChannels from './AddRolesToChannels';
 import ViewChat from './ViewChat';
@@ -51,6 +52,7 @@ export default () => (
             <Route path="/login" exact component={Login} />
             <Route path="/view-chat/:channelId?" exact component={ViewChat} />
             <PrivateRoute path="/create-role" exact component={CreateRole} />
+            <PrivateRoute path="/create-channel" exact component={CreateChannel} />
             <PrivateRoute path="/add-user-to-role" exact component={AddUsersToRoles} />
             <PrivateRoute path="/add-role-to-channel" exact component={AddRolesToChannels} />
             <Route path="/set-data" exact component={SetData} />

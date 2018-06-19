@@ -32,7 +32,7 @@ class AddUsersToRoles extends React.Component {
         try {
             response = await this.props.mutate({ variables: { userIds, roleIds } });
         } catch (err) {
-            console.log('ERROR:', err);
+            console.log('BACKEND ERROR:', err);
             this.props.history.push('/login');
             return;
         }

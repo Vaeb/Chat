@@ -32,7 +32,7 @@ class AddRolesToChannels extends React.Component {
         try {
             response = await this.props.mutate({ variables: { roleIds, channelIds } });
         } catch (err) {
-            console.log('ERROR:', err);
+            console.log('BACKEND ERROR:', err);
             this.props.history.push('/login');
             return;
         }

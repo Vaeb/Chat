@@ -96,6 +96,8 @@ export default {
                     { roleId: 10, userId: 8 }, // Developer - DevUser1
                 ];
 
+                // You can get all users from User role
+
                 for (let i = 0; i < dataUser.length; i++) dataRoleUser.push({ roleId: 1, userId: dataUser[i].id || i + 1 }); // Get all users from fixed role
 
                 const dataRoleChannel = [

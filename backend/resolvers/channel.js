@@ -6,15 +6,31 @@ export default {
         allChannels: async (parent, args, { models }) => models.Channel.findAll({ raw: true }),
     },
     Mutation: {
-        createChannel: async (parent, args, { models }) => {
+        createChannel: requiresAuth.createResolver(async (parent, { name, locked, roleIds }, { models }) => {
             try {
-                const channel = await models.Channel.create(args);
-                return channel.dataValues.id;
+                const channel = await models.Channel.create({ name, locked });
+
+                console.log(roleIds);
+                console.log(typeof roleIds);
+
+                if (roleIds && roleIds.length > 0) {
+                    const dataRoleChannel = roleIds.map(roleId => ({ roleId, channelId: channel.id }));
+                    await models.RoleChannel.bulkCreate(dataRoleChannel);
+                }
+
+                return {
+                    ok: true,
+                    channel,
+                };
             } catch (err) {
                 console.log(err);
-                return -1;
+
+                return {
+                    ok: false,
+                    errors: formatErrors(err, models),
+                };
             }
-        },
+        }),
         addRolesToChannels: requiresAuth.createResolver(async (parent, { roleIds, channelIds }, { models }) => {
             try {
                 const addRows = [];
