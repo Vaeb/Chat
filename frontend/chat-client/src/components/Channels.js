@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const ChannelWrapper = styled.div`
@@ -23,6 +24,7 @@ const ChannelList = styled.ul`
     width: 100%;
     list-style: none;
     padding-left: 0px;
+    position: relative;
 `;
 
 // prettier-ignore
@@ -38,20 +40,35 @@ const ChannelListItem = styled.li`
     }` : '')};
 `;
 
+const AddChannelListItem = styled.li`
+    padding: 8px 2px 8px 10px;
+    font-size: 14px;
+    background-color: #151515;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    top: 12px;
+`;
+
 const channel = ({ id, name, current }) => (
     <Link key={`channel-${id}`} to={`/view-chat/${id}`}>
         <ChannelListItem current={current || false}># {name}</ChannelListItem>
     </Link>
 );
 
-export default ({ chatName, username, channels }) => (
+export default ({ chatName, username, channels, onAddChannelClick }) => (
     <ChannelWrapper>
         <ChannelHead>
             <ChatNameHeader>{chatName}</ChatNameHeader>
             {username}
         </ChannelHead>
         <div>
-            <ChannelList>{channels.map(channel)}</ChannelList>
+            <ChannelList>
+                {channels.map(channel)}
+                <AddChannelListItem onClick={onAddChannelClick}>
+                    Create Channel <Icon name="add circle" />
+                </AddChannelListItem>
+            </ChannelList>
         </div>
     </ChannelWrapper>
 );

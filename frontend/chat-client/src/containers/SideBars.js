@@ -2,6 +2,7 @@ import React from 'react';
 
 import Channels from '../components/Channels';
 import Roles from '../components/Roles';
+import AddChannelModal from '../components/AddChannelModal';
 
 /*
 
@@ -12,38 +13,37 @@ import Roles from '../components/Roles';
 */
 
 // eslint-disable-next-line arrow-body-style
-const SideBars = ({ username, currentChannelId, viewRoles, userChannels }) => {
-    // prettier-ignore
-    /* const viewChannels = allChannels.filter(({ roles, locked }) =>
-        !locked || map(roles, 'id').some(roleId => userRoles.includes(roleId)));
+class SideBars extends React.Component {
+    state = {
+        openAddChannelModal: false,
+    };
 
-    const channelArr = viewChannels.map(({ id, name }) => ({ id, name }));
+    handleAddChannelClose = (resetForm) => {
+        resetForm();
+        this.setState({ openAddChannelModal: false });
+    };
 
-    let roleArr = viewChannels.map(({ roles }) =>
-        roles.filter(({ view }) => view).map(({
-            id, name, position, view, members,
-        }) => ({
-            id,
-            name,
-            position,
-            view,
-            members,
-        })));
+    handleAddChannelClick = () => {
+        this.setState({ openAddChannelModal: true });
+    };
 
-    roleArr = sortRoles(uniqBy(flatten(roleArr), 'id')); */
-
-    return (
-        <React.Fragment>
-            {/* <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'User' }]} /> */}
-            <Roles roles={viewRoles} />
-            <Channels
-                chatName="Vashta"
-                username={username}
-                currentChannelId={currentChannelId}
-                channels={userChannels}
-            />
-        </React.Fragment>
-    );
-};
+    render() {
+        const { username, currentChannelId, viewRoles, userChannels } = this.props;
+        return (
+            <React.Fragment>
+                {/* <Roles roles={[{ id: 1, name: 'Staff' }, { id: 2, name: 'User' }]} /> */}
+                <Roles roles={viewRoles} />
+                <Channels
+                    chatName="Vashta"
+                    username={username}
+                    currentChannelId={currentChannelId}
+                    channels={userChannels}
+                    onAddChannelClick={this.handleAddChannelClick}
+                />
+                <AddChannelModal key="add-channel-modal" onClose={this.handleAddChannelClose} open={this.state.openAddChannelModal} />
+            </React.Fragment>
+        );
+    }
+}
 
 export default SideBars;

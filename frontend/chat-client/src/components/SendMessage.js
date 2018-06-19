@@ -23,18 +23,18 @@ const SendMessageWrapper = styled.div`
 const UseStyle = () => (
     <style>
         {`
-            .input {
+            .SendMessageInput {
                 padding: 0.5em;
                 border: none;
                 height: 100%;
             }
 
-            .input input {
+            .SendMessageInput > input {
                 background-color: hsla(218, 5%, 47%, 0.3) !important;
                 color: hsla(0, 0%, 100%, 0.7) !important;
             }
 
-            .input input::selection {
+            .SendMessageInput > input::selection {
                 color: hsla(0, 0%, 100%, 0.3) !important;
             }
         `}
@@ -44,6 +44,6 @@ const UseStyle = () => (
 export default ({ channelName }) => (
     <SendMessageWrapper>
         <UseStyle />
-        <Input inverted fluid placeholder={`Message #${channelName}`} />
+        <Input className="SendMessageInput" inverted fluid placeholder={`Message #${channelName}`} />
     </SendMessageWrapper>
 );

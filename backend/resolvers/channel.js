@@ -10,9 +10,6 @@ export default {
             try {
                 const channel = await models.Channel.create({ name, locked });
 
-                console.log(roleIds);
-                console.log(typeof roleIds);
-
                 if (roleIds && roleIds.length > 0) {
                     const dataRoleChannel = roleIds.map(roleId => ({ roleId, channelId: channel.id }));
                     await models.RoleChannel.bulkCreate(dataRoleChannel);
