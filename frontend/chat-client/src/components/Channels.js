@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const ChannelWrapper = styled.div`
     grid-column: 1;
@@ -38,9 +39,9 @@ const ChannelListItem = styled.li`
 `;
 
 const channel = ({ id, name, current }) => (
-    <ChannelListItem current={current || false} key={`channel-${id}`}>
-        # {name}
-    </ChannelListItem>
+    <Link key={`channel-${id}`} to={`/view-chat/${id}`}>
+        <ChannelListItem current={current || false}># {name}</ChannelListItem>
+    </Link>
 );
 
 export default ({ chatName, username, channels }) => (

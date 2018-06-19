@@ -19,6 +19,7 @@ module.exports = {
         // "func-names": "off",
         // "global-require": "off",
         // "import/prefer-default-export": "off",
+        'jsx-a11y/anchor-is-valid': 'off',
         // "jsx-a11y/href-no-hash": "off",
         // "linebreak-style": "off",
         'max-len': ['error', { code: 140, tabWidth: 4, ignoreComments: true }],

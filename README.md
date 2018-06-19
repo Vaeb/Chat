@@ -35,21 +35,6 @@ React-based chat project for Vashta.
 -   `\d table_name`: Describe table `table_name`
 -   `\q`: Quit postgres
 
-## Useful Links
-
--   [Node (Includes NPM)](https://nodejs.org/en/)
--   [Yarn](https://yarnpkg.com/lang/en/docs/install/)
--   [Chat (Vashta Server)](https://chat.vashta.io/view-chat) + [Chat (Local)](http://localhost:3000/view-chat)
--   [GraphQL Testing (Vashta Server)](https://chat.vashta.io/graphiql) + [GraphQL Testing (Local)](http://localhost:8080/graphiql)
--   [Apollo GraphQL Docs](https://www.apollographql.com/docs/react/essentials/get-started.html) + [Apollo GraphQL Docs (2.0 Migration)](https://www.apollographql.com/docs/react/recipes/2.0-migration.html)
--   [Sequelize Docs](http://docs.sequelizejs.com/manual/installation/getting-started.html)
--   [MobX Docs](https://github.com/mobxjs/mobx) + [MobX React Docs](https://github.com/mobxjs/mobx-react)
--   [React Tutorial](https://reactjs.org/tutorial/tutorial.html)
--   [React Component Lifecycle Docs](https://reactjs.org/docs/react-component.html)
--   [React Router Docs](https://reacttraining.com/react-router/web/example/auth-workflow)
--   [React Semantic UI Docs](https://react.semantic-ui.com/elements/button)
--   [React Styled Components Docs](https://www.styled-components.com/docs/basics)
-
 ## Recommended VSCode Extensions
 
 -   [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -66,3 +51,19 @@ React-based chat project for Vashta.
         "prettier.printWidth": 140,
         "prettier.proseWrap": "preserve"
         ```
+
+## Useful Links
+
+-   [Node (Includes NPM)](https://nodejs.org/en/)
+-   [Yarn](https://yarnpkg.com/lang/en/docs/install/)
+-   [Chat (Vashta Server)](https://chat.vashta.io/view-chat) + [Chat (Local)](http://localhost:3000/view-chat)
+-   [GraphQL Testing (Vashta Server)](https://chat.vashta.io/graphiql) + [GraphQL Testing (Local)](http://localhost:8080/graphiql)
+-   [Apollo GraphQL Docs](https://www.apollographql.com/docs/react/essentials/get-started.html) + [Apollo GraphQL Docs (2.0 Migration)](https://www.apollographql.com/docs/react/recipes/2.0-migration.html)
+-   [Sequelize Docs](http://docs.sequelizejs.com/manual/installation/getting-started.html)
+-   [MobX Docs](https://github.com/mobxjs/mobx) + [MobX React Docs](https://github.com/mobxjs/mobx-react)
+-   [React Tutorial](https://reactjs.org/tutorial/tutorial.html)
+-   [React Component Lifecycle Docs](https://reactjs.org/docs/react-component.html)
+-   [React Router Docs](https://reacttraining.com/react-router/web/example/auth-workflow)
+-   [React Semantic UI Docs](https://react.semantic-ui.com/elements/button)
+-   [React Styled Components Docs](https://www.styled-components.com/docs/basics)
+-   [Lodash](https://lodash.com/docs/)
