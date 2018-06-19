@@ -92,7 +92,7 @@ const formikData = {
                     ok: true,
                     channel: {
                         __typename: 'Channel',
-                        id: -1,
+                        id: 999999, // Go to bottom
                         name: values.name,
                         locked: false,
                         roles: [],
