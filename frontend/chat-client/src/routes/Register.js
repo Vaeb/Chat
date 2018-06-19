@@ -1,31 +1,29 @@
 import React from 'react';
+import { extendObservable } from 'mobx';
+import { observer } from 'mobx-react';
 import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
 class Register extends React.Component {
-    state = {
-        username: '',
-        usernameError: '',
-        email: '',
-        emailError: '',
-        password: '',
-        passwordError: '',
-    };
+    constructor(props) {
+        super(props);
+
+        extendObservable(this, {
+            username: '',
+            email: '',
+            password: '',
+            errors: {},
+        });
+    }
 
     onChange = (e) => {
         const { name, value } = e.target;
-        this.setState({ [name]: value });
+        this[name] = value;
     };
 
     onSubmit = async () => {
-        this.setState({
-            usernameError: '',
-            emailError: '',
-            passwordError: '',
-        });
-
-        const { username, email, password } = this.state;
+        const { username, email, password } = this;
 
         const response = await this.props.mutate({
             variables: { username, email, password },
@@ -43,14 +41,17 @@ class Register extends React.Component {
                 err[`${path}Error`] = message.charAt(0).toUpperCase() + message.slice(1);
             });
 
-            this.setState(err);
+            this.errors = err;
         }
     };
 
     render() {
         const {
-            username, email, password, usernameError, emailError, passwordError,
-        } = this.state;
+            username,
+            email,
+            password,
+            errors: { usernameError, emailError, passwordError },
+        } = this;
 
         const errorList = [];
 
@@ -93,4 +94,4 @@ const registerMutation = gql`
     }
 `;
 
-export default graphql(registerMutation)(Register);
+export default graphql(registerMutation)(observer(Register));

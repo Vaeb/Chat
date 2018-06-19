@@ -14,6 +14,7 @@ export default {
         register: async (parent, args, { models }) => {
             try {
                 const user = await models.User.create(args);
+                models.RoleUser.create({ roleId: 1, userId: user.id });
 
                 return {
                     ok: true,

@@ -10,47 +10,54 @@ export default {
             try {
                 await models.sequelize.sync({ force: true });
 
+                await Promise.all([
+                    models.sequelize.query('ALTER SEQUENCE roles_id_seq RESTART WITH 1'),
+                    models.sequelize.query('ALTER SEQUENCE permissions_id_seq RESTART WITH 1'),
+                    models.sequelize.query('ALTER SEQUENCE users_id_seq RESTART WITH 1'),
+                    models.sequelize.query('ALTER SEQUENCE channels_id_seq RESTART WITH 1'),
+                ]);
+
                 const dataRole = [
-                    { id: 1, name: 'User' },
-                    { id: 2, name: 'Suspended', view: false }, // for permissions
-                    { id: 3, name: 'Muted', view: false }, // for permissions
-                    { id: 4, name: 'Buyer', color: '#EF5350', position: 40 }, // for permissions
-                    { id: 5, name: 'Support', color: '#00C853', position: 60 },
-                    { id: 6, name: 'Staff', position: 100, view: false }, // for permissions
-                    { id: 7, name: 'Moderator', color: '#FDD835', position: 140 },
-                    { id: 8, name: 'Head Moderator', color: '#F57F17', position: 150 },
-                    { id: 9, name: 'Administrator', position: 200, view: false }, // for permissions
-                    { id: 10, name: 'Developer', color: '#42A5F5', position: 240 },
+                    { /* id: 1, */ name: 'User' },
+                    { /* id: 2, */ name: 'Suspended', view: false }, // for permissions
+                    { /* id: 3, */ name: 'Muted', view: false }, // for permissions
+                    { /* id: 4, */ name: 'Buyer', color: '#EF5350', position: 40 }, // for permissions
+                    { /* id: 5, */ name: 'Support', color: '#00C853', position: 60 },
+                    { /* id: 6, */ name: 'Staff', position: 100, view: false }, // for permissions
+                    { /* id: 7, */ name: 'Moderator', color: '#FDD835', position: 140 },
+                    { /* id: 8, */ name: 'Head Moderator', color: '#F57F17', position: 150 },
+                    { /* id: 9, */ name: 'Administrator', position: 200, view: false }, // for permissions
+                    { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240 },
                 ];
 
                 const dataPermission = [
-                    { id: 1, name: 'SUSPENDED' }, // If a user has *any* role with SUSPENDED=true, they can't access chat (suspended)
-                    { id: 2, name: 'MUTED' },
-                    { id: 3, name: 'MUTE_USER' },
-                    { id: 4, name: 'SUSPEND_USER' },
-                    { id: 5, name: 'KICK_USER' },
-                    { id: 6, name: 'BAN_USER' },
-                    { id: 7, name: 'ADMINISTRATOR' },
+                    { /* id: 1, */ name: 'SUSPENDED' }, // If a user has *any* role with SUSPENDED=true, they can't access chat (suspended)
+                    { /* id: 2, */ name: 'MUTED' },
+                    { /* id: 3, */ name: 'MUTE_USER' },
+                    { /* id: 4, */ name: 'SUSPEND_USER' },
+                    { /* id: 5, */ name: 'KICK_USER' },
+                    { /* id: 6, */ name: 'BAN_USER' },
+                    { /* id: 7, */ name: 'ADMINISTRATOR' },
                 ];
 
                 const dataUser = [
-                    { id: 1, username: 'Vaeb', email: 'vaebmail@gmail.com', password: 'vaebmail@gmail.com' },
-                    { id: 2, username: 'NewUser1', email: 'new1@gmail.com', password: 'new1@gmail.com' },
-                    { id: 3, username: 'BuyerUser1', email: 'buyer1@gmail.com', password: 'buyer1@gmail.com' },
-                    { id: 4, username: 'SupportUser1', email: 'support1@gmail.com', password: 'support1@gmail.com' },
-                    { id: 5, username: 'SupportUser2', email: 'support2@gmail.com', password: 'support2@gmail.com' },
-                    { id: 6, username: 'ModUser1', email: 'mod1@gmail.com', password: 'mod1@gmail.com' },
-                    { id: 7, username: 'ModUser2', email: 'mod2@gmail.com', password: 'mod2@gmail.com' },
-                    { id: 8, username: 'DevUser1', email: 'dev1@gmail.com', password: 'dev1@gmail.com' },
+                    { /* id: 1, */ username: 'Vaeb', email: 'vaebmail@gmail.com', password: 'vaebmail@gmail.com' },
+                    { /* id: 2, */ username: 'NewUser1', email: 'new1@gmail.com', password: 'new1@gmail.com' },
+                    { /* id: 3, */ username: 'BuyerUser1', email: 'buyer1@gmail.com', password: 'buyer1@gmail.com' },
+                    { /* id: 4, */ username: 'SupportUser1', email: 'support1@gmail.com', password: 'support1@gmail.com' },
+                    { /* id: 5, */ username: 'SupportUser2', email: 'support2@gmail.com', password: 'support2@gmail.com' },
+                    { /* id: 6, */ username: 'ModUser1', email: 'mod1@gmail.com', password: 'mod1@gmail.com' },
+                    { /* id: 7, */ username: 'ModUser2', email: 'mod2@gmail.com', password: 'mod2@gmail.com' },
+                    { /* id: 8, */ username: 'DevUser1', email: 'dev1@gmail.com', password: 'dev1@gmail.com' },
                 ];
 
                 const dataChannel = [
-                    { id: 1, name: 'rules' },
-                    { id: 2, name: 'announcements' },
-                    { id: 3, name: 'general' },
-                    { id: 4, name: 'support' },
-                    { id: 5, name: 'staff', locked: true },
-                    { id: 6, name: 'admins', locked: true },
+                    { /* id: 1, */ name: 'rules' },
+                    { /* id: 2, */ name: 'announcements' },
+                    { /* id: 3, */ name: 'general' },
+                    { /* id: 4, */ name: 'support' },
+                    { /* id: 5, */ name: 'staff', locked: true },
+                    { /* id: 6, */ name: 'admins', locked: true },
                 ];
 
                 await Promise.all([
@@ -89,7 +96,7 @@ export default {
                     { roleId: 10, userId: 8 }, // Developer - DevUser1
                 ];
 
-                for (let i = 0; i < dataUser.length; i++) dataRoleUser.push({ roleId: 1, userId: dataUser[i].id }); // Get all users from fixed role
+                for (let i = 0; i < dataUser.length; i++) dataRoleUser.push({ roleId: 1, userId: dataUser[i].id || i + 1 }); // Get all users from fixed role
 
                 const dataRoleChannel = [
                     // Which roles can access which private channels (ignored if channel locked=false)
@@ -99,7 +106,7 @@ export default {
 
                 // You can get all roles from rules channel
 
-                for (let i = 0; i < dataRole.length; i++) dataRoleChannel.push({ roleId: dataRole[i].id, channelId: 1 }); // Get all roles from fixed channel (rules)
+                for (let i = 0; i < dataRole.length; i++) dataRoleChannel.push({ roleId: dataRole[i].id || i + 1, channelId: 1 }); // Get all roles from fixed channel (rules)
 
                 /* // Auto ignored when private
                     for (let i = 0; i < dataChannel.length; i++) {
