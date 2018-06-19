@@ -43,7 +43,7 @@ const RoleListItemUser = styled.li`
     font-size: 14px;
     &:hover {
         background-color: #36393f;
-        ${props => props.viewRoleId == 1 && 'color: #fff;'};
+        ${props => props.viewRoleId === 1 && 'color: #fff;'};
     }
 `;
 

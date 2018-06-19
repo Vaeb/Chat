@@ -4,8 +4,8 @@ React-based chat project for Vashta.
 
 ## Setup
 
-1.  Navigate to `backend/` and install modules: `npm install` or `yarn install`
-1.  Navigate to `frontend/chat-client/` and install modules: `npm install` or `yarn install`
+1.  Navigate to `backend/` and install modules: `yarn install` (or `yarn install --force` for fresh installation)
+1.  Navigate to `frontend/chat-client/` and install modules: `yarn install`(or `yarn install --force` for fresh installation)
 1.  Install nodemon module: `npm i -g nodemon`
 1.  Install PostgreSQL
     -   Windows:
