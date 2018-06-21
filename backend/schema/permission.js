@@ -9,8 +9,14 @@ export default `
         getPermission(id: Int!): Permission!
     }
 
+    type PermissionResponse {
+        ok: Boolean!
+        permission: Permission
+        errors: [Error!]
+    }
+
     type Mutation {
-        createPermission(name: String!): Int!
+        createPermission(name: String!): PermissionResponse!
     }
 
 `;

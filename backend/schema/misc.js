@@ -3,6 +3,7 @@ export default `
     type Query {
         ping: String
         userRoles: [Role!]!
+        userPermissions: [Permission!]!
     }
 
     type SetDataResponse {

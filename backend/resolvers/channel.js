@@ -1,5 +1,6 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
+import linkedQuery from '../linkedQueries';
 
 export default {
     Query: {
@@ -61,8 +62,10 @@ export default {
     Channel: {
         messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ where: { channelId } }),
         roles: ({ id: channelId }, args, { models }) =>
-            models.Role.findAll({
-                include: [{ model: models.Channel, where: { '$channels.id$': channelId } }],
+            linkedQuery({
+                keyModel: models.Channel,
+                keyWhere: { id: channelId },
+                returnModel: models.Role,
             }),
     },
 };

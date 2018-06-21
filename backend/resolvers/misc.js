@@ -15,6 +15,14 @@ export default {
 
             return userRoles;
         },
+        // test
+        userPermissions: async (parent, args, { models, me }) =>
+            linkedQuery({
+                keyModel: models.User,
+                keyWhere: { id: me ? me.id : 1 },
+                midModel: models.Role,
+                returnModel: models.Permission,
+            }),
     },
     Mutation: {
         setData: async (parent, args, { models }) => {
@@ -48,7 +56,7 @@ export default {
                     { /* id: 4, */ name: 'SUSPEND_USER' },
                     { /* id: 5, */ name: 'KICK_USER' },
                     { /* id: 6, */ name: 'BAN_USER' },
-                    { /* id: 7, */ name: 'ADMINISTRATOR' },
+                    { /* id: 7, */ name: 'ADD_ROLE' },
                 ];
 
                 const dataUser = [
@@ -84,9 +92,9 @@ export default {
                     { roleId: 3, permissionId: 2 }, // Muted - MUTED
                     { roleId: 6, permissionId: 3 }, // Staff - MUTE_USER
                     { roleId: 6, permissionId: 4 }, // Staff - SUSPEND_USER
-                    { roleId: 9, permissionId: 7 }, // Administrator - ADMINISTRATOR
                     { roleId: 9, permissionId: 5 }, // Administrator - KICK_USER
                     { roleId: 9, permissionId: 6 }, // Administrator - BAN_USER
+                    { roleId: 9, permissionId: 7 }, // Administrator - ADD_ROLE
                 ];
 
                 const dataRoleUser = [

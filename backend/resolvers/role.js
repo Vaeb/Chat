@@ -1,5 +1,5 @@
 import formatErrors from '../formatErrors';
-import { requiresAuth } from '../permissions';
+import { requiresAuth, requiresPermission } from '../permissions';
 import linkedQuery from '../linkedQueries';
 
 /* const fetchMembers = ({ id }, args, { models }) =>
@@ -72,63 +72,75 @@ export default {
                 };
             }
         }),
-        addUserToRole: requiresAuth.createResolver(async (parent, { username, roleId }, { models, me }) => {
-            try {
-                const meRolesPromise = linkedQuery({
-                    keyModel: models.User,
-                    keyWhere: { id: me.id },
-                    returnModel: models.Role,
-                });
+        addUserToRole: requiresPermission('ADD_ROLE').createResolver(
+            { catchErrors: true },
+            async (parent, { username, roleId }, { models, me }) => {
+                try {
+                    const meRolesPromise = linkedQuery({
+                        keyModel: models.User,
+                        keyWhere: { id: me.id },
+                        returnModel: models.Role,
+                    });
 
-                const userFoundPromise = models.User.findOne({ where: { username } });
-                const roleFoundPromise = models.Role.findOne({ where: { id: roleId } });
+                    const userFoundPromise = models.User.findOne({ where: { username }, raw: true });
+                    const roleFoundPromise = models.Role.findOne({ where: { id: roleId }, raw: true });
 
-                const [meRoles, user, role] = await Promise.all([meRolesPromise, userFoundPromise, roleFoundPromise]);
+                    const [meRoles, user, role] = await Promise.all([meRolesPromise, userFoundPromise, roleFoundPromise]);
 
-                let meOwner = false;
-                const roleOwner = role.owner;
-                let meHigher = role.position == null;
+                    if (!user) return { ok: false, errors: [{ path: 'user', message: 'Could not find a user with this username' }] };
+                    if (!role) return { ok: false, errors: [{ path: 'role', message: 'Could not find a role with this id' }] };
 
-                meRoles.forEach(({ owner, position }) => {
-                    if (owner) meOwner = true;
-                    if (position > role.position) meHigher = true;
-                });
+                    let meOwner = false;
+                    const roleOwner = role.owner;
+                    let meHigher = role.position == null;
 
-                const canAdd = meOwner || (!roleOwner && meHigher);
+                    meRoles.forEach(({ owner, position }) => {
+                        if (owner) meOwner = true;
+                        if (position > role.position) meHigher = true;
+                    });
 
-                if (!canAdd) return { ok: false, errors: [{ path: 'Authentication', message: 'You are not allowed to give this role' }] };
+                    const canAdd = meOwner || (!roleOwner && meHigher);
 
-                await models.RoleUser.create({ roleId, userId: user.id });
+                    if (!canAdd) return { ok: false, errors: [{ path: 'auth', message: 'You are not allowed to give this role' }] };
 
-                return {
-                    ok: true,
-                    user,
-                    errors: [],
-                };
-            } catch (err) {
-                console.log('++++++++++++++++++++++++++++++++');
-                console.log('ERROR:', err);
-                console.log('--------------------------------');
+                    await models.RoleUser.create({ roleId, userId: user.id });
 
-                return {
-                    ok: false,
-                    errors: formatErrors(err, models),
-                };
-            }
-        }),
+                    return {
+                        ok: true,
+                        user,
+                        errors: [],
+                    };
+                } catch (err) {
+                    console.log('++++++++++++++++++++++++++++++++');
+                    console.log('ERROR:', err);
+                    console.log('--------------------------------');
+
+                    return {
+                        ok: false,
+                        errors: formatErrors(err, models),
+                    };
+                }
+            },
+        ),
     },
     Role: {
         channels: ({ id: roleId }, args, { models }) =>
-            models.Channel.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
+            linkedQuery({
+                keyModel: models.Role,
+                keyWhere: { id: roleId },
+                returnModel: models.Channel,
             }),
         members: ({ id: roleId }, args, { models }) =>
-            models.User.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
+            linkedQuery({
+                keyModel: models.Role,
+                keyWhere: { id: roleId },
+                returnModel: models.User,
             }),
         permissions: ({ id: roleId }, args, { models }) =>
-            models.Permission.findAll({
-                include: [{ model: models.Role, where: { '$roles.id$': roleId } }],
+            linkedQuery({
+                keyModel: models.Role,
+                keyWhere: { id: roleId },
+                returnModel: models.Permission,
             }),
     },
 };
