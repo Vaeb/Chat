@@ -1,12 +1,20 @@
 import React from 'react';
-import { Form, Button, Header, Modal, Input, Label } from 'semantic-ui-react';
+import { Form, Button, Modal, Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
 import { viewQuery } from '../graphql/chat';
 
 const AddChannelModal = ({
-    open, onClose, values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, resetForm,
+    /* errors, touched, */
+    open,
+    onClose,
+    values,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting,
+    resetForm,
 }) => (
     <Modal open={open} onClose={() => onClose(resetForm)}>
         <Modal.Header>Add Channel</Modal.Header>
@@ -72,7 +80,7 @@ const createChannelMutation = gql`
 `;
 
 const formikData = {
-    mapPropsToValues: props => ({ name: '' }),
+    mapPropsToValues: (/* props */) => ({ name: '' }),
     /* validate: (values, props) => {
         const errors = {};
         if (!values.name) {
@@ -84,31 +92,35 @@ const formikData = {
     }, */
     handleSubmit: async (values, { props: { mutate, onClose }, setSubmitting, resetForm /* setErrors, setValues, setStatus, etc. */ }) => {
         console.log('Submitting...');
-        const response = await mutate({
-            variables: { name: values.name },
-            optimisticResponse: {
-                createChannel: {
-                    __typename: 'Mutation',
-                    ok: true,
-                    channel: {
-                        __typename: 'Channel',
-                        id: 999999, // Go to bottom
-                        name: values.name,
-                        locked: false,
-                        roles: [],
+        let response;
+
+        try {
+            response = await mutate({
+                variables: { name: values.name },
+                optimisticResponse: {
+                    createChannel: {
+                        __typename: 'Mutation',
+                        ok: true,
+                        channel: {
+                            __typename: 'Channel',
+                            id: 999999, // Go to bottom
+                            name: values.name,
+                            locked: false,
+                            roles: [],
+                        },
                     },
                 },
-            },
-            update: (proxy, { data: { createChannel } }) => {
-                const { ok, channel } = createChannel;
-                if (!ok) {
-                    return;
-                }
-                const data = proxy.readQuery({ query: viewQuery });
-                data.chatData.openChannels.push(channel);
-                proxy.writeQuery({ query: viewQuery, data });
-            },
-        });
+                update: (proxy, { data: { createChannel } }) => {
+                    const { ok, channel } = createChannel;
+                    if (!ok) {
+                        return;
+                    }
+                    const data = proxy.readQuery({ query: viewQuery });
+                    data.chatData.openChannels.push(channel);
+                    proxy.writeQuery({ query: viewQuery, data });
+                },
+            });
+        } catch (err) {} // I broke eslint :FeelsBadMan:
         console.log(response);
         onClose(resetForm);
         setSubmitting(false);
@@ -117,5 +129,5 @@ const formikData = {
 
 export default compose(
     graphql(createChannelMutation),
-    withFormik(formikData),
+    withFormik(formikData)
 )(AddChannelModal);

@@ -1,9 +1,20 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
+import linkedQuery from '../linkedQueries';
 
 export default {
     Query: {
         ping: () => 'pong',
+        userRoles: async (parent, args, { models, me }) => {
+            const userRoles = linkedQuery({
+                keyModel: models.User,
+                keyWhere: { id: me ? me.id : 7 },
+                returnModel: models.Role,
+                returnWhere: { view: true },
+            });
+
+            return userRoles;
+        },
     },
     Mutation: {
         setData: async (parent, args, { models }) => {
@@ -27,7 +38,7 @@ export default {
                     { /* id: 7, */ name: 'Moderator', color: '#FDD835', position: 140 },
                     { /* id: 8, */ name: 'Head Moderator', color: '#F57F17', position: 150 },
                     { /* id: 9, */ name: 'Administrator', position: 200, view: false }, // for permissions
-                    { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240 },
+                    { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240, owner: true },
                 ];
 
                 const dataPermission = [

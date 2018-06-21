@@ -22,7 +22,10 @@ const sortChannels = channels => channels.sort((a, b) => a.id - b.id);
 // prettier-ignore
 const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } } }) => {
     if (loading) return null;
-    if (!chatData) return <Redirect to="/login" />;
+    if (!chatData) {
+        console.log('Chat data not found, are you logged in?');
+        return <Redirect to="/login" />;
+    }
 
     // Current channel id
     channelId = parseInt(channelId, 10);
@@ -130,17 +133,17 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
 
     console.log('nowChannel:', nowChannel);
     console.log('viewChannels:', viewChannels);
-    console.log('allRoles:', allRoles);
+    // console.log('allRoles:', allRoles);
     console.log('requiredRoles:', requiredRoles);
     console.log('viewRoles:', viewRoles);
-    console.log('allUsers:', allUsers);
+    // console.log('allUsers:', allUsers);
     console.log('viewMembers:', viewMembers);
 
     return (
         <AppLayout>
             <SideBars username={username} currentChannelId={channelId} viewRoles={viewRoles} userChannels={viewChannels} />
             <Header channelName={nowChannel.name} />
-            <Messages>
+            <Messages channelId={channelId}>
                 <ul className="message-list">
                     <li />
                     <li />

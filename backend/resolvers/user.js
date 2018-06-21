@@ -15,8 +15,8 @@ import { requiresAuth } from '../permissions';
 
 export default {
     Query: {
-        chatData: requiresAuth.createResolver((parent, args, { models, user }) => models.User.findOne({ where: { id: user.id } })),
-        // chatData: (parent, args, { models, user }) => models.User.findOne({ where: { id: 1 } }),
+        chatData: requiresAuth.createResolver((parent, args, { models, me }) => models.User.findOne({ where: { id: me.id } })),
+        // chatData: (parent, args, { models, me }) => models.User.findOne({ where: { id: 1 } }),
         getUser: (parent, { id }, { models }) => models.User.findOne({ where: { id } }),
         allUsers: (parent, args, { models }) => models.User.findAll(),
     },

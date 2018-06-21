@@ -12,7 +12,7 @@ const createResolver = (resolver) => {
 
 // eslint-disable-next-line import/prefer-default-export
 export const requiresAuth = createResolver((parent, args, context) => {
-    if (!context.user || !context.user.id) {
+    if (!context.me || !context.me.id) {
         throw new Error('Not logged in');
     }
 });

@@ -40,14 +40,15 @@ const ChannelListItem = styled.li`
     }` : '')};
 `;
 
-const AddChannelListItem = styled.li`
+const ButtonListItem = styled.li`
     padding: 8px 2px 8px 10px;
+    margin-bottom: 9px;
     font-size: 14px;
     background-color: #151515;
     cursor: pointer;
     width: 100%;
     position: relative;
-    top: 12px;
+    top: 14px;
 `;
 
 const channel = ({ id, name, current }) => (
@@ -65,9 +66,18 @@ export default ({ chatName, username, channels, onAddChannelClick }) => (
         <div>
             <ChannelList>
                 {channels.map(channel)}
-                <AddChannelListItem onClick={onAddChannelClick}>
-                    Create Channel <Icon name="add circle" />
-                </AddChannelListItem>
+                <ButtonListItem onClick={onAddChannelClick}>
+                    Create Channel{' '}
+                    <span>
+                        <Icon name="add circle" />
+                    </span>
+                </ButtonListItem>
+                <ButtonListItem>
+                    Create Role{' '}
+                    <span>
+                        <Icon name="add circle" />
+                    </span>
+                </ButtonListItem>
             </ChannelList>
         </div>
     </ChannelWrapper>

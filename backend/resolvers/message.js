@@ -1,10 +1,10 @@
 export default {
     Mutation: {
-        createMessage: async (parent, args, { models, user }) => {
+        createMessage: async (parent, args, { models, me }) => {
             try {
                 const role = await models.Message.create({
                     ...args,
-                    userId: user.id,
+                    userId: me.id,
                 });
                 return role.dataValues.id;
             } catch (err) {

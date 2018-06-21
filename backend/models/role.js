@@ -47,6 +47,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: true,
         },
+        owner: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+        },
     });
 
     Role.associate = (models) => {

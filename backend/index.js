@@ -57,7 +57,7 @@ app.use(
         schema,
         context: {
             models,
-            user: req.user,
+            me: req.user,
             SECRET,
             SECRET2,
         },

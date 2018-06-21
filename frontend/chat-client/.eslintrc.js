@@ -28,6 +28,7 @@ module.exports = {
         'no-console': 'off',
         // "no-continue": "off",
         // "no-control-regex": "off",
+        'no-empty': ['error', { allowEmptyCatch: true }],
         // "no-eval": "off",
         // "no-irregular-whitespace": "off",
         // "no-lonely-if": "off",

@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import React from 'react';
+import styled from 'styled-components';
+import { Icon } from 'semantic-ui-react';
 
 const RoleWrapper = styled.div`
     grid-column: 3;
@@ -53,18 +54,27 @@ const roleUser = ({ id, username, color, viewRoleId }) => (
     </RoleListItemUser>
 );
 
-const role = ({ id, title, members }) => (
+const role = ({ id, name, title, members }, onRoleClick) => (
     <React.Fragment key={`role-frag-${id}`}>
-        <RoleListItemName key={`role-name-${id}`}>{title}</RoleListItemName>
+        <RoleListItemName key={`role-name-${id}`}>
+            {`${title}`}
+            <span>
+                <Icon
+                    onClick={() => onRoleClick(id, name)}
+                    style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px' }}
+                    name="add circle"
+                />
+            </span>
+        </RoleListItemName>
         {members.map(roleUser)}
     </React.Fragment>
 );
 
-const Roles = ({ roles }) => (
+const Roles = ({ roles, onRoleClick }) => (
     <RoleWrapper>
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
-            {roles.map(role)}
+            {roles.map(r => role(r, onRoleClick))}
         </RoleList>
     </RoleWrapper>
 );
