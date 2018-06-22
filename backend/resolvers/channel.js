@@ -60,7 +60,7 @@ export default {
         }),
     },
     Channel: {
-        messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ where: { channelId } }),
+        messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ where: { channelId }, raw: true }),
         roles: ({ id: channelId }, args, { models }) =>
             linkedQuery({
                 keyModel: models.Channel,

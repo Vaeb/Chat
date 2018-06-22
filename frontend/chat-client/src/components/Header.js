@@ -10,6 +10,10 @@ const HeaderWrapper = styled.div`
     border-width: 0px;
     border-bottom: 1px solid #202225;
     border-bottom-color: hsla(0, 0%, 100%, 0.04);
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 `;
 
 const style = {

@@ -75,6 +75,10 @@ const createChannelMutation = gql`
                     id
                 }
             }
+            errors {
+                path
+                message
+            }
         }
     }
 `;
@@ -129,5 +133,5 @@ const formikData = {
 
 export default compose(
     graphql(createChannelMutation),
-    withFormik(formikData)
+    withFormik(formikData),
 )(AddChannelModal);

@@ -11,7 +11,6 @@ import linkedQuery from '../linkedQueries';
 
 export default {
     Query: {
-        // allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ id: 1 }, { raw: true })),
         allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ raw: true })),
     },
     Mutation: {
@@ -87,8 +86,8 @@ export default {
 
                     const [meRoles, user, role] = await Promise.all([meRolesPromise, userFoundPromise, roleFoundPromise]);
 
-                    if (!user) return { ok: false, errors: [{ path: 'user', message: 'Could not find a user with this username' }] };
-                    if (!role) return { ok: false, errors: [{ path: 'role', message: 'Could not find a role with this id' }] };
+                    if (!user) return { ok: false, errors: [{ path: 'username', message: 'Could not find user with this username' }] };
+                    if (!role) return { ok: false, errors: [{ path: 'username', message: 'Could not find role with this id' }] };
 
                     let meOwner = false;
                     const roleOwner = role.owner;
@@ -101,7 +100,7 @@ export default {
 
                     const canAdd = meOwner || (!roleOwner && meHigher);
 
-                    if (!canAdd) return { ok: false, errors: [{ path: 'auth', message: 'You are not allowed to give this role' }] };
+                    if (!canAdd) return { ok: false, errors: [{ path: 'username', message: 'You are not allowed to give this role' }] };
 
                     await models.RoleUser.create({ roleId, userId: user.id });
 

@@ -18,19 +18,22 @@ export default {
     Query: {
         chatData: requiresAuth.createResolver((parent, args, { models, me }) => models.User.findOne({ where: { id: me.id } })),
         // chatData: (parent, args, { models, me }) => models.User.findOne({ where: { id: 1 } }),
-        getUser: (parent, { id }, { models }) => models.User.findOne({ where: { id } }),
-        allUsers: (parent, args, { models }) => models.User.findAll(),
+        getUser: (parent, { id }, { models }) => models.User.findOne({ where: { id }, raw: true }),
+        allUsers: (parent, args, { models }) => models.User.findAll({ raw: true }),
     },
     Mutation: {
         login: async (parent, { email, password }, { models, SECRET, SECRET2 }) => tryLogin(email, password, models, SECRET, SECRET2),
         register: async (parent, args, { models }) => {
             try {
-                const user = await models.User.create(args);
-                models.RoleUser.create({ roleId: 1, userId: user.id });
+                const response = await models.sequelize.transaction(async (transaction) => {
+                    const user = await models.User.create(args, { transaction });
+                    await models.RoleUser.create({ roleId: 1, userId: user.id }, { transaction });
+                    return user;
+                });
 
                 return {
                     ok: true,
-                    user,
+                    response,
                 };
             } catch (err) {
                 console.log(err);
@@ -56,8 +59,8 @@ export default {
                 keyWhere: { id: userId },
                 returnModel: models.Role,
             }),
-        openChannels: (parent, args, { models }) => models.Channel.findAll({ where: { locked: false } }),
-        allRoles: (parent, args, { models }) => models.Role.findAll(),
-        allUsers: (parent, args, { models }) => models.User.findAll(),
+        openChannels: (parent, args, { models }) => models.Channel.findAll({ where: { locked: false }, raw: true }),
+        allRoles: (parent, args, { models }) => models.Role.findAll({ raw: true }),
+        allUsers: (parent, args, { models }) => models.User.findAll({ raw: true }),
     },
 };

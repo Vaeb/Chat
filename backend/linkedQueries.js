@@ -1,29 +1,23 @@
 // eslint-disable-next-line object-curly-newline
 const linkedQuery = ({ keyModel, keyWhere, midModel, midWhere, returnModel, returnWhere, findOne }) => {
-    const seqQuery = midModel
-        ? {
-            include: [
-                {
-                    model: midModel,
-                    include: [
-                        {
-                            model: keyModel,
-                            where: keyWhere,
-                        },
-                    ],
-                    where: midWhere,
-                    required: true,
-                },
-            ],
-        }
-        : {
+    // prettier-ignore
+    const linkInclude = midModel
+        ? [{
+            model: midModel,
             include: [
                 {
                     model: keyModel,
                     where: keyWhere,
                 },
             ],
-        };
+            where: midWhere,
+            required: true,
+        }] : [{
+            model: keyModel,
+            where: keyWhere,
+        }];
+
+    const seqQuery = { include: linkInclude, raw: true };
 
     if (returnWhere) seqQuery.where = returnWhere;
 

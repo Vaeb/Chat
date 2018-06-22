@@ -34,7 +34,6 @@ const createResolver = (resolver) => {
     return baseResolver;
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const requiresAuth = createResolver((parent, args, { me }) => {
     if (!me || !me.id) {
         throw new Error('Not logged in');
@@ -43,14 +42,15 @@ export const requiresAuth = createResolver((parent, args, { me }) => {
 
 export const requiresPermission = permissionName =>
     requiresAuth.createResolver(async (parent, args, { models, me }) => {
-        const mePermissions = await linkedQuery({
+        // const { gt, lte, ne, in: opIn } = models.Sequelize.Op;
+
+        const foundPermissions = await linkedQuery({
             keyModel: models.User,
             keyWhere: { id: me.id },
             midModel: models.Role,
             returnModel: models.Permission,
+            returnWhere: { name: permissionName },
         });
 
-        const hasPermission = mePermissions.some(({ name }) => name === permissionName);
-
-        if (!hasPermission) throw new Error(`This action requires the ${permissionName} permission`);
+        if (foundPermissions.length == 0) throw new Error(`This action requires the ${permissionName} permission`);
     });

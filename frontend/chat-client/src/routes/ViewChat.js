@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
@@ -24,7 +24,7 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     if (loading) return null;
     if (!chatData) {
         console.log('Chat data not found, are you logged in?');
-        return <Redirect to="/login" />;
+        // return <Redirect to="/login" />;
     }
 
     // Current channel id
@@ -53,8 +53,13 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     const viewChannels = sortChannels(uniqBy(concat(accessChannels, openChannels), 'id')).map(channel => Object.assign({}, channel));
 
     // Current channel
-    const nowChannelIndex = channelId ? findIndex(viewChannels, ['id', channelId]) : 0;
-    const nowChannel = nowChannelIndex === -1 ? viewChannels[0] : viewChannels[nowChannelIndex];
+    const nowChannelIndex = Math.max(channelId ? findIndex(viewChannels, ['id', channelId]) : 0, 0);
+    const nowChannel = viewChannels[nowChannelIndex];
+
+    if (nowChannel == null) {
+        console.log('Major issue! The chat has no channels, you need to create some first!');
+        return (<p>Major issue! The chat has no channels, you need to create some first!</p>);
+    }
 
     // In case it doesn't exist
     channelId = nowChannel.id;

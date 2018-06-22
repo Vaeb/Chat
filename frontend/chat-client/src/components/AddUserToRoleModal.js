@@ -6,6 +6,7 @@ import { compose, graphql } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
 
 import { viewQuery } from '../graphql/chat';
+import { normalizeErrors, chooseError } from '../normalizeErrors';
 
 const AddUserToRoleModal = ({
     /* errors, touched, */
@@ -18,6 +19,8 @@ const AddUserToRoleModal = ({
     handleSubmit,
     isSubmitting,
     resetForm,
+    touched,
+    errors,
 }) => (
     <Modal open={open} onClose={() => onClose(resetForm)}>
         <Modal.Header>Add User To {roleName}</Modal.Header>
@@ -36,6 +39,7 @@ const AddUserToRoleModal = ({
                         placeholder="Username"
                     />
                 </Form.Field>
+                {chooseError(touched, errors, ['username'])}
                 <Form.Group widths="equal">
                     <Form.Field>
                         <Button disabled={isSubmitting} onClick={() => onClose(resetForm)} fluid>
@@ -60,6 +64,10 @@ const addUserToRoleMutation = gql`
             user {
                 id
             }
+            errors {
+                path
+                message
+            }
         }
     }
 `;
@@ -68,7 +76,7 @@ const formikData = {
     mapPropsToValues: () => ({ username: '' }),
     handleSubmit: async (
         values,
-        { props: { mutate, onClose, roleId }, setSubmitting, resetForm /* setErrors, setValues, setStatus, etc. */ },
+        { props: { mutate, onClose, roleId }, setSubmitting, resetForm, setErrors /* setValues, setStatus, etc. */ },
     ) => {
         console.log('Submitting...');
         let response;
@@ -76,12 +84,6 @@ const formikData = {
         try {
             response = await mutate({
                 variables: { username: values.username, roleId },
-                // optimisticResponse: {
-                //     addUserToRole: {
-                //         __typename: 'Mutation',
-                //         ok: true,
-                //     },
-                // },
                 update: (proxy, { data: { addUserToRole } }) => {
                     const { ok, user } = addUserToRole;
                     if (!ok) {
@@ -111,8 +113,16 @@ const formikData = {
         } catch (err) {}
 
         console.log('Response:', response);
-        onClose(resetForm);
-        setSubmitting(false);
+
+        const { ok, errors } = response.data.addUserToRole;
+
+        if (ok) {
+            onClose(resetForm);
+            setSubmitting(false);
+        } else {
+            setSubmitting(false);
+            setErrors(normalizeErrors(errors));
+        }
     },
 };
 

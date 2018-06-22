@@ -50,7 +50,7 @@ export default () => (
             <Route path="/" exact component={Home} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />
-            <Route path="/view-chat/:channelId?" exact component={ViewChat} />
+            <PrivateRoute path="/view-chat/:channelId?" exact component={ViewChat} />
             <PrivateRoute path="/create-role" exact component={CreateRole} />
             <PrivateRoute path="/create-channel" exact component={CreateChannel} />
             <PrivateRoute path="/add-user-to-role" exact component={AddUsersToRoles} />

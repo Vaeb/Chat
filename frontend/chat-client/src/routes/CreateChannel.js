@@ -25,7 +25,7 @@ class CreateChannel extends React.Component {
     onSubmit = async () => {
         const { name, locked, roleIds } = this;
 
-        const lockedReal = locked !== undefined ? locked == 'true' : undefined;
+        const lockedReal = locked !== undefined ? locked === 'true' : undefined;
         const roleIdsReal = roleIds !== undefined ? roleIds.split(' ').filter(id => id.length > 0) : undefined;
 
         let response;
