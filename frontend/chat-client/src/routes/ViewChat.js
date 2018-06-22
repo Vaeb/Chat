@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql } from 'react-apollo';
-// import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 import uniqBy from 'lodash/uniqBy';
@@ -24,8 +24,7 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     if (loading) return null;
     if (!chatData) {
         console.log('Chat data not found, are you logged in?');
-        // return <Redirect to="/login" />;
-        return null;
+        return <Redirect to="/login" />;
     }
 
     // Current channel id
