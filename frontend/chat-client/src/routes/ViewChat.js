@@ -25,6 +25,7 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     if (!chatData) {
         console.log('Chat data not found, are you logged in?');
         // return <Redirect to="/login" />;
+        return null;
     }
 
     // Current channel id
