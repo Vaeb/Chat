@@ -6,11 +6,12 @@ import path from 'path';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import { createServer } from 'http';
+import { execute, subscribe } from 'graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import models from './models';
 import { refreshTokens } from './auth';
-
-const resetDatabase = false; // DANGEROUS
 
 const SECRET = 'afjefyu3235fuahf8421d';
 const SECRET2 = 'gfjhslafhga342ghhj1248f';
@@ -66,6 +67,22 @@ app.use(
 
 app.use('/graphiql', graphiqlExpress({ endpointURL: graphqlEndpoint }));
 
+const server = createServer(app);
+
+const resetDatabase = false; // DANGEROUS
+
 models.sequelize.sync({ force: resetDatabase }).then(() => {
-    app.listen(8080);
+    server.listen(8080, () => {
+        new SubscriptionServer(
+            {
+                execute,
+                subscribe,
+                schema,
+            },
+            {
+                server,
+                path: '/subscriptions',
+            },
+        );
+    });
 });

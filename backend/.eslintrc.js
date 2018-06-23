@@ -22,6 +22,7 @@ module.exports = {
         // "no-lonely-if": "off",
         // "no-mixed-operators": "off",
         // "no-multi-spaces": "off",
+        'no-new': 'off',
         'no-param-reassign': 'off',
         'no-plusplus': 'off',
         'no-prototype-builtins': 'off',

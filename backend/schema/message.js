@@ -8,18 +8,16 @@ export default `
         created_at: String!
     }
 
-    type CreateMessageResponse {
-        ok: Boolean!
-        message: Message
-        errors: [Error!]
-    }
-
     type Query {
         getMessages(channelId: Int!): [Message!]!
     }
 
+    type Subscription {
+        newChannelMessage(channelId: Int!): Message!
+    }
+
     type Mutation {
-        createMessage(channelId: Int!, text: String!): CreateMessageResponse!
+        createMessage(channelId: Int!, text: String!): Boolean!
     }
 
 `;

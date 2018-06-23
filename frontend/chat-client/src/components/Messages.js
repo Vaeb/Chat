@@ -7,4 +7,6 @@ export default styled.div`
     color: hsla(0, 0%, 100%, 0.7);
     font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
     padding-left: 20px;
+    display: flex;
+    overflow-y: auto;
 `;

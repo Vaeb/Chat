@@ -62,17 +62,7 @@ const SendMessage = ({
 
 const createMessageMutation = gql`
     mutation($channelId: Int!, $text: String!) {
-        createMessage(channelId: $channelId, text: $text) {
-            ok
-            message {
-                id
-                text
-            }
-            errors {
-                path
-                message
-            }
-        }
+        createMessage(channelId: $channelId, text: $text)
     }
 `;
 
@@ -107,11 +97,15 @@ const formikData = {
                     console.log(createMessage);
                 }, */
             });
-        } catch (err) {}
+        } catch (err) {
+            console.log('SendMessage Error:', err);
+        }
 
-        const { ok, errors } = response.data.createMessage;
+        console.log('Sent:', response.data.createMessage);
 
-        if (!ok) console.log(errors);
+        /* const { ok, errors } = response.data.createMessage;
+
+        if (!ok) console.log(errors); */
     },
 };
 
