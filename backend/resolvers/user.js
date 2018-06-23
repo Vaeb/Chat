@@ -1,7 +1,7 @@
 import { tryLogin } from '../auth';
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
-import linkedQuery from '../linkedQueries';
+import { linkedQuery, linkedQueryId } from '../linkedQueries';
 
 /*
 
@@ -46,18 +46,20 @@ export default {
     },
     User: {
         roles: ({ id: userId }, args, { models }) =>
-            linkedQuery({
-                keyModel: models.User,
-                keyWhere: { id: userId },
+            linkedQueryId({
                 returnModel: models.Role,
+                midModel: models.RoleUser,
+                keyModel: models.User,
+                id: userId,
             }),
     },
     UserView: {
         roles: ({ id: userId }, args, { models }) =>
-            linkedQuery({
-                keyModel: models.User,
-                keyWhere: { id: userId },
+            linkedQueryId({
                 returnModel: models.Role,
+                midModel: models.RoleUser,
+                keyModel: models.User,
+                id: userId,
             }),
         openChannels: (parent, args, { models }) => models.Channel.findAll({ where: { locked: false }, raw: true }),
         allRoles: (parent, args, { models }) => models.Role.findAll({ raw: true }),

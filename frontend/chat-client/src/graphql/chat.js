@@ -61,6 +61,7 @@ export const viewQuery = gql`
             }
             roles {
                 id
+                owner
                 permissions {
                     name
                 }

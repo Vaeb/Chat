@@ -1,6 +1,6 @@
 import formatErrors from '../formatErrors';
-import { requiresAuth } from '../permissions';
-import linkedQuery from '../linkedQueries';
+// import { requiresAuth } from '../permissions';
+import { linkedQuery } from '../linkedQueries';
 
 export default {
     Query: {
@@ -57,6 +57,7 @@ export default {
                     { /* id: 5, */ name: 'KICK_USER' },
                     { /* id: 6, */ name: 'BAN_USER' },
                     { /* id: 7, */ name: 'ADD_ROLE' },
+                    { /* id: 8, */ name: 'OWNER' },
                 ];
 
                 const dataUser = [
@@ -79,12 +80,19 @@ export default {
                     { /* id: 6, */ name: 'admins', locked: true },
                 ];
 
-                await Promise.all([
-                    models.Role.bulkCreate(dataRole),
-                    models.Permission.bulkCreate(dataPermission),
-                    models.User.bulkCreate(dataUser, { validate: true, individualHooks: true }),
-                    models.Channel.bulkCreate(dataChannel),
-                ]);
+                const maxRows = Math.max(dataRole.length, dataPermission.length, dataUser.length, dataChannel.length);
+
+                for (let i = 0; i < maxRows; i++) {
+                    const nextPromises = [];
+
+                    if (i < dataRole.length) nextPromises.push(models.Role.create(dataRole[i]));
+                    if (i < dataPermission.length) nextPromises.push(models.Permission.create(dataPermission[i]));
+                    if (i < dataUser.length) nextPromises.push(models.User.create(dataUser[i]));
+                    if (i < dataChannel.length) nextPromises.push(models.Channel.create(dataChannel[i]));
+
+                    // eslint-disable-next-line no-await-in-loop
+                    await Promise.all(nextPromises);
+                }
 
                 const dataRolePermission = [
                     // Which roles have which permissions
@@ -95,6 +103,7 @@ export default {
                     { roleId: 9, permissionId: 5 }, // Administrator - KICK_USER
                     { roleId: 9, permissionId: 6 }, // Administrator - BAN_USER
                     { roleId: 9, permissionId: 7 }, // Administrator - ADD_ROLE
+                    { roleId: 10, permissionId: 8 }, // DEVELOPER - OWNER
                 ];
 
                 const dataRoleUser = [

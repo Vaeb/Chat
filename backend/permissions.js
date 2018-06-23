@@ -1,5 +1,5 @@
 import formatErrors from './formatErrors';
-import linkedQuery from './linkedQueries';
+import { linkedQuery } from './linkedQueries';
 
 const createResolver = (resolver) => {
     const baseResolver = resolver;
@@ -42,14 +42,19 @@ export const requiresAuth = createResolver((parent, args, { me }) => {
 
 export const requiresPermission = permissionName =>
     requiresAuth.createResolver(async (parent, args, { models, me }) => {
-        // const { gt, lte, ne, in: opIn } = models.Sequelize.Op;
+        const { Op } = models.Sequelize;
+        // const { gt, lte, ne, in: opIn } = Op;
 
         const foundPermissions = await linkedQuery({
             keyModel: models.User,
             keyWhere: { id: me.id },
             midModel: models.Role,
             returnModel: models.Permission,
-            returnWhere: { name: permissionName },
+            returnWhere: {
+                name: {
+                    [Op.or]: [permissionName, 'OWNER'],
+                },
+            },
         });
 
         if (foundPermissions.length == 0) throw new Error(`This action requires the ${permissionName} permission`);

@@ -1,6 +1,6 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
-import linkedQuery from '../linkedQueries';
+import { linkedQuery, linkedQueryId } from '../linkedQueries';
 
 /* const fetchMembers = ({ id }, args, { models }) =>
     models.sequelize.query('select * from users as u join roleusers as ru on ru.user_id = u.id where ru.role_id = ?', {
@@ -124,22 +124,25 @@ export default {
     },
     Role: {
         channels: ({ id: roleId }, args, { models }) =>
-            linkedQuery({
-                keyModel: models.Role,
-                keyWhere: { id: roleId },
+            linkedQueryId({
                 returnModel: models.Channel,
+                midModel: models.RoleChannel,
+                keyModel: models.Role,
+                id: roleId,
             }),
         members: ({ id: roleId }, args, { models }) =>
-            linkedQuery({
-                keyModel: models.Role,
-                keyWhere: { id: roleId },
+            linkedQueryId({
                 returnModel: models.User,
+                midModel: models.RoleUser,
+                keyModel: models.Role,
+                id: roleId,
             }),
         permissions: ({ id: roleId }, args, { models }) =>
-            linkedQuery({
-                keyModel: models.Role,
-                keyWhere: { id: roleId },
+            linkedQueryId({
                 returnModel: models.Permission,
+                midModel: models.RolePermission,
+                keyModel: models.Role,
+                id: roleId,
             }),
     },
 };

@@ -58,27 +58,29 @@ const roleUser = ({ id, username, color, viewRoleId }) => (
     </RoleListItemUser>
 );
 
-const role = ({ id, name, title, members }, onRoleClick) => (
+const role = ({ id, name, title, members }, onRoleClick, canAdd) => (
     <React.Fragment key={`role-frag-${id}`}>
         <RoleListItemName key={`role-name-${id}`}>
             {`${title}`}
-            <span>
-                <Icon
-                    onClick={() => onRoleClick(id, name)}
-                    style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px' }}
-                    name="add circle"
-                />
-            </span>
+            {canAdd ? (
+                <span>
+                    <Icon
+                        onClick={() => onRoleClick({ roleId: id, roleName: name })}
+                        style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px' }}
+                        name="add circle"
+                    />
+                </span>
+            ) : null}
         </RoleListItemName>
         {members.map(roleUser)}
     </React.Fragment>
 );
 
-const Roles = ({ roles, onRoleClick }) => (
+const Roles = ({ roles, onRoleClick, canAdd }) => (
     <RoleWrapper>
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
-            {roles.map(r => role(r, onRoleClick))}
+            {roles.map(r => role(r, onRoleClick, canAdd))}
         </RoleList>
     </RoleWrapper>
 );

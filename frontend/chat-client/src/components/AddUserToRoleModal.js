@@ -22,7 +22,7 @@ const AddUserToRoleModal = ({
     touched,
     errors,
 }) => (
-    <Modal open={open} onClose={() => onClose(resetForm)}>
+    <Modal open={open} onClose={e => onClose({ e, resetForm })}>
         <Modal.Header>Add User To {roleName}</Modal.Header>
         <Modal.Content>
             <Form>
@@ -42,7 +42,7 @@ const AddUserToRoleModal = ({
                 {chooseError(touched, errors, ['username'])}
                 <Form.Group widths="equal">
                     <Form.Field>
-                        <Button disabled={isSubmitting} onClick={() => onClose(resetForm)} fluid>
+                        <Button disabled={isSubmitting} onClick={e => onClose({ e, resetForm })} fluid>
                             Cancel
                         </Button>
                     </Form.Field>
@@ -117,7 +117,7 @@ const formikData = {
         const { ok, errors } = response.data.addUserToRole;
 
         if (ok) {
-            onClose(resetForm);
+            onClose({ resetForm });
             setSubmitting(false);
         } else {
             setSubmitting(false);

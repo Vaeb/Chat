@@ -16,7 +16,7 @@ const AddChannelModal = ({
     isSubmitting,
     resetForm,
 }) => (
-    <Modal open={open} onClose={() => onClose(resetForm)}>
+    <Modal open={open} onClose={e => onClose({ e, resetForm })}>
         <Modal.Header>Add Channel</Modal.Header>
         <Modal.Content>
             <Form>
@@ -35,7 +35,7 @@ const AddChannelModal = ({
                 </Form.Field>
                 <Form.Group widths="equal">
                     <Form.Field>
-                        <Button disabled={isSubmitting} onClick={() => onClose(resetForm)} fluid>
+                        <Button disabled={isSubmitting} onClick={e => onClose({ e, resetForm })} fluid>
                             Cancel
                         </Button>
                     </Form.Field>
@@ -126,7 +126,7 @@ const formikData = {
             });
         } catch (err) {} // I broke eslint :FeelsBadMan:
         console.log(response);
-        onClose(resetForm);
+        onClose({ resetForm });
         setSubmitting(false);
     },
 };

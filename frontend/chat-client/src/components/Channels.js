@@ -61,7 +61,9 @@ const channel = ({ id, name, current }) => (
     </Link>
 );
 
-export default ({ chatName, username, channels, onAddChannelClick }) => (
+export default ({
+    chatName, username, channels, onAddChannelClick, canCreate,
+}) => (
     <ChannelWrapper>
         <ChannelHead>
             <ChatNameHeader>{chatName}</ChatNameHeader>
@@ -70,18 +72,22 @@ export default ({ chatName, username, channels, onAddChannelClick }) => (
         <div>
             <ChannelList>
                 {channels.map(channel)}
-                <ButtonListItem onClick={onAddChannelClick}>
-                    Create Channel{' '}
-                    <span>
-                        <Icon name="add circle" />
-                    </span>
-                </ButtonListItem>
-                <ButtonListItem>
-                    Create Role{' '}
-                    <span>
-                        <Icon name="add circle" />
-                    </span>
-                </ButtonListItem>
+                {canCreate ? (
+                    <React.Fragment>
+                        <ButtonListItem onClick={onAddChannelClick}>
+                            Create Channel{' '}
+                            <span>
+                                <Icon name="add circle" />
+                            </span>
+                        </ButtonListItem>
+                        <ButtonListItem>
+                            Create Role{' '}
+                            <span>
+                                <Icon name="add circle" />
+                            </span>
+                        </ButtonListItem>
+                    </React.Fragment>
+                ) : null}
             </ChannelList>
         </div>
     </ChannelWrapper>

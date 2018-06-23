@@ -10,9 +10,9 @@ import keyBy from 'lodash/keyBy';
 
 import AppLayout from '../components/AppLayout';
 import Header from '../components/Header';
-import Messages from '../components/Messages';
 import SendMessage from '../components/SendMessage';
 import SideBars from '../containers/SideBars';
+import MessageContainer from '../containers/MessageContainer';
 
 import { viewQuery } from '../graphql/chat';
 
@@ -48,6 +48,8 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     const allUsers = keyBy(allUsersOrig, 'id');
     const allRoles = keyBy(allRolesOrig, 'id');
 
+    // /////////////////////////////////////////////// VIEW CHANNELS //////////////////////////////////////////////////////////////////
+
     // Public channels + Private channels accessible with the current user's roles
     const accessChannels = flatten(map(userRolesOrig, 'channels'));
     const viewChannels = sortChannels(uniqBy(concat(accessChannels, openChannels), 'id')).map(channel => Object.assign({}, channel));
@@ -75,6 +77,8 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     // Roles required to access current channel (only relevant if private)
     const requiredRoles = map(nowChannel.roles, 'id');
 
+    // /////////////////////////////////////////////// VIEW MEMBERS //////////////////////////////////////////////////////////////////
+
     // Members who can view the current channel
     const viewMembers = [];
 
@@ -101,9 +105,13 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
         }
     }
 
+    // /////////////////////////////////////////////// VIEW ROLES //////////////////////////////////////////////////////////////////
+
     // Roles seen in the current channel
     const viewRoles = [];
     const viewRolesMap = {};
+
+    const viewMemberData = {};
 
     // Build viewRoles, get each member's highest visible role and add color property to members (from visible role)
     for (let i = 0; i < viewMembers.length; i++) {
@@ -124,6 +132,8 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
         member.color = role.color;
 
         role.members.push({ id: member.id, username: member.username, color: member.color, viewRoleId: member.viewRoleId });
+
+        viewMemberData[member.username] = { color: member.color };
     }
 
     // Once viewRoles is built, set the role title to include the number of members
@@ -136,25 +146,39 @@ const ViewChat = ({ data: { loading, chatData }, match: { params: { channelId } 
     // Sort roles by position
     sortRoles(viewRoles);
 
-    console.log('nowChannel:', nowChannel);
-    console.log('viewChannels:', viewChannels);
-    // console.log('allRoles:', allRoles);
-    console.log('requiredRoles:', requiredRoles);
-    console.log('viewRoles:', viewRoles);
-    // console.log('allUsers:', allUsers);
-    console.log('viewMembers:', viewMembers);
+    // /////////////////////////////////////////////// USER PERMISSIONS //////////////////////////////////////////////////////////////////
+
+    const userPermissions = flatten(map(userRolesOrig, 'permissions')).reduce((obj, { name }) => {
+        obj[name] = true; return obj;
+    }, {});
+
+    // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    const userDebugData = {
+        nowChannel,
+        viewChannels,
+        allRoles,
+        requiredRoles,
+        viewRoles,
+        allUsers,
+        viewMembers,
+        userPermissions,
+    };
+
+    console.log('Debug data:', userDebugData);
 
     return (
         <AppLayout>
-            <SideBars username={username} currentChannelId={channelId} viewRoles={viewRoles} userChannels={viewChannels} />
+            <SideBars
+                username={username}
+                currentChannelId={nowChannel.id}
+                viewRoles={viewRoles}
+                userChannels={viewChannels}
+                userPermissions={userPermissions}
+            />
             <Header channelName={nowChannel.name} />
-            <Messages channelId={channelId}>
-                <ul className="message-list">
-                    <li />
-                    <li />
-                </ul>
-            </Messages>
-            <SendMessage channelName={nowChannel.name} />
+            <MessageContainer channelId={nowChannel.id} viewMemberData={viewMemberData} />
+            <SendMessage channelName={nowChannel.name} channelId={nowChannel.id} />
         </AppLayout>
     );
 };
