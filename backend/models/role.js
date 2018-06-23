@@ -4,8 +4,8 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true,
             validate: {
-                isAlphanumeric: {
-                    args: true,
+                is: {
+                    args: /^[0-9a-z_\- ]+$/i,
                     msg: 'The role name can only contain letters and numbers',
                 },
                 len: {
