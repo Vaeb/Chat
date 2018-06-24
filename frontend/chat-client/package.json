@@ -37,6 +37,7 @@
         "eject": "react-scripts eject",
         "lint": "eslint src"
     },
+    "homepage": "https://chat.vashta.io",
     "devDependencies": {
         "babel-eslint": "^8.2.3",
         "eslint": "4.9.0",
