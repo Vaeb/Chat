@@ -35,7 +35,7 @@ const messageWrapperStyle = {
     gridRow: 2,
     backgroundColor: '#36393e',
     color: 'hsla(0, 0%, 100%, 0.7)',
-    fontFamily: 'Lato, Helvetica Neue, Arial, Helvetica, sans-serif',
+    fontFamily: 'Open Sans, Lato, Helvetica Neue, Arial, Helvetica, sans-serif',
     paddingLeft: '20px',
     display: 'flex',
     overflowY: 'auto',

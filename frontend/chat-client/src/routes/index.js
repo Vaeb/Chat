@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import decode from 'jwt-decode';
 
-import Home from './Home';
+// import Home from './Home';
 import Register from './Register';
 import Login from './Login';
 import CreateRole from './CreateRole';
@@ -47,7 +47,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 export default () => (
     <BrowserRouter>
         <Switch>
-            <Route path="/" exact component={Home} />
+            {/* <Route path="/" exact component={Home} /> */}
+            <Route path="/" exact render={() => <Redirect to="/view-chat" />} />
             <Route path="/register" exact component={Register} />
             <Route path="/login" exact component={Login} />
             <PrivateRoute path="/view-chat/:channelId?" exact component={ViewChat} />

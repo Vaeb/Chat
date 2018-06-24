@@ -5,6 +5,12 @@ import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-rea
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+const styles = {
+    Container: {
+        marginTop: '50px',
+    },
+};
+
 class Login extends React.Component {
     constructor(props) {
         super(props);
@@ -69,7 +75,7 @@ class Login extends React.Component {
         if (passwordError) errorList.push(passwordError);
 
         return (
-            <Container text>
+            <Container text style={styles.Container}>
                 <Header as="h2">Login</Header>
                 <Form>
                     <Form.Field error={!!emailError}>
@@ -79,7 +85,13 @@ class Login extends React.Component {
                         <Input name="password" onChange={this.onChange} value={password} type="password" placeholder="Password" fluid />
                     </Form.Field>
 
-                    <Button onClick={this.onSubmit}>Submit</Button>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <Button style={{ marginRight: 'auto' }} onClick={this.onSubmit}>
+                            Submit
+                        </Button>
+                        <div style={{ marginRight: '10px' }}>Haven't signed up yet?</div>
+                        <Button onClick={() => this.props.history.push('/register')}>Register</Button>
+                    </div>
                 </Form>
 
                 {errorList.length ? <Message error header="There were some errors with your submission" list={errorList} /> : null}
