@@ -13,6 +13,11 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 import models from './models';
 import { refreshTokens } from './auth';
 
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Promise Rejection at:', p);
+    console.log('Reason:', reason);
+});
+
 const SECRET = 'afjefyu3235fuahf8421d';
 const SECRET2 = 'gfjhslafhga342ghhj1248f';
 
@@ -61,6 +66,7 @@ app.use(
             me: req.user,
             SECRET,
             SECRET2,
+            serverURL: `${req.protocol}://${req.get('host')}`,
         },
     })),
 );

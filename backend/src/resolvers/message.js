@@ -1,8 +1,7 @@
-import { PubSub, withFilter } from 'graphql-subscriptions';
+import { withFilter } from 'graphql-subscriptions';
 // import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
-
-const pubsub = new PubSub();
+import pubsub from '../pubsub';
 
 const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 
@@ -47,7 +46,6 @@ export default {
                             ...message.dataValues,
                             user: currentUser.dataValues,
                         },
-                        context: { models },
                     });
                 };
 
