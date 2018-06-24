@@ -8,7 +8,16 @@ const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 export default {
     Subscription: {
         newChannelMessage: {
-            subscribe: withFilter(() => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE), (payload, args) => payload.channelId === args.channelId),
+            subscribe: withFilter(
+                () => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
+                (payload, args) => {
+                    if (!payload || !args) {
+                        console.log("Concerning... Payload or Args doesn't exist.", 'Payload:', payload, 'Args:', args);
+                        return false;
+                    }
+                    return payload.channelId === args.channelId;
+                },
+            ),
         },
     },
     Query: {
