@@ -72,13 +72,12 @@ export const refreshTokens = async (token, refreshToken, models, SECRET, SECRET2
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
-    const user = await models.User.findOne({ where: { email }, raw: true });
+const tryLoginCheck = async (userVal, userValType, password, models) => {
+    const user = await models.User.findOne({ where: { [userValType]: userVal }, raw: true });
     if (!user) {
-        // user with provided email not found
         return {
             ok: false,
-            errors: [{ path: 'email', message: 'Invalid email' }],
+            errors: [{ path: 'email', message: 'Invalid username or email' }],
         };
     }
 
@@ -89,6 +88,30 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
             ok: false,
             errors: [{ path: 'password', message: 'Invalid password' }],
         };
+    }
+
+    return {
+        ok: true,
+        user,
+    };
+};
+
+export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
+    let user;
+
+    const loginSuccess1 = await tryLoginCheck(email, 'username', password, models);
+
+    if (!loginSuccess1.ok) {
+        const loginSuccess2 = await tryLoginCheck(email, 'email', password, models);
+
+        if (!loginSuccess2.ok) {
+            const loginReturn = loginSuccess1.errors[0].message === 'Invalid password' ? loginSuccess1 : loginSuccess2;
+            return loginReturn;
+        }
+
+        ({ user } = loginSuccess2);
+    } else {
+        ({ user } = loginSuccess1);
     }
 
     const refreshTokenSecret = user.password + SECRET2;
