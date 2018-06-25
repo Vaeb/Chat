@@ -53,7 +53,7 @@ const RoleListItemUser = styled.li`
 `;
 
 const roleUser = ({ id, username, color, viewRoleId }) => (
-    <RoleListItemUser viewRoleId={viewRoleId} color={color} key={`role-user-${id}`}>
+    <RoleListItemUser style={{ cursor: 'pointer' }} viewRoleId={viewRoleId} color={color} key={`role-user-${id}`}>
         {username}
     </RoleListItemUser>
 );
