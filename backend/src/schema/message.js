@@ -10,10 +10,11 @@ export default `
 
     type Query {
         getMessages(channelId: Int!): [Message!]!
+        allMessages(numFetch: Int): [[Message!]!]!
     }
 
     type Subscription {
-        newChannelMessage(channelId: Int!): Message!
+        newChannelMessage: Message!
     }
 
     type Mutation {

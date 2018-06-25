@@ -1,4 +1,5 @@
 import { withFilter } from 'graphql-subscriptions';
+// import flatten from 'lodash/flatten';
 // import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
 import pubsub from '../pubsub';
@@ -26,13 +27,13 @@ export default {
                         return false;
                     }
 
-                    return payload.channelId === args.channelId;
+                    return true;
                 },
             ),
         },
     },
     Query: {
-        getMessages: requiresAuth.createResolver(async (parent, { channelId }, { models }) => {
+        getMessages: async (parent, { channelId }, { models }) => {
             const messages = models.Message.findAll({
                 where: { channelId },
                 order: [['created_at', 'DESC']],
@@ -41,7 +42,24 @@ export default {
             });
 
             return messages;
-        }),
+        },
+        allMessages: async (parent, { numFetch }, { models }) => {
+            if (numFetch == null) numFetch = 35;
+
+            const channels = await models.Channel.findAll({ attributes: ['id'], raw: true });
+
+            const allPromises = channels.map(({ id }) =>
+                models.Message.findAll({
+                    where: { channelId: id },
+                    order: [['created_at', 'DESC']],
+                    limit: 35,
+                    raw: true,
+                }));
+
+            const allMessages = await Promise.all(allPromises);
+
+            return allMessages;
+        },
     },
     Mutation: {
         createMessage: requiresAuth.createResolver(async (parent, args, { models, me }) => {
@@ -50,6 +68,14 @@ export default {
                     where: {
                         id: me.id,
                     },
+                    raw: true,
+                });
+
+                const currentChannelPromise = models.Channel.findOne({
+                    where: {
+                        id: args.channelId,
+                    },
+                    raw: true,
                 });
 
                 const message = await models.Message.create({
@@ -58,13 +84,14 @@ export default {
                 });
 
                 const asyncFunc = async () => {
-                    const currentUser = await currentUserPromise;
+                    const [currentUser, currentChannel] = await Promise.all([currentUserPromise, currentChannelPromise]);
 
                     pubsub.publish(NEW_CHANNEL_MESSAGE, {
                         channelId: args.channelId,
                         newChannelMessage: {
                             ...message.dataValues,
-                            user: currentUser.dataValues,
+                            user: currentUser,
+                            channel: currentChannel,
                         },
                     });
                 };
@@ -84,6 +111,13 @@ export default {
             if (user) return user;
 
             return models.User.findOne({ where: { id: userId }, raw: true });
+        },
+        channel: ({ channel, channelId }, args, { models }) => {
+            if (channel) {
+                return channel;
+            }
+
+            return models.Channel.findOne({ where: { id: channelId }, raw: true });
         },
     },
 };

@@ -10,13 +10,17 @@ const heartbeatSubscription = gql`
 
 // eslint-disable-next-line react/prefer-stateless-function
 class AllPages extends React.Component {
+    shouldComponentUpdate() {
+        return false;
+    }
+
     render() {
         return (
             // eslint-disable-next-line
             <Subscription subscription={heartbeatSubscription}>
                 {({ data, loading }) => {
                     if (loading) {
-                        console.log('Subscription component loading...');
+                        console.log('Heartbeat component loading...');
                         return null;
                     }
 

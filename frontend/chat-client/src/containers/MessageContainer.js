@@ -1,6 +1,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 // import styled from 'styled-components';
 import { Comment } from 'semantic-ui-react';
 import DateFormat from 'dateformat';
@@ -71,12 +71,31 @@ const UseStyle = () => (
 );
 
 const newChannelMessageSubscription = gql`
-    subscription($channelId: Int!) {
-        newChannelMessage(channelId: $channelId) {
+    subscription {
+        newChannelMessage {
             id
             text
             user {
                 username
+            }
+            channel {
+                id
+            }
+            created_at
+        }
+    }
+`;
+
+const getMessagesQuery = gql`
+    query {
+        allMessages {
+            id
+            text
+            user {
+                username
+            }
+            channel {
+                id
             }
             created_at
         }
@@ -87,60 +106,94 @@ class MessageContainer extends React.Component {
     constructor(props) {
         super(props);
         this.isScrolledToBottom = true;
-    }
+        this.allMessages = {};
 
-    componentWillMount() {
-        this.unsubscribe = this.subscribe(this.props.channelId);
+        // this.stateMod = 1;
+        // this.state = { num: 1 };
+
+        this.onMessage = this.onMessage.bind(this);
     }
 
     componentDidMount() {
         // console.log('Mounted');
 
+        this.props.client
+            .query({
+                query: getMessagesQuery,
+                fetchPolicy: 'network-only',
+            })
+            .then(({ loading, data }) => {
+                if (loading) {
+                    console.log('Message query loading data...');
+                    return;
+                }
+
+                const { allMessages } = data;
+
+                console.log('Got messages!');
+
+                for (let i = 0; i < allMessages.length; i++) {
+                    const channelMessages = allMessages[i];
+
+                    if (channelMessages.length > 0) {
+                        this.allMessages[channelMessages[0].channel.id] = channelMessages.slice();
+                    }
+                }
+
+                if (!this.allMessages[this.props.channelId]) {
+                    this.allMessages[this.props.channelId] = [];
+                }
+
+                this.subscriptionObserver = this.subscribe(this.props.channelId, this.onMessage);
+
+                this.refState();
+            });
         this.fixScroll();
     }
 
-    componentWillReceiveProps({ data: { loading, getMessages }, channelId }) {
-        if (this.props.channelId !== channelId) {
-            if (this.unsubscribe) {
-                this.unsubscribe();
-                this.unsubscribe = null;
-            }
-            this.unsubscribe = this.subscribe(channelId);
-        }
-    }
-
     componentDidUpdate() {
-        // console.log('Updated');
-
         this.fixScroll();
     }
 
     componentWillUnmount() {
-        if (this.unsubscribe) {
-            this.unsubscribe();
-            this.unsubscribe = null;
+        if (this.subscriptionObserver) {
+            this.subscriptionObserver.unsubscribe();
+            this.subscriptionObserver = null;
         }
     }
 
-    subscribe = channelId =>
-        this.props.data.subscribeToMore({
-            document: newChannelMessageSubscription,
-            variables: {
-                channelId,
-            },
-            updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData) {
-                    return prev;
-                }
+    onMessage(newMessage) {
+        const newChannelId = newMessage.channel.id;
 
-                console.log('subscriptionData', subscriptionData);
+        if (!this.allMessages[newChannelId]) {
+            this.allMessages[newChannelId] = [];
+        }
 
-                return {
-                    ...prev,
-                    getMessages: [subscriptionData.data.newChannelMessage, ...prev.getMessages],
-                };
-            },
-        });
+        this.allMessages[newChannelId].unshift(newMessage);
+
+        if (newChannelId === this.props.channelId) this.refState();
+    }
+
+    subscribe = (channelId, onMessage) =>
+        this.props.client
+            .subscribe({
+                query: newChannelMessageSubscription,
+            })
+            .subscribe({
+                next(newData) {
+                    if (newData.errors || !newData.data) {
+                        console.log('Message subscription data error:', newData.errors);
+                        return;
+                    }
+
+                    const newMessage = newData.data.newChannelMessage;
+
+                    onMessage(newMessage);
+                },
+                error(err) {
+                    console.error('Message subscription error:', err);
+                },
+            });
 
     fixScroll() {
         const out = document.getElementById('MessageWrapper');
@@ -156,21 +209,29 @@ class MessageContainer extends React.Component {
         // console.log(out.scrollTop, this.isScrolledToBottom, out.scrollHeight - out.clientHeight, out.scrollTop + 1);
     }
 
+    refState() {
+        /* const nowNum = this.state.num;
+
+        if (nowNum <= 1) this.stateMod = 1;
+        if (nowNum >= 1e6) this.stateMod = -1;
+
+        this.setState({ num: nowNum + this.stateMod }); */
+
+        this.forceUpdate();
+    }
+
     render() {
-        const {
-            viewMemberData,
-            data: { loading, getMessages },
-        } = this.props;
+        const { channelId, viewMemberData } = this.props;
 
         // console.log('Rendering messages');
 
-        return loading ? (
+        return !this.allMessages[channelId] ? (
             <div style={messageWrapperStyle} />
         ) : (
             <div id="MessageWrapper" style={messageWrapperStyle}>
                 <UseStyle />
                 <Comment.Group>
-                    {getMessages
+                    {this.allMessages[channelId]
                         .slice()
                         .reverse()
                         .map(m => (
@@ -192,26 +253,4 @@ class MessageContainer extends React.Component {
     }
 }
 
-const getMessagesQuery = gql`
-    query($channelId: Int!) {
-        getMessages(channelId: $channelId) {
-            id
-            text
-            user {
-                username
-            }
-            created_at
-        }
-    }
-`;
-
-const getMessageGQL = graphql(getMessagesQuery, {
-    options: props => ({
-        fetchPolicy: 'network-only',
-        variables: {
-            channelId: props.channelId,
-        },
-    }),
-});
-
-export default getMessageGQL(MessageContainer);
+export default withApollo(MessageContainer);
