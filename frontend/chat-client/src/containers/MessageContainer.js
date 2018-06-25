@@ -99,10 +99,11 @@ class MessageContainer extends React.Component {
         this.fixScroll();
     }
 
-    componentWillReceiveProps({ data: { getMessages }, channelId }) {
+    componentWillReceiveProps({ data: { loading, getMessages }, channelId }) {
         if (this.props.channelId !== channelId) {
             if (this.unsubscribe) {
                 this.unsubscribe();
+                this.unsubscribe = null;
             }
             this.unsubscribe = this.subscribe(channelId);
         }
@@ -117,6 +118,7 @@ class MessageContainer extends React.Component {
     componentWillUnmount() {
         if (this.unsubscribe) {
             this.unsubscribe();
+            this.unsubscribe = null;
         }
     }
 
@@ -130,6 +132,8 @@ class MessageContainer extends React.Component {
                 if (!subscriptionData) {
                     return prev;
                 }
+
+                console.log('subscriptionData', subscriptionData);
 
                 return {
                     ...prev,

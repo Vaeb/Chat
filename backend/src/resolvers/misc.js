@@ -1,8 +1,17 @@
 import formatErrors from '../formatErrors';
 // import { requiresAuth } from '../permissions';
 import { linkedQuery } from '../linkedQueries';
+import pubsub from '../pubsub';
+
+const HEARTBEAT = 'HEARTBEAT';
 
 export default {
+    Subscription: {
+        heartbeat: {
+            resolve: payload => payload,
+            subscribe: () => pubsub.asyncIterator(HEARTBEAT),
+        },
+    },
     Query: {
         ping: () => 'pong',
         userRoles: async (parent, args, { models, me }) => {

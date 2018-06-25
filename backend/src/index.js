@@ -12,6 +12,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import models from './models';
 import { refreshTokens } from './auth';
+import pubsub from './pubsub';
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Promise Rejection at:', p);
@@ -98,3 +99,9 @@ models.sequelize.sync({ force: resetDatabase }).then(() => {
         );
     });
 });
+
+const HEARTBEAT = 'HEARTBEAT';
+
+setInterval(async () => {
+    pubsub.publish(HEARTBEAT, String(+new Date()));
+}, 44000); // 44000

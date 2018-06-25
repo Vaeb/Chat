@@ -11,6 +11,10 @@ export default `
         errors: [Error!]
     }
 
+    type Subscription {
+        heartbeat: String!
+    }
+
     type Mutation {
         setData: SetDataResponse!
     }

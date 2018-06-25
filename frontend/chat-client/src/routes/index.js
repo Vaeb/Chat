@@ -11,6 +11,7 @@ import AddUsersToRoles from './AddUsersToRoles';
 import AddRolesToChannels from './AddRolesToChannels';
 import ViewChat from './ViewChat';
 import SetData from './SetData';
+import AllPages from '../components/AllPages';
 
 const isAuthenticated = () => {
     const token = localStorage.getItem('token');
@@ -26,12 +27,15 @@ const isAuthenticated = () => {
     return true;
 };
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
+const CustomRoute = ({ component: Component, isPrivate, ...rest }) => (
     <Route
         {...rest}
         render={props =>
-            (isAuthenticated() ? (
-                <Component {...props} />
+            (!isPrivate || isAuthenticated() ? (
+                <React.Fragment>
+                    <AllPages />
+                    <Component {...props} />
+                </React.Fragment>
             ) : (
                 <Redirect
                     to={{
@@ -49,14 +53,14 @@ export default () => (
         <Switch>
             {/* <Route path="/" exact component={Home} /> */}
             <Route path="/" exact render={() => <Redirect to="/view-chat" />} />
-            <Route path="/register" exact component={Register} />
-            <Route path="/login" exact component={Login} />
-            <PrivateRoute path="/view-chat/:channelId?" exact component={ViewChat} />
-            <PrivateRoute path="/create-role" exact component={CreateRole} />
-            <PrivateRoute path="/create-channel" exact component={CreateChannel} />
-            <PrivateRoute path="/add-user-to-role" exact component={AddUsersToRoles} />
-            <PrivateRoute path="/add-role-to-channel" exact component={AddRolesToChannels} />
-            <Route path="/set-data" exact component={SetData} />
+            <CustomRoute path="/register" exact component={Register} />
+            <CustomRoute path="/login" exact component={Login} />
+            <CustomRoute isPrivate path="/view-chat/:channelId?" exact component={ViewChat} />
+            <CustomRoute isPrivate path="/create-role" exact component={CreateRole} />
+            <CustomRoute isPrivate path="/create-channel" exact component={CreateChannel} />
+            <CustomRoute isPrivate path="/add-user-to-role" exact component={AddUsersToRoles} />
+            <CustomRoute isPrivate path="/add-role-to-channel" exact component={AddRolesToChannels} />
+            <CustomRoute path="/set-data" exact component={SetData} />
         </Switch>
     </BrowserRouter>
 );
