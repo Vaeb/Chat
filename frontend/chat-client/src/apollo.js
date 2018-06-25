@@ -6,7 +6,7 @@ import { ApolloLink, split } from 'apollo-link';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
-const debugging = true;
+const debugging = false;
 
 const uri = debugging ? 'http://localhost:8080/graphql' : 'https://chat.vashta.io/graphql';
 const uriWs = debugging ? 'ws://localhost:8080/subscriptions' : 'wss://chat.vashta.io/subscriptions';
