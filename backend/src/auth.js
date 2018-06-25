@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken';
 import pick from 'lodash/pick';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
