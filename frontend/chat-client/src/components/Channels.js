@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
+import { withData } from '../context/dataContexts';
+
 const ChannelWrapper = styled.div`
     grid-column: 1;
     grid-row: 1 / 4;
@@ -55,14 +57,14 @@ const ButtonListItem = styled.li`
     top: 14px;
 `;
 
-const channel = ({ id, name, current }) => (
+const channel = ({ id, name }, currentChannelId) => (
     <Link key={`channel-${id}`} to={`/view-chat/${id}`}>
-        <ChannelListItem current={current || false}># {name}</ChannelListItem>
+        <ChannelListItem current={id === currentChannelId}># {name}</ChannelListItem>
     </Link>
 );
 
-export default ({
-    chatName, username, channels, onAddChannelClick, canCreate,
+const Channels = ({
+    chatName, username, onAddChannelClick, canCreate, currentChannelId, chatData: { viewChannels },
 }) => (
     <ChannelWrapper>
         <ChannelHead>
@@ -71,7 +73,7 @@ export default ({
         </ChannelHead>
         <div>
             <ChannelList>
-                {channels.map(channel)}
+                {viewChannels.map(c => channel(c, currentChannelId))}
                 {canCreate ? (
                     <React.Fragment>
                         <ButtonListItem onClick={onAddChannelClick}>
@@ -92,3 +94,5 @@ export default ({
         </div>
     </ChannelWrapper>
 );
+
+export default withData(Channels, ['viewChannels']);

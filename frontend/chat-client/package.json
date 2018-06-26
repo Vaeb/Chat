@@ -21,6 +21,8 @@
         "mobx-react": "^5.2.3",
         "react": "^16.4.0",
         "react-apollo": "^2.1.4",
+        "react-compose-context-consumers": "^0.1.3",
+        "react-dividable-context": "^1.0.2",
         "react-dom": "^16.4.0",
         "react-router-dom": "^4.3.1",
         "react-scripts": "1.1.4",

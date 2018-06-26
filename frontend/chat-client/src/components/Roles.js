@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon } from 'semantic-ui-react';
+import find from 'lodash/find';
+
+import { withData } from '../context/dataContexts';
 
 const RoleWrapper = styled.div`
     grid-column: 3;
@@ -48,17 +51,17 @@ const RoleListItemUser = styled.li`
     font-size: 14px;
     &:hover {
         background-color: #36393f;
-        ${props => props.viewRoleId === 1 && 'color: #fff;'};
+        ${props => props.highestViewRoleId === 1 && 'color: #fff;'};
     }
 `;
 
-const roleUser = ({ id, username, color, viewRoleId }) => (
-    <RoleListItemUser style={{ cursor: 'pointer' }} viewRoleId={viewRoleId} color={color} key={`role-user-${id}`}>
+const roleUser = ({ id, username, color, highestViewRoleId }) => (
+    <RoleListItemUser style={{ cursor: 'pointer' }} highestViewRoleId={highestViewRoleId} color={color} key={`role-user-${id}`}>
         {username}
     </RoleListItemUser>
 );
 
-const role = ({ id, name, title, members }, onRoleClick, canAdd) => (
+const role = ({ id, name, title, members }, onRoleClick, canAdd, viewUsers) => (
     <React.Fragment key={`role-frag-${id}`}>
         <RoleListItemName key={`role-name-${id}`}>
             {`${title}`}
@@ -72,17 +75,17 @@ const role = ({ id, name, title, members }, onRoleClick, canAdd) => (
                 </span>
             ) : null}
         </RoleListItemName>
-        {members.map(roleUser)}
+        {members.map(memberId => roleUser(find(viewUsers, ['id', memberId])))}
     </React.Fragment>
 );
 
-const Roles = ({ roles, onRoleClick, canAdd }) => (
+const Roles = ({ chatData: { viewRoles, viewUsers }, onRoleClick, canAdd }) => (
     <RoleWrapper>
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
-            {roles.map(r => role(r, onRoleClick, canAdd))}
+            {viewRoles.map(r => role(r, onRoleClick, canAdd, viewUsers))}
         </RoleList>
     </RoleWrapper>
 );
 
-export default Roles;
+export default withData(Roles, ['viewRoles', 'viewUsers']);

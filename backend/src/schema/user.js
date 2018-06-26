@@ -17,8 +17,7 @@ export default `
         id: Int!
         username: String!
         email: String!
-        roles: [Role!]!
-        openChannels: [Channel!]!
+        allChannels: [Channel!]!
         allRoles: [Role!]!
         allUsers: [User!]!
     }

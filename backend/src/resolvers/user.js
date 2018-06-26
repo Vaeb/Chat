@@ -54,14 +54,7 @@ export default {
             }),
     },
     UserView: {
-        roles: ({ id: userId }, args, { models }) =>
-            linkedQueryId({
-                returnModel: models.Role,
-                midModel: models.RoleUser,
-                keyModel: models.User,
-                id: userId,
-            }),
-        openChannels: (parent, args, { models }) => models.Channel.findAll({ where: { locked: false }, raw: true }),
+        allChannels: (parent, args, { models }) => models.Channel.findAll({ raw: true }),
         allRoles: (parent, args, { models }) => models.Role.findAll({ raw: true }),
         allUsers: (parent, args, { models }) => models.User.findAll({ raw: true }),
     },

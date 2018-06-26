@@ -5,6 +5,8 @@ import { withApollo } from 'react-apollo';
 import { Comment } from 'semantic-ui-react';
 import DateFormat from 'dateformat';
 
+import { withData } from '../context/dataContexts';
+
 const dayStamp = 1000 * 60 * 60 * 24;
 const twoDayStamp = 1000 * 60 * 60 * 24;
 
@@ -27,7 +29,7 @@ const formatDate = (dateStr) => {
         return `Yesterday at ${DateFormat(dateObj, 'h:MM TT')}`;
     }
 
-    return `${DateFormat(dateObj, 'ddd, mmm dS at h:MM TT')}`;
+    return `${DateFormat(dateObj, 'ddd, mmm dS @ h:MM TT')}`.replace('@', 'at');
 };
 
 const messageWrapperStyle = {
@@ -76,6 +78,7 @@ const newChannelMessageSubscription = gql`
             id
             text
             user {
+                id
                 username
             }
             channel {
@@ -92,6 +95,7 @@ const getMessagesQuery = gql`
             id
             text
             user {
+                id
                 username
             }
             channel {
@@ -221,7 +225,10 @@ class MessageContainer extends React.Component {
     }
 
     render() {
-        const { channelId, viewMemberData } = this.props;
+        const {
+            channelId,
+            chatData: { allUsers },
+        } = this.props;
 
         // console.log('Rendering messages');
 
@@ -237,7 +244,7 @@ class MessageContainer extends React.Component {
                         .map(m => (
                             <Comment key={`${m.id}-message`}>
                                 <Comment.Content>
-                                    <Comment.Author as="a" style={{ color: viewMemberData[m.user.username].color }}>
+                                    <Comment.Author as="a" style={{ color: allUsers[m.user.id].color }}>
                                         {m.user.username}
                                     </Comment.Author>
                                     <Comment.Metadata>
@@ -253,4 +260,4 @@ class MessageContainer extends React.Component {
     }
 }
 
-export default withApollo(MessageContainer);
+export default withApollo(withData(MessageContainer, ['allUsers']));

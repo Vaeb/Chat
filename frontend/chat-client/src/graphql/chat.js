@@ -37,7 +37,7 @@ export const viewQuery = gql`
         chatData {
             id
             username
-            openChannels {
+            allChannels {
                 id
                 name
                 locked
@@ -51,28 +51,17 @@ export const viewQuery = gql`
                 color
                 position
                 view
+                owner
                 members {
                     id
+                }
+                permissions {
+                    name
                 }
             }
             allUsers {
                 id
                 username
-            }
-            roles {
-                id
-                owner
-                permissions {
-                    name
-                }
-                channels {
-                    id
-                    name
-                    locked
-                    roles {
-                        id
-                    }
-                }
             }
         }
     }
