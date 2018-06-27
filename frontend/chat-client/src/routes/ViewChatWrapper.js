@@ -1,7 +1,8 @@
 import React from 'react';
 import { withApollo } from 'react-apollo';
-import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
+import find from 'lodash/find';
+import findIndex from 'lodash/findIndex';
 // import uniqBy from 'lodash/uniqBy';
 // import concat from 'lodash/concat';
 import flatten from 'lodash/flatten';
@@ -18,6 +19,7 @@ import {
     viewUsersContext,
     nowUserContext,
     nowChannelContext,
+    pushUpContext,
 } from '../context/dataContexts';
 
 const sortRoles = roles => roles.sort((a, b) => (a.id === 1 ? 1 : (b.position || 0) - (a.position || 0)));
@@ -33,10 +35,18 @@ class ViewChatWrapper extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            viewChannels: [],
+            viewRoles: [],
+            viewUsers: [],
+        };
+
         const {
             setupData,
             props: { history },
         } = this;
+
+        console.log('Creating ViewChatWrapper');
 
         this.props.client
             .query({
@@ -58,96 +68,43 @@ class ViewChatWrapper extends React.Component {
             });
     }
 
-    setupData = (chatData) => {
-        const { id: userId, allChannels: allChannelsOrig, allRoles: allRolesOrig, allUsers: allUsersOrig } = chatData;
+    componentWillReceiveProps(nextProps) {
+        if (this.hasData && this.getNowChannel(nextProps.match.params.channelId, this.state.viewChannels).id !== this.nowChannelId) {
+            this.setupView(nextProps);
+        }
+    }
 
-        // /////////////////////////////////////////////// PARSE GRAPHQL DATA //////////////////////////////////////////////////////////////////
-
-        // GraphQL data is read-only
-        const allRoles = this.mapArrToObj(allRolesOrig, [
-            { propName: 'members', valueKey: 'id' },
-            { propName: 'permissions', valueKey: 'name' },
-        ]);
-        const allChannels = this.mapArrToObj(allChannelsOrig, [{ propName: 'roles', valueKey: 'id' }]);
-        const allUsers = this.mapArrToObj(allUsersOrig);
-
-        this.linkRoles(allUsers, allRoles);
-
-        const nowUser = allUsers[userId];
-        nowUser.permissions = toObj(flatten(nowUser.roles.map(roleId => allRoles[roleId].permissions)));
-
-        const checkUserRoles = toObj(nowUser.roles);
-        const viewChannels = this.parseViewChannels(allChannels, checkUserRoles, nowUser.owner);
-
-        console.log('Setup data:', {
-            allRoles,
-            allChannels,
-            allUsers,
-            nowUser,
-            viewChannels,
-        });
-
-        this.allRoles = allRoles;
-        this.allChannels = allChannels;
-        this.allUsers = allUsers;
-
-        this.viewChannels = viewChannels;
-
-        this.nowUser = nowUser;
-        this.setup = true;
-        this.forceUpdate();
+    getNowChannel = (channelId, viewChannels) => {
+        channelId = parseInt(channelId, 10);
+        const nowChannel = viewChannels[Math.max(channelId ? findIndex(viewChannels, ['id', channelId]) : 0, 0)];
+        return nowChannel;
     };
 
-    mapArrToObj = (allData, dataProps = []) => {
+    fixDataProps = (oldData, dataProps = []) => {
+        const newData = Object.assign({}, oldData);
+
+        if (dataProps.length > 0) {
+            for (let i = 0; i < dataProps.length; i++) {
+                const { propName, valueKey } = dataProps[i];
+                newData[propName] = map(newData[propName], valueKey);
+            }
+        }
+
+        return newData;
+    };
+
+    mapArrToObj = (allData, dataProps) => {
         // GraphQL data is read-only
         allData = allData.slice();
-
-        // Change list in data from Array to Object: role.members = { 13: [id: 13, name: 'Bob'] }
-        /* for (let i = 0; i < allData.length; i++) {
-            const newData = Object.assign({}, allData[i]);
-
-            if (dataProp) {
-                const newDataArr = newData[dataProp];
-                const newDataObj = {};
-
-                for (let j = 0; j < newDataArr.length; j++) {
-                    newDataObj[newDataArr[j].id] = true;
-                }
-
-                newData[dataProp] = newDataObj;
-            }
-
-            allData[i] = newData;
-        } */
+        const { fixDataProps } = this;
 
         // Change from array of objects to an array
         for (let i = 0; i < allData.length; i++) {
-            const newData = Object.assign({}, allData[i]);
-
-            if (dataProps.length > 0) {
-                for (let j = 0; j < dataProps.length; j++) {
-                    const { propName, valueKey } = dataProps[j];
-                    newData[propName] = map(newData[propName], valueKey);
-                }
-            }
-
-            allData[i] = newData;
+            allData[i] = fixDataProps(allData[i], dataProps);
         }
 
         // Change from Array to Object
         return keyBy(allData, 'id');
-    };
-
-    parseViewChannels = (allChannels, checkUserRoles, isOwner) => {
-        const viewChannels = [];
-
-        Object.values(allChannels).forEach((channel) => {
-            if (!channel.locked || isOwner || channel.roles.some(roleData => checkUserRoles[roleData.id])) {
-                viewChannels.push(channel);
-            }
-        });
-
-        return sortChannels(viewChannels);
     };
 
     linkRoles = (allUsers, allRoles) => {
@@ -165,13 +122,125 @@ class ViewChatWrapper extends React.Component {
 
             const highestRoleId = Math.max(...userRoles);
             const highestViewRoleId = Math.max(...userRoles.filter(id => allRoles[id].view));
-            const viewRole = allRoles[highestViewRoleId];
+            const highestViewRole = allRoles[highestViewRoleId];
 
             user.roles = userRoles;
             user.highestRoleId = highestRoleId;
             user.highestViewRoleId = highestViewRoleId;
-            user.color = viewRole.color;
+            user.color = highestViewRole.color;
         });
+    };
+
+    setupData = (chatData) => {
+        const { id: nowUserId, allChannels: allChannelsOrig, allRoles: allRolesOrig, allUsers: allUsersOrig } = chatData;
+
+        // /////////////////////////////////////////////// PARSE GRAPHQL DATA //////////////////////////////////////////////////////////////////
+
+        // GraphQL data is read-only
+        const allRoles = this.mapArrToObj(allRolesOrig, [
+            { propName: 'members', valueKey: 'id' },
+            { propName: 'permissions', valueKey: 'name' },
+        ]);
+        const allChannels = this.mapArrToObj(allChannelsOrig, [{ propName: 'roles', valueKey: 'id' }]);
+        const allUsers = this.mapArrToObj(allUsersOrig);
+
+        this.linkRoles(allUsers, allRoles);
+
+        this.setupPushUps();
+
+        console.log('Setup data:', {
+            allRoles,
+            allChannels,
+            allUsers,
+        });
+
+        this.allRoles = allRoles;
+        this.allChannels = allChannels;
+        this.allUsers = allUsers;
+
+        this.nowUserId = nowUserId;
+
+        this.hasData = true;
+
+        this.setupView(this.props);
+    };
+
+    setupPushUps = () => {
+        this.pushUpMethods = {
+            newChannel: (newChannelData) => {
+                console.log('Updating for newChannel');
+
+                this.allChannels[newChannelData.id] = this.fixDataProps(newChannelData, [{ propName: 'roles', valueKey: 'id' }]);
+
+                this.setupView(this.props);
+            },
+            newRoleUser: ({ role: { id: roleId }, user: { id: userId } }) => {
+                console.log('Updating for newRoleUser');
+                // setTimeout(() => {
+                const role = this.allRoles[roleId];
+                const user = this.allUsers[userId];
+
+                if (!role || !user) {
+                    console.log('newRoleUser error', '| role:', role, '| user:', user);
+                }
+
+                if (!role.members.includes(userId)) role.members.push(userId);
+                if (!user.roles.includes(roleId)) user.roles.push(roleId);
+
+                const highestRoleId = Math.max(...user.roles);
+                const highestViewRoleId = Math.max(...user.roles.filter(id => this.allRoles[id].view));
+                const highestViewRole = this.allRoles[highestViewRoleId];
+
+                user.highestRoleId = highestRoleId;
+                user.highestViewRoleId = highestViewRoleId;
+                user.color = highestViewRole.color;
+
+                // if (userId === this.nowUserId) {
+                // console.log('User was client, refreshing view');
+                this.setupView(this.props);
+                // } else {
+                //     const viewUsers = this.state.viewUsers.slice();
+                //     const nowChannel = find(this.state.viewChannels, ['id', this.nowChannelId]);
+
+                //     // ////////////////////////////////////////////////////
+                //     const viewUserIndex = findIndex(viewUsers, ['id', user.id]);
+
+                //     if (role.owner) user.owner = true;
+                //     const checkRequiredRoles = toObj(nowChannel.roles);
+
+                //     if (viewUserIndex > -1) {
+                //         viewUsers[viewUserIndex] = Object.assign({}, user);
+                //     } else if (!nowChannel.locked || user.owner || user.roles.some(rId => checkRequiredRoles[rId])) {
+                //         // Check if viewUsers changed
+                //         viewUsers.push(Object.assign({}, user));
+                //     }
+
+                //     const highestRoleId = Math.max(...user.roles);
+                //     const highestViewRoleId = Math.max(...user.roles.filter(id => this.allRoles[id].view));
+                //     const highestViewRole = this.allRoles[highestViewRoleId];
+
+                //     user.highestRoleId = highestRoleId;
+                //     user.highestViewRoleId = highestViewRoleId;
+                //     user.color = highestViewRole.color;
+                //     // ////////////////////////////////////////////////////
+
+                //     this.setState({ viewUsers });
+                // }
+                // }, 4000);
+            },
+        };
+    };
+
+    parseViewChannels = (allChannels, checkUserRoles, isOwner) => {
+        const viewChannels = [];
+
+        Object.values(allChannels).forEach((channel) => {
+            if (!channel.locked || isOwner || channel.roles.some(id => checkUserRoles[id])) {
+                viewChannels.push(Object.assign({}, channel));
+            }
+        });
+
+        return sortChannels(viewChannels);
     };
 
     parseViewUsers = (allUsers, requiredRoles, isPrivate) => {
@@ -181,7 +250,7 @@ class ViewChatWrapper extends React.Component {
 
         Object.values(allUsers).forEach((user) => {
             if (!isPrivate || user.owner || user.roles.some(roleId => checkRequiredRoles[roleId])) {
-                viewUsers.push(user);
+                viewUsers.push(Object.assign({}, user));
             }
         });
 
@@ -215,74 +284,110 @@ class ViewChatWrapper extends React.Component {
         return sortRoles(viewRoles);
     };
 
-    render() {
-        if (!this.setup) {
-            console.log('Loading ViewChatWrapper...');
-            return null;
-        }
-
-        console.log('Rendering ViewChatWrapper');
-
+    setupView = (props) => {
         const {
             match: {
                 params: { channelId: channelIdPassed },
             },
-        } = this.props;
+        } = props;
 
-        const {
-            allRoles, allChannels, allUsers, viewChannels, nowUser,
-        } = this;
+        const { allChannels, allRoles, allUsers } = this;
 
         // /////////////////////////////////////////////// PARSE CHANNEL-VIEW DATA //////////////////////////////////////////////////////////////////
 
-        // Current channel id
-        let channelId = parseInt(channelIdPassed, 10);
+        const nowUser = allUsers[this.nowUserId];
+        const userRolesMap = toObj(nowUser.roles);
+
+        // Channels the current user can access
+        const viewChannels = this.parseViewChannels(allChannels, userRolesMap, nowUser.owner);
 
         // Current channel
-        const nowChannel = viewChannels[Math.max(channelId ? findIndex(viewChannels, ['id', channelId]) : 0, 0)];
+        const nowChannel = this.getNowChannel(channelIdPassed, viewChannels);
 
         if (nowChannel == null) {
-            console.log('Major issue! The chat has no channels, you need to create some first!');
-            return <p>Major issue! The chat has no channels, you need to create some first!</p>;
+            this.hasView = true;
+            this.noChannel = true;
+            return;
         }
 
-        // In case it doesn't exist
-        channelId = nowChannel.id;
+        this.noChannel = false;
 
-        const isPrivate = nowChannel.locked;
-
-        console.log(`=== ${nowChannel.name} (${channelId}) ===`);
+        console.log(`=== ${nowChannel.name} (${nowChannel.id}) ===`);
+        console.log('Rendering ViewChatWrapper');
 
         // Members who can view the current channel
-        const viewUsers = this.parseViewUsers(allUsers, nowChannel.roles, isPrivate);
+        const viewUsers = this.parseViewUsers(allUsers, nowChannel.roles, nowChannel.locked);
 
         // Roles seen in the current channel
         const viewRoles = this.parseViewRoles(allRoles, viewUsers);
 
+        this.nowChannelId = nowChannel.id;
+        this.hasView = true;
+
+        this.setState({ viewChannels, viewRoles, viewUsers });
+    };
+
+    render() {
+        if (!this.hasView) {
+            console.log('Loading ViewChatWrapper...');
+            return null;
+        }
+
+        if (this.noChannel) {
+            console.log('Major issue! The chat has no channels, you need to create some first!');
+            return <p>Major issue! The chat has no channels, you need to create some first!</p>;
+        }
+
+        if (this.getNowChannel(this.props.match.params.channelId, this.state.viewChannels).id !== this.nowChannelId) {
+            console.log('Waiting for new view-data computation...');
+            return null;
+        }
+
+        const {
+            allChannels, allRoles, allUsers, nowUserId, nowChannelId, pushUpMethods,
+        } = this;
+        const { viewChannels, viewRoles, viewUsers } = this.state;
+
+        const nowUser = allUsers[nowUserId];
+        nowUser.permissions = toObj(flatten(nowUser.roles.map(roleId => allRoles[roleId].permissions)));
+
+        const nowChannel = find(this.state.viewChannels, ['id', nowChannelId]);
+
         console.log('Channel view data:', {
-            nowChannel,
-            viewUsers,
+            allChannels,
+            allRoles,
+            allUsers,
+            viewChannels,
             viewRoles,
+            viewUsers,
+            nowUser,
+            nowChannel,
         });
 
         return (
-            <nowUserContext.Provider value={nowUser}>
-                <nowChannelContext.Provider value={nowChannel}>
-                    <allRolesContext.Provider value={allRoles}>
+            <pushUpContext.Provider value={pushUpMethods}>
+                <nowUserContext.Provider value={nowUser}>
+                    <nowChannelContext.Provider value={nowChannel}>
                         <allChannelsContext.Provider value={allChannels}>
-                            <allUsersContext.Provider value={allUsers}>
-                                <viewRolesContext.Provider value={viewRoles}>
+                            <allRolesContext.Provider value={allRoles}>
+                                <allUsersContext.Provider value={allUsers}>
                                     <viewChannelsContext.Provider value={viewChannels}>
-                                        <viewUsersContext.Provider value={viewUsers}>
-                                            <ViewChat channelId={channelId} username={nowUser.name} channelName={nowChannel.name} />
-                                        </viewUsersContext.Provider>
+                                        <viewRolesContext.Provider value={viewRoles}>
+                                            <viewUsersContext.Provider value={viewUsers}>
+                                                <ViewChat
+                                                    channelId={nowChannel.id}
+                                                    username={nowUser.username}
+                                                    channelName={nowChannel.name}
+                                                />
+                                            </viewUsersContext.Provider>
+                                        </viewRolesContext.Provider>
                                     </viewChannelsContext.Provider>
-                                </viewRolesContext.Provider>
-                            </allUsersContext.Provider>
+                                </allUsersContext.Provider>
+                            </allRolesContext.Provider>
                         </allChannelsContext.Provider>
-                    </allRolesContext.Provider>
-                </nowChannelContext.Provider>
-            </nowUserContext.Provider>
+                    </nowChannelContext.Provider>
+                </nowUserContext.Provider>
+            </pushUpContext.Provider>
         );
     }
 }

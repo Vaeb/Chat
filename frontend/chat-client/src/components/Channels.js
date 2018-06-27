@@ -67,6 +67,7 @@ const Channels = ({
     chatName, username, onAddChannelClick, canCreate, currentChannelId, chatData: { viewChannels },
 }) => (
     <ChannelWrapper>
+        {console.log('Rendering Channels')}
         <ChannelHead>
             <ChatNameHeader>{chatName}</ChatNameHeader>
             {username}

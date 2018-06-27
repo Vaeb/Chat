@@ -3,9 +3,9 @@ import { Form, Button, Modal, Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
-import findIndex from 'lodash/findIndex';
+// import findIndex from 'lodash/findIndex';
 
-import { viewQuery } from '../graphql/chat';
+// import { viewQuery } from '../graphql/chat';
 import { normalizeErrors, chooseError } from '../normalizeErrors';
 
 const AddUserToRoleModal = ({
@@ -23,6 +23,7 @@ const AddUserToRoleModal = ({
     errors,
 }) => (
     <Modal open={open} onClose={e => onClose({ e, resetForm })}>
+        {console.log('Rendering AddUserToRoleModal')}
         <Modal.Header>Add User To {roleName}</Modal.Header>
         <Modal.Content>
             <Form>
@@ -84,7 +85,7 @@ const formikData = {
         try {
             response = await mutate({
                 variables: { username: values.username, roleId },
-                update: (proxy, { data: { addUserToRole } }) => {
+                /* update: (proxy, { data: { addUserToRole } }) => {
                     const { ok, user } = addUserToRole;
                     if (!ok) {
                         console.log('Mutation errored');
@@ -108,7 +109,7 @@ const formikData = {
                     cachedRoleMembers.push(user);
 
                     proxy.writeQuery({ query: viewQuery, data });
-                },
+                }, */
             });
         } catch (err) {}
 

@@ -3,7 +3,7 @@ import { Form, Button, Modal, Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
-import { viewQuery } from '../graphql/chat';
+// import { viewQuery } from '../graphql/chat';
 
 const AddChannelModal = ({
     /* errors, touched, */
@@ -101,7 +101,7 @@ const formikData = {
         try {
             response = await mutate({
                 variables: { name: values.name },
-                optimisticResponse: {
+                /* optimisticResponse: {
                     createChannel: {
                         __typename: 'Mutation',
                         ok: true,
@@ -120,9 +120,9 @@ const formikData = {
                         return;
                     }
                     const data = proxy.readQuery({ query: viewQuery });
-                    data.chatData.openChannels.push(channel);
+                    data.chatData.allChannels.push(channel);
                     proxy.writeQuery({ query: viewQuery, data });
-                },
+                }, */
             });
         } catch (err) {} // I broke eslint :FeelsBadMan:
         console.log(response);

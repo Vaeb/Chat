@@ -230,7 +230,7 @@ class MessageContainer extends React.Component {
             chatData: { allUsers },
         } = this.props;
 
-        // console.log('Rendering messages');
+        console.log('Rendering MessageContainer');
 
         return !this.allMessages[channelId] ? (
             <div style={messageWrapperStyle} />

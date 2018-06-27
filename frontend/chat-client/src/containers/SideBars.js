@@ -8,20 +8,46 @@ import AddChannelModal from '../components/AddChannelModal';
 import AddUserToRoleModal from '../components/AddUserToRoleModal';
 import { withData } from '../context/dataContexts';
 
-const newRoleSubscription = gql`
-    subscription {
-        newRole {
-            id
-            name
-            color
-            position
-            view
-            members {
+const subscriptions = {
+    newChannel: gql`
+        subscription {
+            newChannel {
                 id
+                name
+                locked
+                roles {
+                    id
+                }
             }
         }
-    }
-`;
+    `,
+    newRole: gql`
+        subscription {
+            newRole {
+                id
+                name
+                color
+                position
+                view
+                members {
+                    id
+                }
+            }
+        }
+    `,
+    newRoleUser: gql`
+        subscription {
+            newRoleUser {
+                role {
+                    id
+                }
+                user {
+                    id
+                }
+            }
+        }
+    `,
+};
 
 class SideBars extends React.Component {
     constructor(props) {
@@ -34,31 +60,37 @@ class SideBars extends React.Component {
     }
 
     componentDidMount() {
-        this.onNewRoleSub = this.makeSubscription('New role', 'newRole', this.onNewRole);
+        const pushUpMethods = this.props.chatData.pushUp;
+
+        this.subEvents = [
+            this.makeSubscription('New channel', 'newChannel', pushUpMethods),
+            this.makeSubscription('New role user', 'newRoleUser', pushUpMethods),
+        ];
     }
 
-    onNewRole = (newRoleData) => {
-        console.log('got newroledata', newRoleData);
-    };
+    componentWillUnmount() {
+        this.subEvents.forEach(subEvent => subEvent.unsubscribe());
+        this.subEvents = [];
+    }
 
-    makeSubscription = (subName, dataName, onFunc) =>
+    makeSubscription = (subName, dataName, pushUpMethods) =>
         this.props.client
             .subscribe({
-                query: newRoleSubscription,
+                query: subscriptions[dataName],
             })
             .subscribe({
-                next(newData) {
-                    if (newData.errors || !newData.data) {
-                        console.log('New role subscription data error:', newData.errors);
+                next(eventData) {
+                    if (eventData.errors || !eventData.data) {
+                        console.log(`${subName} subscription data error:`, eventData.errors);
                         return;
                     }
 
-                    const newMessage = newData.data.newChannelMessage;
+                    const newData = eventData.data[dataName];
 
-                    onFunc(newMessage);
+                    pushUpMethods[dataName](newData);
                 },
                 error(err) {
-                    console.error('New role error:', err);
+                    console.error(`${subName} error:`, err);
                 },
             });
 
@@ -98,7 +130,7 @@ class SideBars extends React.Component {
         } = this.props;
         const { addChannelModal, addUserToRoleModal } = this.state;
 
-        console.log('nowuser', nowUser);
+        console.log('Rendering SideBars');
 
         const canAdd = nowUser.permissions.ADD_ROLE || nowUser.permissions.OWNER;
         const canCreate = nowUser.permissions.OWNER;
@@ -126,4 +158,4 @@ class SideBars extends React.Component {
     }
 }
 
-export default withApollo(withData(SideBars, ['nowUser']));
+export default withApollo(withData(SideBars, ['nowUser', 'pushUp']));

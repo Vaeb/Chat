@@ -24,7 +24,9 @@ React-based chat project for Vashta.
 1.  Connect to postgres: `psql -U postgres`
 1.  Create chat database: `create database chat;`
 1.  Exit database: `\q`
-1.  Navigate into `backend/`
+1.  Install redis
+1.  Start the redis websocket server: `redis-server`
+1.  Using another terminal if necessary, navigate into `backend/`
 1.  Compile the code with babel: `npm run build`
 1.  Start the backend nodemon server: `npm run serve`
 1.  Using another terminal if necessary, navigate into `frontend/chat-client/`

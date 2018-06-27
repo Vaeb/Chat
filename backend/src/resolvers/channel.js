@@ -1,8 +1,17 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
 import { linkedQuery, linkedQueryId } from '../linkedQueries';
+import pubsub from '../pubsub';
+
+const NEW_CHANNEL = 'NEW_CHANNEL';
 
 export default {
+    Subscription: {
+        newChannel: {
+            resolve: payload => payload.newChannel,
+            subscribe: () => pubsub.asyncIterator(NEW_CHANNEL),
+        },
+    },
     Query: {
         allChannels: async (parent, args, { models }) => models.Channel.findAll({ raw: true }),
     },
@@ -12,6 +21,18 @@ export default {
             async (parent, { name, locked, roleIds }, { models }) => {
                 try {
                     const channel = await models.Channel.create({ name, locked });
+
+                    const asyncFunc = async () => {
+                        pubsub.publish(NEW_CHANNEL, {
+                            newChannel: {
+                                ...channel.dataValues,
+                                roles: [],
+                                messages: [],
+                            },
+                        });
+                    };
+
+                    asyncFunc();
 
                     if (roleIds && roleIds.length > 0) {
                         const dataRoleChannel = roleIds.map(roleId => ({ roleId, channelId: channel.id }));
@@ -63,8 +84,10 @@ export default {
         }),
     },
     Channel: {
-        messages: ({ id: channelId }, args, { models }) => models.Message.findAll({ where: { channelId }, raw: true }),
-        roles: ({ id: channelId }, args, { models }) =>
+        messages: ({ id: channelId, messages }, args, { models }) =>
+            messages || models.Message.findAll({ where: { channelId }, raw: true }),
+        roles: ({ id: channelId, roles }, args, { models }) =>
+            roles ||
             linkedQueryId({
                 returnModel: models.Role,
                 midModel: models.RoleChannel,

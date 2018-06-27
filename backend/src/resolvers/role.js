@@ -1,15 +1,17 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
 import { linkedQuery, linkedQueryId } from '../linkedQueries';
+import pubsub from '../pubsub';
 
-/* const fetchMembers = ({ id }, args, { models }) =>
-    models.sequelize.query('select * from users as u join roleusers as ru on ru.user_id = u.id where ru.role_id = ?', {
-        replacements: [id],
-        model: models.User,
-        raw: true,
-    }); */
+const NEW_ROLE_USER = 'NEW_ROLE_USER';
 
 export default {
+    Subscription: {
+        newRoleUser: {
+            resolve: payload => payload.newRoleUser,
+            subscribe: () => pubsub.asyncIterator(NEW_ROLE_USER),
+        },
+    },
     Query: {
         allRoles: requiresAuth.createResolver(async (parent, args, { models }) => models.Role.findAll({ raw: true })),
     },
@@ -104,6 +106,17 @@ export default {
 
                     await models.RoleUser.create({ roleId, userId: user.id });
 
+                    const asyncFunc = async () => {
+                        pubsub.publish(NEW_ROLE_USER, {
+                            newRoleUser: {
+                                role,
+                                user,
+                            },
+                        });
+                    };
+
+                    asyncFunc();
+
                     return {
                         ok: true,
                         user,
@@ -144,5 +157,9 @@ export default {
                 keyModel: models.Role,
                 id: roleId,
             }),
+    },
+    NewRoleUser: {
+        role: ({ role }, args, context) => role,
+        user: ({ user }, args, context) => user,
     },
 };

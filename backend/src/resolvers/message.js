@@ -1,4 +1,4 @@
-import { withFilter } from 'graphql-subscriptions';
+// import { withFilter } from 'graphql-subscriptions';
 // import flatten from 'lodash/flatten';
 // import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
@@ -10,26 +10,7 @@ export default {
     Subscription: {
         newChannelMessage: {
             resolve: payload => payload.newChannelMessage,
-            subscribe: withFilter(
-                () => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
-                (payload, args) => {
-                    const payloadData = !payload
-                        ? payload
-                        : {
-                            id: payload.newChannelMessage.id,
-                            channelId: payload.newChannelMessage.channelId,
-                            channelId2: payload.channelId,
-                            text: payload.newChannelMessage.text,
-                        };
-                    console.log('Got data |', payloadData, '| from client requirements', args);
-                    if (!payload) {
-                        // console.log('Websocket payload (data sent) is undefined. Payload:', payload, '| Subscription args:', args);
-                        return false;
-                    }
-
-                    return true;
-                },
-            ),
+            subscribe: () => pubsub.asyncIterator(NEW_CHANNEL_MESSAGE),
         },
     },
     Query: {

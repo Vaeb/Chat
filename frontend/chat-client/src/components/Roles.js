@@ -81,6 +81,7 @@ const role = ({ id, name, title, members }, onRoleClick, canAdd, viewUsers) => (
 
 const Roles = ({ chatData: { viewRoles, viewUsers }, onRoleClick, canAdd }) => (
     <RoleWrapper>
+        {console.log('Rendering Roles')}
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
             {viewRoles.map(r => role(r, onRoleClick, canAdd, viewUsers))}

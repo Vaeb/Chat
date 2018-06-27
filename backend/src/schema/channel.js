@@ -8,14 +8,18 @@ export default `
         roles: [Role!]!
     }
 
-    type Query {
-        allChannels: [Channel!]!
-    }
-
     type CreateChannelResponse {
         ok: Boolean!
         channel: Channel
         errors: [Error!]
+    }
+
+    type Query {
+        allChannels: [Channel!]!
+    }
+
+    type Subscription {
+        newChannel: Channel!
     }
 
     type Mutation {

@@ -23,8 +23,17 @@ export default `
         errors: [Error!]
     }
 
+    type NewRoleUser {
+        role: Role!
+        user: User!
+    }
+
     type Query {
         allRoles: [Role!]!
+    }
+
+    type Subscription {
+        newRoleUser: NewRoleUser!
     }
 
     type Mutation {

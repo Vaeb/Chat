@@ -9,6 +9,7 @@ export const viewChannelsContext = React.createContext([]);
 export const viewUsersContext = React.createContext([]);
 export const nowUserContext = React.createContext([]);
 export const nowChannelContext = React.createContext([]);
+export const pushUpContext = React.createContext({});
 
 const contextMap = {
     allRoles: allUsersContext,
@@ -19,6 +20,7 @@ const contextMap = {
     viewUsers: viewUsersContext,
     nowUser: nowUserContext,
     nowChannel: nowChannelContext,
+    pushUp: pushUpContext,
 };
 
 export const withData = (Component, contextNames) => (props) => {

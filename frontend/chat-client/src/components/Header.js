@@ -26,6 +26,7 @@ const style = {
 
 export default ({ channelName }) => (
     <HeaderWrapper>
+        {console.log('Rendering Header')}
         <Header inverted style={style.header}>
             # {channelName}
         </Header>

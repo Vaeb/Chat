@@ -13,7 +13,7 @@ class ViewChat extends React.Component {
     }
 
     render() {
-        console.log('Rendered ViewChat');
+        console.log('Rendering ViewChat');
 
         const { channelId, username, channelName } = this.props;
 
