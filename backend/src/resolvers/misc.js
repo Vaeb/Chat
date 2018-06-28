@@ -1,9 +1,7 @@
 import formatErrors from '../formatErrors';
-// import { requiresAuth } from '../permissions';
+import { requiresPermission } from '../permissions';
 import { linkedQuery } from '../linkedQueries';
-import pubsub from '../pubsub';
-
-const HEARTBEAT = 'HEARTBEAT';
+import { pubsub, HEARTBEAT } from '../pubsub';
 
 export default {
     Subscription: {
@@ -34,7 +32,7 @@ export default {
             }),
     },
     Mutation: {
-        setData: async (parent, args, { models }) => {
+        setData: requiresPermission('').createResolver({ catchErrors: true }, async (parent, args, { models }) => {
             try {
                 await models.sequelize.sync({ force: true });
 
@@ -50,11 +48,11 @@ export default {
                     { /* id: 2, */ name: 'Suspended', view: false }, // for permissions
                     { /* id: 3, */ name: 'Muted', view: false }, // for permissions
                     { /* id: 4, */ name: 'Buyer', color: '#EF5350', position: 40 }, // for permissions
-                    { /* id: 5, */ name: 'Support', color: '#00C853', position: 60 },
+                    { /* id: 5, */ name: 'Support', color: '#00C853', position: 60, view: false },
                     { /* id: 6, */ name: 'Staff', position: 100, view: false }, // for permissions
                     { /* id: 7, */ name: 'Moderator', color: '#FDD835', position: 140 },
                     { /* id: 8, */ name: 'Head Moderator', color: '#F57F17', position: 150 },
-                    { /* id: 9, */ name: 'Administrator', position: 200, view: false }, // for permissions
+                    { /* id: 9, */ name: 'Administrator', position: 200 }, // for permissions
                     { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240, owner: true },
                 ];
 
@@ -119,6 +117,8 @@ export default {
                     // Which roles belong to which users
                     { roleId: 4, userId: 1 }, // Buyer - Vaeb
                     { roleId: 4, userId: 3 }, // Buyer - BuyerUser1
+                    { roleId: 4, userId: 4 }, // Buyer - BuyerUser1
+                    { roleId: 4, userId: 5 }, // Buyer - BuyerUser1
                     { roleId: 5, userId: 4 }, // Support - SupportUser1
                     { roleId: 5, userId: 5 }, // Support - SupportUser2
                     { roleId: 6, userId: 1 }, // Staff - Vaeb
@@ -130,7 +130,7 @@ export default {
                     { roleId: 9, userId: 1 }, // Administrator - Vaeb
                     { roleId: 9, userId: 8 }, // Administrator - DevUser1
                     { roleId: 10, userId: 1 }, // Developer - Vaeb
-                    { roleId: 10, userId: 8 }, // Developer - DevUser1
+                    // { roleId: 10, userId: 8 }, // Developer - DevUser1
                 ];
 
                 // You can get all users from User role
@@ -145,7 +145,7 @@ export default {
 
                 // You can get all roles from rules channel
 
-                for (let i = 0; i < dataRole.length; i++) dataRoleChannel.push({ roleId: dataRole[i].id || i + 1, channelId: 1 }); // Get all roles from fixed channel (rules)
+                // for (let i = 0; i < dataRole.length; i++) dataRoleChannel.push({ roleId: dataRole[i].id || i + 1, channelId: 1 }); // Get all roles from fixed channel (rules)
 
                 /* // Auto ignored when private
                     for (let i = 0; i < dataChannel.length; i++) {
@@ -176,6 +176,6 @@ export default {
                     errors: formatErrors(err, models),
                 };
             }
-        },
+        }),
     },
 };

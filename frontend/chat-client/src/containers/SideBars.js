@@ -47,6 +47,17 @@ const subscriptions = {
             }
         }
     `,
+    newUser: gql`
+        subscription {
+            newUser {
+                id
+                username
+                roles {
+                    id
+                }
+            }
+        }
+    `,
 };
 
 class SideBars extends React.Component {
@@ -60,11 +71,13 @@ class SideBars extends React.Component {
     }
 
     componentDidMount() {
+        console.log('Setting up subscriptions');
         const pushUpMethods = this.props.chatData.pushUp;
 
         this.subEvents = [
             this.makeSubscription('New channel', 'newChannel', pushUpMethods),
             this.makeSubscription('New role user', 'newRoleUser', pushUpMethods),
+            this.makeSubscription('New user', 'newUser', pushUpMethods),
         ];
     }
 

@@ -1,7 +1,8 @@
 import { tryLogin } from '../auth';
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
-import { linkedQuery, linkedQueryId } from '../linkedQueries';
+import { linkedQueryId } from '../linkedQueries';
+import { pubsub, NEW_USER } from '../pubsub';
 
 /*
 
@@ -15,6 +16,12 @@ import { linkedQuery, linkedQueryId } from '../linkedQueries';
 */
 
 export default {
+    Subscription: {
+        newUser: {
+            resolve: payload => payload.newUser,
+            subscribe: () => pubsub.asyncIterator(NEW_USER),
+        },
+    },
     Query: {
         chatData: requiresAuth.createResolver((parent, args, { models, me }) => models.User.findOne({ where: { id: me.id } })),
         // chatData: (parent, args, { models, me }) => models.User.findOne({ where: { id: 1 } }),
@@ -25,11 +32,27 @@ export default {
         login: async (parent, { email, password }, { models, SECRET, SECRET2 }) => tryLogin(email, password, models, SECRET, SECRET2),
         register: async (parent, args, { models }) => {
             try {
+                let user;
+                const rolePromise = models.Role.findOne({ where: { id: 1 }, raw: true });
+
                 const response = await models.sequelize.transaction(async (transaction) => {
-                    const user = await models.User.create(args, { transaction });
+                    user = await models.User.create(args, { transaction });
                     await models.RoleUser.create({ roleId: 1, userId: user.id }, { transaction });
                     return user;
                 });
+
+                const asyncFunc = async () => {
+                    const role = await rolePromise;
+
+                    pubsub.publish(NEW_USER, {
+                        newUser: {
+                            ...user.dataValues,
+                            roles: [role],
+                        },
+                    });
+                };
+
+                asyncFunc();
 
                 return {
                     ok: true,
@@ -45,7 +68,8 @@ export default {
         },
     },
     User: {
-        roles: ({ id: userId }, args, { models }) =>
+        roles: ({ id: userId, roles }, args, { models }) =>
+            roles ||
             linkedQueryId({
                 returnModel: models.Role,
                 midModel: models.RoleUser,

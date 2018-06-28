@@ -2,9 +2,7 @@
 // import flatten from 'lodash/flatten';
 // import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
-import pubsub from '../pubsub';
-
-const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
+import { pubsub, NEW_CHANNEL_MESSAGE } from '../pubsub';
 
 export default {
     Subscription: {

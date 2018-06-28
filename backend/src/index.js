@@ -12,7 +12,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws';
 
 import models from './models';
 import { refreshTokens } from './auth';
-import pubsub from './pubsub';
+import { pubsub } from './pubsub';
 
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled Promise Rejection at:', p);

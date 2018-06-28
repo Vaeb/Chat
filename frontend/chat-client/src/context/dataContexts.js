@@ -1,33 +1,32 @@
 import React from 'react';
 import Compose from 'react-compose-context-consumers';
 
-export const allRolesContext = React.createContext({});
-export const allChannelsContext = React.createContext({});
-export const allUsersContext = React.createContext({});
-export const viewRolesContext = React.createContext([]);
-export const viewChannelsContext = React.createContext([]);
-export const viewUsersContext = React.createContext([]);
-export const nowUserContext = React.createContext([]);
-export const nowChannelContext = React.createContext([]);
-export const pushUpContext = React.createContext({});
+export const allChannelsContext = React.createContext({ default: 'allChannels' });
+export const allRolesContext = React.createContext({ default: 'allRoles' });
+export const allUsersContext = React.createContext({ default: 'allUsers' });
+export const viewChannelsContext = React.createContext([{ default: 'viewChannels' }]);
+export const viewRolesContext = React.createContext([{ default: 'viewRoles' }]);
+export const viewUsersContext = React.createContext([{ default: 'viewUsers' }]);
+export const nowUserContext = React.createContext({ default: 'nowUser' });
+export const nowChannelContext = React.createContext({ default: 'nowChannel' });
+export const pushUpContext = React.createContext({ default: 'pushUp' });
 
 const contextMap = {
-    allRoles: allUsersContext,
     allChannels: allChannelsContext,
+    allRoles: allRolesContext,
     allUsers: allUsersContext,
-    viewRoles: viewRolesContext,
     viewChannels: viewChannelsContext,
+    viewRoles: viewRolesContext,
     viewUsers: viewUsersContext,
     nowUser: nowUserContext,
     nowChannel: nowChannelContext,
     pushUp: pushUpContext,
 };
 
-export const withData = (Component, contextNames) => (props) => {
+export const withData = (Component, contextNames) => {
     const consumers = contextNames.reduce((o, name) => {
         o[name] = contextMap[name].Consumer;
         return o;
     }, {});
-
-    return <Compose {...consumers}>{chatData => <Component {...props} chatData={chatData} />}</Compose>;
+    return props => <Compose {...consumers}>{chatData => <Component {...props} chatData={chatData} />}</Compose>;
 };

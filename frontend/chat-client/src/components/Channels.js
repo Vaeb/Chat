@@ -33,17 +33,26 @@ const ChannelList = styled.ul`
     position: relative;
 `;
 
+// eslint-disable-next-line
 // prettier-ignore
 const ChannelListItem = styled.li`
-    padding: 8px 2px 8px 10px;
-    font-size: 16px;
-    color: ${props => (props.current ? '#f6f6f7' : '#72767d')};
-    background-color: ${props => (props.current ? 'rgba(79,84,92,.6)' : 'transparent')};
-    ${props => (!props.current ? `
-    &:hover {
-        background-color: #36393f;
-        color: #b9bbbe;
-    }` : '')};
+    ${props => `
+        padding: 8px 2px 8px 10px;
+        font-size: 16px;
+        background-color: ${props.current ? 'rgba(79,84,92,.6)' : 'transparent'};
+        color: #72767d;
+        & > .channelName {
+            color: ${props.current ? '#f6f6f7' : props.newMessages ? '#DCDDDE' : '#72767d'};
+        }
+        ${!props.current ? `
+            &:hover {
+                background-color: #36393f;
+            }
+            &:hover > .channelName {
+                ${!props.newMessages ? 'color: #b9bbbe;' : ''}
+            }
+        ` : ''};
+    `};
 `;
 
 const ButtonListItem = styled.li`
@@ -57,9 +66,11 @@ const ButtonListItem = styled.li`
     top: 14px;
 `;
 
-const channel = ({ id, name }, currentChannelId) => (
+const channel = ({ id, name, newMessages }, currentChannelId) => (
     <Link key={`channel-${id}`} to={`/view-chat/${id}`}>
-        <ChannelListItem current={id === currentChannelId}># {name}</ChannelListItem>
+        <ChannelListItem newMessages={newMessages} current={id === currentChannelId}>
+            # <span className="channelName">{name}</span>
+        </ChannelListItem>
     </Link>
 );
 

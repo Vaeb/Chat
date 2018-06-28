@@ -112,10 +112,9 @@ class MessageContainer extends React.Component {
         this.isScrolledToBottom = true;
         this.allMessages = {};
 
-        // this.stateMod = 1;
-        // this.state = { num: 1 };
-
-        this.onMessage = this.onMessage.bind(this);
+        this.state = {
+            viewMessages: [],
+        };
     }
 
     componentDidMount() {
@@ -148,11 +147,17 @@ class MessageContainer extends React.Component {
                     this.allMessages[this.props.channelId] = [];
                 }
 
-                this.subscriptionObserver = this.subscribe(this.props.channelId, this.onMessage);
+                this.subscriptionObserver = this.subscribe(this.props.channelId, this.newMessage);
 
-                this.refState();
+                this.setState({ viewMessages: [...this.allMessages[this.props.channelId]] });
             });
         this.fixScroll();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.channelId !== this.props.channelId) {
+            this.setState({ viewMessages: this.allMessages[nextProps.channelId] ? [...this.allMessages[nextProps.channelId]] : [] });
+        }
     }
 
     componentDidUpdate() {
@@ -166,19 +171,23 @@ class MessageContainer extends React.Component {
         }
     }
 
-    onMessage(newMessage) {
-        const newChannelId = newMessage.channel.id;
+    newMessage = (message) => {
+        const newChannelId = message.channel.id;
 
         if (!this.allMessages[newChannelId]) {
             this.allMessages[newChannelId] = [];
         }
 
-        this.allMessages[newChannelId].unshift(newMessage);
+        this.allMessages[newChannelId].unshift(message);
 
-        if (newChannelId === this.props.channelId) this.refState();
-    }
+        if (newChannelId === this.props.channelId) {
+            this.setState({ viewMessages: [...this.allMessages[newChannelId]] });
+        }
 
-    subscribe = (channelId, onMessage) =>
+        this.props.chatData.pushUp.newMessage(message);
+    };
+
+    subscribe = (channelId, newMessage) =>
         this.props.client
             .subscribe({
                 query: newChannelMessageSubscription,
@@ -190,16 +199,16 @@ class MessageContainer extends React.Component {
                         return;
                     }
 
-                    const newMessage = newData.data.newChannelMessage;
+                    const message = newData.data.newChannelMessage;
 
-                    onMessage(newMessage);
+                    newMessage(message);
                 },
                 error(err) {
                     console.error('Message subscription error:', err);
                 },
             });
 
-    fixScroll() {
+    fixScroll = () => {
         const out = document.getElementById('MessageWrapper');
 
         if (out == null) return;
@@ -211,40 +220,26 @@ class MessageContainer extends React.Component {
         this.isScrolledToBottom = out.scrollHeight - out.clientHeight <= out.scrollTop + 1;
 
         // console.log(out.scrollTop, this.isScrolledToBottom, out.scrollHeight - out.clientHeight, out.scrollTop + 1);
-    }
-
-    refState() {
-        /* const nowNum = this.state.num;
-
-        if (nowNum <= 1) this.stateMod = 1;
-        if (nowNum >= 1e6) this.stateMod = -1;
-
-        this.setState({ num: nowNum + this.stateMod }); */
-
-        this.forceUpdate();
-    }
+    };
 
     render() {
         const {
-            channelId,
             chatData: { allUsers },
         } = this.props;
 
         console.log('Rendering MessageContainer');
 
-        return !this.allMessages[channelId] ? (
-            <div style={messageWrapperStyle} />
-        ) : (
+        return (
             <div id="MessageWrapper" style={messageWrapperStyle}>
                 <UseStyle />
                 <Comment.Group>
-                    {this.allMessages[channelId]
+                    {this.state.viewMessages
                         .slice()
                         .reverse()
                         .map(m => (
                             <Comment key={`${m.id}-message`}>
                                 <Comment.Content>
-                                    <Comment.Author as="a" style={{ color: allUsers[m.user.id].color }}>
+                                    <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#B9BBBE' }}>
                                         {m.user.username}
                                     </Comment.Author>
                                     <Comment.Metadata>
@@ -260,4 +255,4 @@ class MessageContainer extends React.Component {
     }
 }
 
-export default withApollo(withData(MessageContainer, ['allUsers']));
+export default withApollo(withData(MessageContainer, ['allUsers', 'pushUp']));

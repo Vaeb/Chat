@@ -1,9 +1,7 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
 import { linkedQuery, linkedQueryId } from '../linkedQueries';
-import pubsub from '../pubsub';
-
-const NEW_ROLE_USER = 'NEW_ROLE_USER';
+import { pubsub, NEW_ROLE_USER } from '../pubsub';
 
 export default {
     Subscription: {
@@ -159,7 +157,7 @@ export default {
             }),
     },
     NewRoleUser: {
-        role: ({ role }, args, context) => role,
-        user: ({ user }, args, context) => user,
+        role: ({ role }) => role,
+        user: ({ user }) => user,
     },
 };

@@ -57,5 +57,5 @@ export const requiresPermission = permissionName =>
             },
         });
 
-        if (foundPermissions.length == 0) throw new Error(`This action requires the ${permissionName} permission`);
+        if (foundPermissions.length == 0) throw new Error(`This action requires the ${permissionName || 'owner'} permission`);
     });

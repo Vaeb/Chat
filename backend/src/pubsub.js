@@ -1,6 +1,6 @@
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 
-const pubsub = new RedisPubSub({
+export const pubsub = new RedisPubSub({
     connection: {
         host: process.env.REDIS_HOST || '127.0.0.1',
         port: 6379,
@@ -10,4 +10,8 @@ const pubsub = new RedisPubSub({
 
 console.log(123, 'loading pubsub', pubsub != null);
 
-export default pubsub;
+export const HEARTBEAT = 'HEARTBEAT';
+export const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
+export const NEW_CHANNEL = 'NEW_CHANNEL';
+export const NEW_ROLE_USER = 'NEW_ROLE_USER';
+export const NEW_USER = 'NEW_USER';

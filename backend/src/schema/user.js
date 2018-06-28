@@ -22,12 +22,6 @@ export default `
         allUsers: [User!]!
     }
 
-    type Query {
-        chatData: UserView!
-        getUser(id: Int!): User!
-        allUsers: [User!]!
-    }
-
     type RegisterResponse {
         ok: Boolean!
         user: User
@@ -39,6 +33,16 @@ export default `
         token: String
         refreshToken: String
         errors: [Error!]
+    }
+
+    type Query {
+        chatData: UserView!
+        getUser(id: Int!): User!
+        allUsers: [User!]!
+    }
+
+    type Subscription {
+        newUser: User!
     }
 
     type Mutation {

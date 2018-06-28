@@ -23,7 +23,6 @@ const AddUserToRoleModal = ({
     errors,
 }) => (
     <Modal open={open} onClose={e => onClose({ e, resetForm })}>
-        {console.log('Rendering AddUserToRoleModal')}
         <Modal.Header>Add User To {roleName}</Modal.Header>
         <Modal.Content>
             <Form>

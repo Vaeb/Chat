@@ -41,7 +41,6 @@ const SendMessage = ({
     channelName, values, handleChange, handleBlur, handleSubmit, isSubmitting,
 }) => (
     <SendMessageWrapper>
-        {console.log('Rendering SendMessage')}
         <UseStyle />
         <Input
             name="message"

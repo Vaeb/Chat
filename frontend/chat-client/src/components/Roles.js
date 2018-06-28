@@ -42,17 +42,19 @@ const RoleListItemName = styled.li`
 `;
 
 const RoleListItemUser = styled.li`
-    height: 28px;
-    color: ${props => props.color};
-    display: flex;
-    margin-left: 8px;
-    padding-left: 21px;
-    align-items: center;
-    font-size: 14px;
-    &:hover {
-        background-color: #36393f;
-        ${props => props.highestViewRoleId === 1 && 'color: #fff;'};
-    }
+    ${props => `
+        height: 28px;
+        color: ${props.color};
+        display: flex;
+        margin-left: 8px;
+        padding-left: 21px;
+        align-items: center;
+        font-size: 14px;
+        &:hover {
+            background-color: #36393f;
+            ${props.highestViewRoleId === 1 && 'color: #fff;'};
+        }
+    `};
 `;
 
 const roleUser = ({ id, username, color, highestViewRoleId }) => (

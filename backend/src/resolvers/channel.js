@@ -1,9 +1,7 @@
 import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
-import { linkedQuery, linkedQueryId } from '../linkedQueries';
-import pubsub from '../pubsub';
-
-const NEW_CHANNEL = 'NEW_CHANNEL';
+import { linkedQueryId } from '../linkedQueries';
+import { pubsub, NEW_CHANNEL } from '../pubsub';
 
 export default {
     Subscription: {
@@ -18,15 +16,34 @@ export default {
     Mutation: {
         createChannel: requiresPermission('').createResolver(
             { catchErrors: true },
-            async (parent, { name, locked, roleIds }, { models }) => {
+            async (parent, { name, locked, roles: roleIds = [] }, { models }) => {
                 try {
-                    const channel = await models.Channel.create({ name, locked });
+                    const { Op } = models.Sequelize;
+
+                    const channelPromise = models.Channel.create({ name, locked });
+
+                    let rolesPromise;
+
+                    if (roleIds.length) {
+                        rolesPromise = models.Role.findAll({
+                            where: {
+                                id: {
+                                    [Op.or]: roleIds,
+                                },
+                            },
+                            raw: true,
+                        });
+                    }
+
+                    const channel = await channelPromise;
 
                     const asyncFunc = async () => {
+                        const roles = roleIds.length ? await rolesPromise : [];
+
                         pubsub.publish(NEW_CHANNEL, {
                             newChannel: {
                                 ...channel.dataValues,
-                                roles: [],
+                                roles,
                                 messages: [],
                             },
                         });
@@ -34,7 +51,7 @@ export default {
 
                     asyncFunc();
 
-                    if (roleIds && roleIds.length > 0) {
+                    if (roleIds && roleIds.length) {
                         const dataRoleChannel = roleIds.map(roleId => ({ roleId, channelId: channel.id }));
                         await models.RoleChannel.bulkCreate(dataRoleChannel);
                     }
