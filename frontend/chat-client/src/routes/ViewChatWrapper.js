@@ -69,6 +69,11 @@ class ViewChatWrapper extends React.Component {
                 }
 
                 setupData(data.chatData);
+            })
+            .catch((err) => {
+                console.log('ChatData error:', err);
+                console.log('Chat data not found, are you logged in?');
+                history.push('/login');
             });
     }
 
@@ -109,6 +114,21 @@ class ViewChatWrapper extends React.Component {
         return keyBy(allData, 'id');
     };
 
+    addUserRoleData = (user, userRoles, allRoles) => {
+        sortRoleIds(userRoles, allRoles);
+
+        const highestRoleId = userRoles[0];
+        const highestViewRoleId = userRoles.find(rId => allRoles[rId].view);
+        const highestRole = allRoles[highestRoleId];
+        const highestViewRole = allRoles[highestViewRoleId];
+
+        user.roles = userRoles;
+        user.highestRoleId = highestRoleId;
+        user.highestViewRoleId = highestViewRoleId;
+        user.position = highestRole.position;
+        user.color = highestViewRole.color;
+    };
+
     linkRoles = (allUsers, allRoles) => {
         const allRoleVals = Object.values(allRoles);
 
@@ -122,16 +142,7 @@ class ViewChatWrapper extends React.Component {
                 }
             });
 
-            sortRoleIds(userRoles, allRoles);
-
-            const highestRoleId = userRoles[0];
-            const highestViewRoleId = userRoles.find(rId => allRoles[rId].view);
-            const highestViewRole = allRoles[highestViewRoleId];
-
-            user.roles = userRoles;
-            user.highestRoleId = highestRoleId;
-            user.highestViewRoleId = highestViewRoleId;
-            user.color = highestViewRole.color;
+            this.addUserRoleData(user, userRoles, allRoles);
         });
     };
 
@@ -174,6 +185,17 @@ class ViewChatWrapper extends React.Component {
         allUsers: changeStorage.includes('allUsers') ? Object.assign({}, this.state.allUsers) : undefined,
     });
 
+    getDataEdit = (viewStorage, dataId) => {
+        // Get data from viewStorage for editing without needing to call setupView()
+        const dataIndex = findIndex(viewStorage, ['id', dataId]);
+        if (dataIndex === -1) return null;
+
+        const data = Object.assign({}, viewStorage[dataIndex]);
+        viewStorage[dataIndex] = data;
+
+        return data;
+    };
+
     setupPushUps = () => {
         this.pushUpMethods = {
             newChannel: (newChannelData) => {
@@ -183,11 +205,28 @@ class ViewChatWrapper extends React.Component {
                 const { allChannels } = this.allStorage(['allChannels']);
 
                 const channel = this.fixDataProps(newChannelData, [{ propName: 'roles', valueKey: 'id' }]);
+                channel.newMessages = false;
 
                 allChannels[newChannelData.id] = channel;
 
                 this.setupView(this.props, { allChannels });
                 // }, 4000);
+            },
+            newRole: (newRoleData) => {
+                console.log('Updating for newRole', newRoleData);
+
+                const { allRoles, allUsers } = this.allStorage(['allRoles', 'allUsers']);
+
+                const role = this.fixDataProps(newRoleData, [
+                    { propName: 'members', valueKey: 'id' },
+                    { propName: 'permissions', valueKey: 'name' },
+                ]);
+
+                allRoles[newRoleData.id] = role;
+
+                this.linkRoles(allUsers, allRoles);
+
+                this.setupView(this.props, { allRoles, allUsers });
             },
             newRoleUser: ({ role: { id: roleId }, user: { id: userId } }) => {
                 // setTimeout(() => {
@@ -205,20 +244,35 @@ class ViewChatWrapper extends React.Component {
                 if (!role.members.includes(userId)) role.members.push(userId);
                 if (!user.roles.includes(roleId)) user.roles.push(roleId);
 
-                if (user.roles.some(rId => allRoles[rId].owner)) user.owner = true;
+                user.owner = user.roles.some(rId => allRoles[rId].owner);
 
-                sortRoleIds(user.roles, allRoles);
-
-                const highestRoleId = user.roles[0];
-                const highestViewRoleId = user.roles.find(rId => allRoles[rId].view);
-                const highestViewRole = allRoles[highestViewRoleId];
-
-                user.highestRoleId = highestRoleId;
-                user.highestViewRoleId = highestViewRoleId;
-                user.color = highestViewRole.color;
+                this.addUserRoleData(user, user.roles, allRoles);
 
                 this.setupView(this.props, { allRoles, allUsers });
                 // }, 4000);
+            },
+            remRoleUser: ({ role: { id: roleId }, user: { id: userId } }) => {
+                console.log('Updating for remRoleUser', roleId, userId);
+
+                const { allRoles, allUsers } = this.allStorage(['allRoles', 'allUsers']);
+
+                const role = allRoles[roleId];
+                const user = allUsers[userId];
+
+                if (!role || !user) {
+                    console.log('remRoleUser error', '| role:', role, '| user:', user);
+                }
+
+                console.log(typeof userId, typeof role.members[0], typeof roleId, typeof user.roles[0]);
+
+                role.members = role.members.filter(uId => uId !== userId);
+                user.roles = user.roles.filter(rId => rId !== roleId);
+
+                user.owner = user.roles.some(rId => allRoles[rId].owner);
+
+                this.addUserRoleData(user, user.roles, allRoles);
+
+                this.setupView(this.props, { allRoles, allUsers });
             },
             newUser: (newUserData) => {
                 // setTimeout(() => {
@@ -230,15 +284,7 @@ class ViewChatWrapper extends React.Component {
 
                 if (user.roles.some(rId => allRoles[rId].owner)) user.owner = true;
 
-                sortRoleIds(user.roles, allRoles);
-
-                const highestRoleId = user.roles[0];
-                const highestViewRoleId = user.roles.find(rId => allRoles[rId].view);
-                const highestViewRole = allRoles[highestViewRoleId];
-
-                user.highestRoleId = highestRoleId;
-                user.highestViewRoleId = highestViewRoleId;
-                user.color = highestViewRole.color;
+                this.addUserRoleData(user, user.roles, allRoles);
 
                 allUsers[newUserData.id] = user;
 
@@ -253,15 +299,24 @@ class ViewChatWrapper extends React.Component {
                     const viewChannels = this.state.viewChannels.slice();
 
                     const allChannel = allChannels[channelId];
-                    const viewChannel = find(viewChannels, ['id', channelId]);
+                    const viewChannel = this.getDataEdit(viewChannels, channelId);
 
                     if (!viewChannel) return;
 
                     allChannel.newMessages = true;
                     viewChannel.newMessages = true;
 
-                    this.setState({ viewChannels });
+                    this.setState({ allChannels, viewChannels });
                 }
+            },
+            onRolesCheckboxClick: (checked) => {
+                const { allUsers } = this.allStorage(['allUsers']);
+
+                const allUser = allUsers[this.nowUserId];
+
+                allUser.editRoleUsers = checked;
+
+                this.setupView(this.props, { allUsers });
             },
         };
     };
@@ -292,22 +347,30 @@ class ViewChatWrapper extends React.Component {
         return viewUsers;
     };
 
-    parseViewRoles = (allRoles, viewUsers) => {
+    parseViewRoles = (allRoles, viewUsers, editRoleUsers) => {
         const viewRoles = [];
         const viewRolesMap = {};
 
-        for (let i = 0; i < viewUsers.length; i++) {
-            const user = viewUsers[i];
-            const { id: userId, highestViewRoleId } = user;
+        if (!editRoleUsers) {
+            for (let i = 0; i < viewUsers.length; i++) {
+                const user = viewUsers[i];
+                const { id: userId, highestViewRoleId } = user;
 
-            let role = viewRoles[viewRolesMap[highestViewRoleId]];
+                let role = viewRoles[viewRolesMap[highestViewRoleId]];
 
-            if (!role) {
-                role = Object.assign({}, allRoles[highestViewRoleId], { members: [] });
-                viewRolesMap[highestViewRoleId] = viewRoles.push(role) - 1;
+                if (!role) {
+                    role = Object.assign({}, allRoles[highestViewRoleId], { members: [] });
+                    viewRolesMap[highestViewRoleId] = viewRoles.push(role) - 1;
+                }
+
+                role.members.push(userId);
             }
-
-            role.members.push(userId);
+        } else {
+            Object.values(allRoles).forEach((role) => {
+                role = Object.assign({}, role);
+                role.members = role.members.filter(mId => findIndex(viewUsers, ['id', mId]) !== -1);
+                viewRoles.push(role);
+            });
         }
 
         for (let i = 0; i < viewRoles.length; i++) {
@@ -334,6 +397,7 @@ class ViewChatWrapper extends React.Component {
 
         const nowUser = allUsers[this.nowUserId];
         const userRolesMap = toObj(nowUser.roles);
+        nowUser.permissions = toObj(flatten(nowUser.roles.map(roleId => allRoles[roleId].permissions)));
 
         // Channels the current user can access
         const viewChannels = this.parseViewChannels(allChannels, userRolesMap, nowUser.owner);
@@ -359,7 +423,7 @@ class ViewChatWrapper extends React.Component {
         const viewUsers = this.parseViewUsers(allUsers, nowChannel.roles, nowChannel.locked);
 
         // Roles seen in the current channel
-        const viewRoles = this.parseViewRoles(allRoles, viewUsers);
+        const viewRoles = this.parseViewRoles(allRoles, viewUsers, nowUser.editRoleUsers);
 
         this.nowChannelId = nowChannel.id;
         this.hasView = true;
@@ -395,10 +459,10 @@ class ViewChatWrapper extends React.Component {
             allChannels, allRoles, allUsers, viewChannels, viewRoles, viewUsers,
         } = this.state;
 
-        const nowUser = allUsers[nowUserId];
-        nowUser.permissions = toObj(flatten(nowUser.roles.map(roleId => allRoles[roleId].permissions)));
-
+        const nowUser = find(this.state.viewUsers, ['id', nowUserId]);
         const nowChannel = find(this.state.viewChannels, ['id', nowChannelId]);
+
+        // const nowChannel = allChannels[nowChannelId];
 
         console.log('Channel view data:', {
             allChannels,

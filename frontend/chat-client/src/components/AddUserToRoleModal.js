@@ -61,9 +61,6 @@ const addUserToRoleMutation = gql`
     mutation($username: String!, $roleId: Int!) {
         addUserToRole(username: $username, roleId: $roleId) {
             ok
-            user {
-                id
-            }
             errors {
                 path
                 message

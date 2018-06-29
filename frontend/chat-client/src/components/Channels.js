@@ -75,7 +75,7 @@ const channel = ({ id, name, newMessages }, currentChannelId) => (
 );
 
 const Channels = ({
-    chatName, username, onAddChannelClick, canCreate, currentChannelId, chatData: { viewChannels },
+    chatName, username, onAddChannelClick, onAddRoleClick, canCreate, currentChannelId, chatData: { viewChannels },
 }) => (
     <ChannelWrapper>
         {console.log('Rendering Channels')}
@@ -94,7 +94,7 @@ const Channels = ({
                                 <Icon name="add circle" />
                             </span>
                         </ButtonListItem>
-                        <ButtonListItem>
+                        <ButtonListItem onClick={onAddRoleClick}>
                             Create Role{' '}
                             <span>
                                 <Icon name="add circle" />

@@ -6,6 +6,7 @@ import Channels from '../components/Channels';
 import Roles from '../components/Roles';
 import AddChannelModal from '../components/AddChannelModal';
 import AddUserToRoleModal from '../components/AddUserToRoleModal';
+import AddRoleModal from '../components/AddRoleModal';
 import { withData } from '../context/dataContexts';
 
 const subscriptions = {
@@ -29,8 +30,12 @@ const subscriptions = {
                 color
                 position
                 view
+                owner
                 members {
                     id
+                }
+                permissions {
+                    name
                 }
             }
         }
@@ -38,6 +43,18 @@ const subscriptions = {
     newRoleUser: gql`
         subscription {
             newRoleUser {
+                role {
+                    id
+                }
+                user {
+                    id
+                }
+            }
+        }
+    `,
+    remRoleUser: gql`
+        subscription {
+            remRoleUser {
                 role {
                     id
                 }
@@ -60,14 +77,29 @@ const subscriptions = {
     `,
 };
 
+const remUserFromRoleMutation = gql`
+    mutation($userId: Int!, $roleId: Int!) {
+        remUserFromRole(userId: $userId, roleId: $roleId) {
+            ok
+            errors {
+                path
+                message
+            }
+        }
+    }
+`;
+
 class SideBars extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
+        this.defaultState = {
             addChannelModal: { open: false },
-            addUserToRoleModal: { open: false, roleId: null, roleName: null },
+            addRoleModal: { open: false },
+            addUserRoleModal: { open: false, roleId: null, roleName: null },
         };
+
+        this.state = Object.assign({}, this.defaultState);
     }
 
     componentDidMount() {
@@ -76,7 +108,9 @@ class SideBars extends React.Component {
 
         this.subEvents = [
             this.makeSubscription('New channel', 'newChannel', pushUpMethods),
+            this.makeSubscription('New role', 'newRole', pushUpMethods),
             this.makeSubscription('New role user', 'newRoleUser', pushUpMethods),
+            this.makeSubscription('Remove role user', 'remRoleUser', pushUpMethods),
             this.makeSubscription('New user', 'newUser', pushUpMethods),
         ];
     }
@@ -111,37 +145,68 @@ class SideBars extends React.Component {
         if (e) e.preventDefault();
 
         this.setState((state) => {
-            // Open
-            if (!state.addChannelModal.open) {
-                return { addChannelModal: { open: true } };
-            }
-            // Close
+            // Do open
+            if (!state.addChannelModal.open) return { addChannelModal: { open: true } };
+
+            // Do close
             resetForm();
-            return { addChannelModal: { open: false } };
+            return { addChannelModal: this.defaultState.addChannelModal };
         });
     };
 
-    toggleAddUserToRoleModal = ({ e, roleId, roleName, resetForm } = {}) => {
+    toggleAddRoleModal = ({ e, resetForm } = {}) => {
         if (e) e.preventDefault();
 
         this.setState((state) => {
-            // Open
-            if (!state.addUserToRoleModal.open) {
-                return { addUserToRoleModal: { open: true, roleId, roleName } };
-            }
-            // Close
+            // Do open
+            if (!state.addRoleModal.open) return { addRoleModal: { open: true } };
+
+            // Do close
             resetForm();
-            return { addUserToRoleModal: { open: false, roleId: null, roleName: null } };
+            return { addRoleModal: this.defaultState.addRoleModal };
         });
+    };
+
+    toggleAddUserRoleModal = ({ e, roleId, roleName, resetForm } = {}) => {
+        if (e) e.preventDefault();
+
+        console.log(this.defaultState.addUserRoleModal);
+
+        this.setState((state) => {
+            // Do open
+            if (!state.addUserRoleModal.open) return { addUserRoleModal: { open: true, roleId, roleName } };
+
+            // Do close
+            resetForm();
+            console.log(this.defaultState.addUserRoleModal);
+            return { addUserRoleModal: this.defaultState.addUserRoleModal };
+        });
+    };
+
+    removeUserRole = ({ userId, roleId } = {}) => {
+        this.props.client
+            .mutate({
+                mutation: remUserFromRoleMutation,
+                variables: { userId, roleId },
+            })
+            .catch((err) => {
+                console.log('RemoveUserRole error:', err);
+            });
+    };
+
+    onRolesCheckboxClick = (checked) => {
+        console.log('toggled', checked);
+        this.setState(state => ({ editRoleUsers: !state.editRoleUsers }));
     };
 
     render() {
         const {
             username,
             channelId,
-            chatData: { nowUser },
+            chatData: { nowUser, pushUp },
         } = this.props;
-        const { addChannelModal, addUserToRoleModal } = this.state;
+
+        const { addChannelModal, addRoleModal, addUserRoleModal } = this.state;
 
         console.log('Rendering SideBars');
 
@@ -150,21 +215,29 @@ class SideBars extends React.Component {
 
         return (
             <React.Fragment>
-                <Roles onRoleClick={this.toggleAddUserToRoleModal} canAdd={canAdd} />
+                <Roles
+                    canAdd={canAdd}
+                    editRoleUsers={nowUser.editRoleUsers}
+                    onRoleClick={this.toggleAddUserRoleModal}
+                    onEditClick={pushUp.onRolesCheckboxClick}
+                    onUserRoleClick={this.removeUserRole}
+                />
                 <Channels
                     chatName="Vashta"
                     username={username}
                     currentChannelId={channelId}
                     onAddChannelClick={this.toggleAddChannelModal}
+                    onAddRoleClick={this.toggleAddRoleModal}
                     canCreate={canCreate}
                 />
                 <AddChannelModal key="add-channel-modal" onClose={this.toggleAddChannelModal} open={addChannelModal.open} />
+                <AddRoleModal key="add-role-modal" onClose={this.toggleAddRoleModal} open={addRoleModal.open} />
                 <AddUserToRoleModal
                     key="add-user-to-role-modal"
-                    onClose={this.toggleAddUserToRoleModal}
-                    open={addUserToRoleModal.open}
-                    roleId={addUserToRoleModal.roleId}
-                    roleName={addUserToRoleModal.roleName}
+                    onClose={this.toggleAddUserRoleModal}
+                    open={addUserRoleModal.open}
+                    roleId={addUserRoleModal.roleId}
+                    roleName={addUserRoleModal.roleName}
                 />
             </React.Fragment>
         );

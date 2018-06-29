@@ -48,11 +48,11 @@ export default {
                     { /* id: 2, */ name: 'Suspended', view: false }, // for permissions
                     { /* id: 3, */ name: 'Muted', view: false }, // for permissions
                     { /* id: 4, */ name: 'Buyer', color: '#EF5350', position: 40 }, // for permissions
-                    { /* id: 5, */ name: 'Support', color: '#00C853', position: 60, view: false },
+                    { /* id: 5, */ name: 'Support', color: '#00C853', position: 60 },
                     { /* id: 6, */ name: 'Staff', position: 100, view: false }, // for permissions
                     { /* id: 7, */ name: 'Moderator', color: '#FDD835', position: 140 },
                     { /* id: 8, */ name: 'Head Moderator', color: '#F57F17', position: 150 },
-                    { /* id: 9, */ name: 'Administrator', position: 200 }, // for permissions
+                    { /* id: 9, */ name: 'Administrator', position: 200, view: false }, // for permissions
                     { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240, owner: true },
                 ];
 
@@ -115,10 +115,11 @@ export default {
 
                 const dataRoleUser = [
                     // Which roles belong to which users
-                    { roleId: 4, userId: 1 }, // Buyer - Vaeb
                     { roleId: 4, userId: 3 }, // Buyer - BuyerUser1
-                    { roleId: 4, userId: 4 }, // Buyer - BuyerUser1
-                    { roleId: 4, userId: 5 }, // Buyer - BuyerUser1
+                    { roleId: 4, userId: 4 }, // Buyer - SupportUser1
+                    { roleId: 4, userId: 5 }, // Buyer - SupportUser2
+                    { roleId: 4, userId: 6 }, // Buyer - ModUser1
+                    { roleId: 4, userId: 7 }, // Buyer - ModUser2
                     { roleId: 5, userId: 4 }, // Support - SupportUser1
                     { roleId: 5, userId: 5 }, // Support - SupportUser2
                     { roleId: 6, userId: 1 }, // Staff - Vaeb
@@ -127,6 +128,7 @@ export default {
                     { roleId: 6, userId: 8 }, // Staff - DevUser1
                     { roleId: 7, userId: 6 }, // Moderator - ModUser1
                     { roleId: 7, userId: 7 }, // Moderator - ModUser2
+                    { roleId: 8, userId: 8 }, // Head Moderator - DevUser1
                     { roleId: 9, userId: 1 }, // Administrator - Vaeb
                     { roleId: 9, userId: 8 }, // Administrator - DevUser1
                     { roleId: 10, userId: 1 }, // Developer - Vaeb

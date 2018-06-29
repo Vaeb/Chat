@@ -101,14 +101,13 @@ const formikData = {
     mapPropsToValues: () => ({ name: '', locked: false, roles: [] }),
     handleSubmit: async (values, { props: { mutate, onClose }, setSubmitting, resetForm /* setErrors, setValues, setStatus, etc. */ }) => {
         console.log('Submitting...');
-        console.log({ name: values.name, locked: values.locked, roles: values.roles });
 
         let response;
         try {
             response = await mutate({
                 variables: { name: values.name, locked: values.locked, roles: values.roles },
             });
-        } catch (err) {} // I broke eslint :FeelsBadMan:
+        } catch (err) {}
 
         console.log(response);
 

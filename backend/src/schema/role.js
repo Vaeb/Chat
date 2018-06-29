@@ -23,7 +23,17 @@ export default `
         errors: [Error!]
     }
 
+    type RemUserFromRoleResponse {
+        ok: Boolean!
+        errors: [Error!]
+    }
+
     type NewRoleUser {
+        role: Role!
+        user: User!
+    }
+
+    type RemRoleUser {
         role: Role!
         user: User!
     }
@@ -33,13 +43,16 @@ export default `
     }
 
     type Subscription {
+        newRole: Role!
         newRoleUser: NewRoleUser!
+        remRoleUser: RemRoleUser!
     }
 
     type Mutation {
         createRole(name: String!, color: String="#B9BBBE", position: String, view: Boolean=true, owner: Boolean=false): CreateRoleResponse!
         addUsersToRoles(userIds: [String!]!, roleIds: [String!]!): CreateRoleResponse!
         addUserToRole(username: String!, roleId: Int!): AddUserToRoleResponse!
+        remUserFromRole(userId: Int!, roleId: Int!): RemUserFromRoleResponse!
     }
 
 `;
