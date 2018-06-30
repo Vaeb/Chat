@@ -69,6 +69,10 @@ const UseStyle = () => (
             .ui.comments .comment:last-child {
                 margin-bottom: 11px;
             }
+
+            .ui.comments .comment div.avatar img, .ui.comments .comment img.avatar {
+                border-radius: 50%;
+            }
         `}
     </style>
 );
@@ -263,6 +267,7 @@ class MessageContainer extends React.Component {
                         .reverse()
                         .map(m => (
                             <Comment key={`${m.id}-message`}>
+                                <Comment.Avatar src="/avatar2.png" />
                                 <Comment.Content>
                                     <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#B9BBBE' }}>
                                         {m.user.username}
