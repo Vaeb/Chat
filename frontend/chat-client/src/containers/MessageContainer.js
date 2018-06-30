@@ -267,7 +267,7 @@ class MessageContainer extends React.Component {
                         .reverse()
                         .map(m => (
                             <Comment key={`${m.id}-message`}>
-                                <Comment.Avatar src="/avatar2.png" />
+                                <Comment.Avatar src="/avatar4.jpg" />
                                 <Comment.Content>
                                     <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#B9BBBE' }}>
                                         {m.user.username}

@@ -45,19 +45,33 @@ const RoleListItemName = styled.li`
     margin-bottom: 5px;
 `;
 
-const RoleListItemUser = styled.li`
+const RoleListItemImg = styled.img`
+    border-radius: 50%;
+    border-style: none;
+    box-sizing: inherit;
+    width: 30px
+    height: 30px
+    margin-right: 10px;
+`;
+
+const RoleListItemUserWrapper = styled.li`
     ${props => `
-        height: 28px;
+        height: 40px;
         color: ${props.color};
         display: flex;
-        padding-left: 21px;
+        padding-left: 7px;
         align-items: center;
         font-size: 14px;
         &:hover {
             background-color: #36393f;
-            ${props.highestViewRoleId === 1 && 'color: #fff;'};
+            ${props.highestViewRoleId === 1 ? 'color: #fff;' : ''};
         }
     `};
+`;
+
+const RoleListItemUser = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const CustomStyle = () => (
@@ -78,6 +92,14 @@ const CustomStyle = () => (
             .ui.toggle.checkbox input:focus:checked~.box:before, div.ui.toggle.checkbox input:focus:checked~label:before {
                 background-color: #2185d0 !important;
             }
+
+            li.roleListItemUserClassWrapper {
+                cursor: pointer;
+            }
+
+            div.roleListItemUserClass {
+                cursor: pointer;
+            }
         `}
     </style>
 );
@@ -94,18 +116,26 @@ const styles = {
 };
 
 const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRoleUsers, onUserRoleClick) => (
-    <RoleListItemUser style={{ cursor: 'pointer' }} highestViewRoleId={highestViewRoleId} color={color} key={`role-user-${id}`}>
-        {username}
-        {editRoleUsers && roleId !== 1 ? (
-            <span>
-                <Icon
-                    onClick={() => onUserRoleClick({ roleId, userId: id })}
-                    style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px', color: 'hsla(0,0%,100%,0.2)' }}
-                    name="minus circle"
-                />
-            </span>
-        ) : null}
-    </RoleListItemUser>
+    <RoleListItemUserWrapper
+        className="roleListItemUserClassWrapper"
+        highestViewRoleId={highestViewRoleId}
+        color={color}
+        key={`role-user-${id}`}
+    >
+        <RoleListItemUser className="roleListItemUserClass">
+            <RoleListItemImg src="/avatar4.jpg" />
+            {username}
+            {editRoleUsers && roleId !== 1 ? (
+                <span>
+                    <Icon
+                        onClick={() => onUserRoleClick({ roleId, userId: id })}
+                        style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px', color: 'hsla(0,0%,100%,0.2)' }}
+                        name="minus circle"
+                    />
+                </span>
+            ) : null}
+        </RoleListItemUser>
+    </RoleListItemUserWrapper>
 );
 
 const role = ({
