@@ -52,7 +52,7 @@ export default {
                     { /* id: 6, */ name: 'Staff', position: 100, view: false }, // for permissions
                     { /* id: 7, */ name: 'Moderator', color: '#FDD835', position: 140 },
                     { /* id: 8, */ name: 'Head Moderator', color: '#F57F17', position: 150 },
-                    { /* id: 9, */ name: 'Administrator', position: 200, view: false }, // for permissions
+                    { /* id: 9, */ name: 'Administrator', position: 200, view: false, owner: true }, // for permissions
                     { /* id: 10, */ name: 'Developer', color: '#42A5F5', position: 240, owner: true },
                 ];
 
