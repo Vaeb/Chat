@@ -6,6 +6,13 @@ export default `
         user: User!
         channel: Channel!
         created_at: String!
+        chatId: String
+    }
+
+    type CreateMessageResponse {
+        ok: Boolean!
+        message: Message
+        errors: [Error!]
     }
 
     type Query {
@@ -18,7 +25,7 @@ export default `
     }
 
     type Mutation {
-        createMessage(channelId: Int!, text: String!): Boolean!
+        createMessage(channelId: Int!, text: String!, chatId: String): CreateMessageResponse!
     }
 
 `;

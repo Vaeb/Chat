@@ -15,14 +15,16 @@ class ViewChat extends React.Component {
     render() {
         console.log('Rendering ViewChat');
 
-        const { channelId, username, channelName } = this.props;
+        const {
+            channelId, userId, username, channelName, chatId,
+        } = this.props;
 
         return (
             <AppLayout>
                 <SideBars channelId={channelId} username={username} />
                 <Header channelName={channelName} />
-                <MessageContainer channelId={channelId} />
-                <SendMessage channelId={channelId} channelName={channelName} />
+                <MessageContainer channelId={channelId} userId={userId} chatId={chatId} />
+                <SendMessage channelId={channelId} userId={userId} username={username} channelName={channelName} chatId={chatId} />
             </AppLayout>
         );
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { withApollo } from 'react-apollo';
+import findIndex from 'lodash/findIndex';
 // import styled from 'styled-components';
 import { Comment } from 'semantic-ui-react';
 import DateFormat from 'dateformat';
@@ -85,6 +86,7 @@ const newChannelMessageSubscription = gql`
                 id
             }
             created_at
+            chatId
         }
     }
 `;
@@ -147,7 +149,7 @@ class MessageContainer extends React.Component {
                     this.allMessages[this.props.channelId] = [];
                 }
 
-                this.subscriptionObserver = this.subscribe(this.props.channelId, this.newMessage);
+                this.subscriptionObserver = this.subscribe(this.props.chatId, this.newMessage);
 
                 this.setState({ viewMessages: [...this.allMessages[this.props.channelId]] });
             });
@@ -158,6 +160,27 @@ class MessageContainer extends React.Component {
         if (nextProps.channelId !== this.props.channelId) {
             this.setState({ viewMessages: this.allMessages[nextProps.channelId] ? [...this.allMessages[nextProps.channelId]] : [] });
         }
+    }
+
+    componentWillUpdate({ chatData: { selfMessage } }) {
+        const selfMessages = selfMessage.getSelfMessages();
+        selfMessages.forEach(({ message, tmpId }) => {
+            const newChannelId = message.channel.id;
+
+            const existingIndex = findIndex(this.allMessages[newChannelId] || [], ['id', tmpId]);
+            const isTemp = message.id === tmpId;
+
+            if (existingIndex === -1) {
+                if (isTemp) message.temp = true;
+                this.newMessage(message);
+            } else if (!isTemp) {
+                this.allMessages[newChannelId][existingIndex] = message;
+
+                if (newChannelId === this.props.channelId) {
+                    this.setState({ viewMessages: [...this.allMessages[newChannelId]] });
+                }
+            }
+        });
     }
 
     componentDidUpdate() {
@@ -178,16 +201,18 @@ class MessageContainer extends React.Component {
             this.allMessages[newChannelId] = [];
         }
 
-        this.allMessages[newChannelId].unshift(message);
+        const channelMessages = this.allMessages[newChannelId];
+
+        channelMessages.unshift(message);
 
         if (newChannelId === this.props.channelId) {
-            this.setState({ viewMessages: [...this.allMessages[newChannelId]] });
+            this.setState({ viewMessages: [...channelMessages] });
         }
 
         this.props.chatData.pushUp.newMessage(message);
     };
 
-    subscribe = (channelId, newMessage) =>
+    subscribe = (chatId, newMessage) =>
         this.props.client
             .subscribe({
                 query: newChannelMessageSubscription,
@@ -201,7 +226,7 @@ class MessageContainer extends React.Component {
 
                     const message = newData.data.newChannelMessage;
 
-                    newMessage(message);
+                    if (!message.chatId || message.chatId !== chatId) newMessage(message);
                 },
                 error(err) {
                     console.error('Message subscription error:', err);
@@ -245,7 +270,9 @@ class MessageContainer extends React.Component {
                                     <Comment.Metadata>
                                         <div className="CreatedStamp">{formatDate(m.created_at)}</div>
                                     </Comment.Metadata>
-                                    <Comment.Text>{m.text}</Comment.Text>
+                                    <Comment.Text style={{ color: !m.temp ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.4)' }}>
+                                        {m.text}
+                                    </Comment.Text>
                                 </Comment.Content>
                             </Comment>
                         ))}
@@ -255,4 +282,4 @@ class MessageContainer extends React.Component {
     }
 }
 
-export default withApollo(withData(MessageContainer, ['allUsers', 'pushUp']));
+export default withApollo(withData(MessageContainer, ['allUsers', 'pushUp', 'selfMessage']));

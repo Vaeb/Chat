@@ -5,6 +5,8 @@ import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
 
+import { withData } from '../context/dataContexts';
+
 const SendMessageWrapper = styled.div`
     grid-column: 2;
     grid-row: 3;
@@ -38,7 +40,7 @@ const UseStyle = () => (
 const ENTER_KEY = 13;
 
 const SendMessage = ({
-    channelName, values, handleChange, handleBlur, handleSubmit, isSubmitting,
+    channelName, values, handleChange, handleBlur, handleSubmit, isSubmitting, chatData: { selfMessage },
 }) => (
     <SendMessageWrapper>
         <UseStyle />
@@ -61,14 +63,46 @@ const SendMessage = ({
 );
 
 const createMessageMutation = gql`
-    mutation($channelId: Int!, $text: String!) {
-        createMessage(channelId: $channelId, text: $text)
+    mutation($channelId: Int!, $text: String!, $chatId: String) {
+        createMessage(channelId: $channelId, text: $text, chatId: $chatId) {
+            ok
+            errors {
+                path
+                message
+            }
+            message {
+                id
+                text
+                user {
+                    id
+                    username
+                }
+                channel {
+                    id
+                }
+                created_at
+            }
+        }
     }
 `;
 
 const formikData = {
     mapPropsToValues: () => ({ message: '' }),
-    handleSubmit: async (values, { props: { mutate, channelId }, setSubmitting, resetForm }) => {
+    handleSubmit: async (
+        values,
+        {
+            props: {
+                mutate,
+                channelId,
+                userId,
+                username,
+                chatId,
+                chatData: { selfMessage },
+            },
+            setSubmitting,
+            resetForm,
+        },
+    ) => {
         if (values.message.trim() === '') {
             setSubmitting(false);
             return;
@@ -76,32 +110,46 @@ const formikData = {
 
         resetForm();
 
-        console.log('Submitting...');
+        console.log('Submitting...', chatId, typeof chatId);
         let response;
+
+        const nowTime = new Date();
+        const nowStamp = +nowTime;
 
         try {
             response = await mutate({
-                variables: { channelId, text: values.message },
-                /* optimisticResponse: {
+                variables: { channelId, text: values.message, chatId },
+                optimisticResponse: {
                     createMessage: {
                         __typename: 'Mutation',
                         ok: true,
+                        errors: [],
                         message: {
                             __typename: 'Message',
-                            id: 999999, // Go to bottom
+                            id: nowStamp,
                             text: values.message,
+                            user: { __typename: 'User', id: userId, username },
+                            channel: { __typename: 'Channel', id: channelId },
+                            created_at: nowTime,
+                            chatId,
                         },
                     },
                 },
                 update: (proxy, { data: { createMessage } }) => {
-                    console.log(createMessage);
-                }, */
+                    const { ok, message } = createMessage;
+                    if (!ok) {
+                        console.log('Mutation errored');
+                        return;
+                    }
+
+                    selfMessage.newSelfMessage({ message, tmpId: nowStamp });
+                },
             });
         } catch (err) {
             console.log('SendMessage Error:', err);
         }
 
-        console.log('Sent:', response.data.createMessage);
+        if (response) console.log('Sent:', response.data.createMessage);
 
         /* const { ok, errors } = response.data.createMessage;
 
@@ -109,7 +157,10 @@ const formikData = {
     },
 };
 
-export default compose(
-    graphql(createMessageMutation),
-    withFormik(formikData),
-)(SendMessage);
+export default withData(
+    compose(
+        graphql(createMessageMutation),
+        withFormik(formikData),
+    )(SendMessage),
+    ['selfMessage'],
+);

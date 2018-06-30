@@ -15,7 +15,10 @@ React-based chat project for Vashta.
         -   `sudo apt-get update`
         -   `sudo apt-get install postgresql postgresql-contrib`
         -   Login as postgres user: `sudo -i -u postgres`
+        -   Connect to postgres: `psql -U postgres`
         -   Set the password to 1248: `\password`
+        -   Exit database: `\q`
+        -   Switch back to previous user: `exit`
 1.  Add "psql" to Windows PATH
     -   Windows:
         -   Add C:\Program Files\PostgreSQL\9.6\bin to PATH

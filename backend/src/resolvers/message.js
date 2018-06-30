@@ -1,6 +1,6 @@
 // import { withFilter } from 'graphql-subscriptions';
 // import flatten from 'lodash/flatten';
-// import formatErrors from '../formatErrors';
+import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
 import { pubsub, NEW_CHANNEL_MESSAGE } from '../pubsub';
 
@@ -41,7 +41,7 @@ export default {
         },
     },
     Mutation: {
-        createMessage: requiresAuth.createResolver(async (parent, args, { models, me }) => {
+        createMessage: requiresAuth.createResolver(async (parent, { chatId, ...args }, { models, me }) => {
             try {
                 const currentUserPromise = models.User.findOne({
                     where: {
@@ -71,17 +71,25 @@ export default {
                             ...message.dataValues,
                             user: currentUser,
                             channel: currentChannel,
+                            chatId,
                         },
                     });
                 };
 
                 asyncFunc();
 
-                return true;
+                return {
+                    ok: true,
+                    message,
+                    errors: [],
+                };
             } catch (err) {
                 console.log(err);
 
-                return false;
+                return {
+                    ok: false,
+                    errors: formatErrors(err, models),
+                };
             }
         }),
     },
@@ -92,9 +100,7 @@ export default {
             return models.User.findOne({ where: { id: userId }, raw: true });
         },
         channel: ({ channel, channelId }, args, { models }) => {
-            if (channel) {
-                return channel;
-            }
+            if (channel) return channel;
 
             return models.Channel.findOne({ where: { id: channelId }, raw: true });
         },

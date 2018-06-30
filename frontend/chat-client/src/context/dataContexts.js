@@ -10,6 +10,7 @@ export const viewUsersContext = React.createContext([{ default: 'viewUsers' }]);
 export const nowUserContext = React.createContext({ default: 'nowUser' });
 export const nowChannelContext = React.createContext({ default: 'nowChannel' });
 export const pushUpContext = React.createContext({ default: 'pushUp' });
+export const selfMessageContext = React.createContext({ default: 'selfMessage' });
 
 const contextMap = {
     allChannels: allChannelsContext,
@@ -21,6 +22,7 @@ const contextMap = {
     nowUser: nowUserContext,
     nowChannel: nowChannelContext,
     pushUp: pushUpContext,
+    selfMessage: selfMessageContext,
 };
 
 export const withData = (Component, contextNames) => {

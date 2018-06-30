@@ -20,6 +20,7 @@ import {
     nowUserContext,
     nowChannelContext,
     pushUpContext,
+    selfMessageContext,
 } from '../context/dataContexts';
 
 const sortRoles = roles => roles.sort((a, b) => (a.id === 1 ? 1 : b.position - a.position));
@@ -36,6 +37,8 @@ class ViewChatWrapper extends React.Component {
     constructor(props) {
         super(props);
 
+        this.chatId = String(Math.random());
+
         this.state = {
             allChannels: {},
             allRoles: {},
@@ -43,6 +46,22 @@ class ViewChatWrapper extends React.Component {
             viewChannels: [],
             viewRoles: [],
             viewUsers: [],
+            selfMessage: {
+                newSelfMessage: (message) => {
+                    this.setState(prevState => ({
+                        selfMessage: { ...prevState.selfMessage, selfMessageData: [...prevState.selfMessage.selfMessageData, message] },
+                    }));
+                },
+                getSelfMessages: () => {
+                    const { selfMessageData } = this.state.selfMessage;
+                    if (selfMessageData.length === 0) return selfMessageData;
+
+                    this.setState(prevState => ({ selfMessage: { ...prevState.selfMessage, selfMessageData: [] } }));
+
+                    return selfMessageData;
+                },
+                selfMessageData: [],
+            },
         };
 
         const {
@@ -454,9 +473,9 @@ class ViewChatWrapper extends React.Component {
             return null;
         }
 
-        const { nowUserId, nowChannelId, pushUpMethods } = this;
+        const { nowUserId, nowChannelId, pushUpMethods, chatId } = this;
         const {
-            allChannels, allRoles, allUsers, viewChannels, viewRoles, viewUsers,
+            allChannels, allRoles, allUsers, viewChannels, viewRoles, viewUsers, selfMessage,
         } = this.state;
 
         const nowUser = find(this.state.viewUsers, ['id', nowUserId]);
@@ -485,11 +504,15 @@ class ViewChatWrapper extends React.Component {
                                     <viewChannelsContext.Provider value={viewChannels}>
                                         <viewRolesContext.Provider value={viewRoles}>
                                             <viewUsersContext.Provider value={viewUsers}>
-                                                <ViewChat
-                                                    channelId={nowChannel.id}
-                                                    username={nowUser.username}
-                                                    channelName={nowChannel.name}
-                                                />
+                                                <selfMessageContext.Provider value={selfMessage}>
+                                                    <ViewChat
+                                                        channelId={nowChannel.id}
+                                                        userId={nowUser.id}
+                                                        username={nowUser.username}
+                                                        channelName={nowChannel.name}
+                                                        chatId={chatId}
+                                                    />
+                                                </selfMessageContext.Provider>
                                             </viewUsersContext.Provider>
                                         </viewRolesContext.Provider>
                                     </viewChannelsContext.Provider>
