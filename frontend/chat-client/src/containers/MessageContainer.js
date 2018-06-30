@@ -2,7 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { withApollo } from 'react-apollo';
 import findIndex from 'lodash/findIndex';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import { Comment } from 'semantic-ui-react';
 import DateFormat from 'dateformat';
 
@@ -44,6 +44,23 @@ const messageWrapperStyle = {
     overflowY: 'auto',
 };
 
+const AvatarImage = styled.div`
+    border-radius: 50%;
+    border-style: none;
+    box-sizing: inherit;
+    width: 35px
+    height: 35px
+    margin-right: 14px;
+    background-clip: padding-box;
+    background-position-x: 50%;
+    background-position-y: 50%;
+    background-size: 35px 35px;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+`;
+
 const UseStyle = () => (
     <style>
         {`
@@ -51,6 +68,7 @@ const UseStyle = () => (
                 color: hsla(0, 0%, 100%, .7);
                 font-size: 0.9375rem;
                 line-height: 1.6;
+                margin: .25em 0 0
             }
 
             .ui.comments .comment .metadata .CreatedStamp {
@@ -64,6 +82,7 @@ const UseStyle = () => (
 
             .ui.comments div.comment {
                 margin-top: 13px;
+                display: flex;
             }
 
             .ui.comments .comment:last-child {
@@ -267,7 +286,12 @@ class MessageContainer extends React.Component {
                         .reverse()
                         .map(m => (
                             <Comment key={`${m.id}-message`}>
-                                <Comment.Avatar src="/avatar4.jpg" />
+                                <AvatarImage
+                                    style={{
+                                        backgroundImage:
+                                            'url("https://cdn.discordapp.com/avatars/212518810668892161/27107bf7579fa42170a9f2c2b6e1d18f.png?size=128")',
+                                    }}
+                                />
                                 <Comment.Content>
                                     <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#B9BBBE' }}>
                                         {m.user.username}
