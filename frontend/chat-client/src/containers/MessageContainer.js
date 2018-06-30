@@ -59,6 +59,7 @@ const AvatarImage = styled.div`
     border-image-slice: 100%;
     border-image-source: none;
     border-image-width: 1;
+    cursor: pointer;
 `;
 
 const UseStyle = () => (
@@ -289,6 +290,7 @@ class MessageContainer extends React.Component {
                                 <AvatarImage
                                     style={{
                                         backgroundImage:
+                                            // eslint-disable-next-line max-len
                                             'url("https://cdn.discordapp.com/avatars/212518810668892161/27107bf7579fa42170a9f2c2b6e1d18f.png?size=128")',
                                     }}
                                 />

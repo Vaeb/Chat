@@ -45,13 +45,21 @@ const RoleListItemName = styled.li`
     margin-bottom: 5px;
 `;
 
-const RoleListItemImg = styled.img`
+const RoleListItemImg = styled.div`
     border-radius: 50%;
     border-style: none;
     box-sizing: inherit;
     width: 30px
     height: 30px
     margin-right: 10px;
+    background-clip: padding-box;
+    background-position-x: 50%;
+    background-position-y: 50%;
+    background-size: 30px 30px;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
 `;
 
 const RoleListItemUserWrapper = styled.li`
@@ -72,6 +80,7 @@ const RoleListItemUserWrapper = styled.li`
 const RoleListItemUser = styled.div`
     display: flex;
     align-items: center;
+    text-overflow: ellipsis;
 `;
 
 const CustomStyle = () => (
@@ -123,17 +132,24 @@ const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRo
         key={`role-user-${id}`}
     >
         <RoleListItemUser className="roleListItemUserClass">
-            <RoleListItemImg src="/avatar4.jpg" />
-            {username}
-            {editRoleUsers && roleId !== 1 ? (
-                <span>
-                    <Icon
-                        onClick={() => onUserRoleClick({ roleId, userId: id })}
-                        style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px', color: 'hsla(0,0%,100%,0.2)' }}
-                        name="minus circle"
-                    />
-                </span>
-            ) : null}
+            <RoleListItemImg
+                style={{
+                    backgroundImage:
+                        'url("https://cdn.discordapp.com/avatars/212518810668892161/27107bf7579fa42170a9f2c2b6e1d18f.png?size=128")',
+                }}
+            />
+            <span>
+                {username}
+                {editRoleUsers && roleId !== 1 ? (
+                    <span>
+                        <Icon
+                            onClick={() => onUserRoleClick({ roleId, userId: id })}
+                            style={{ marginLeft: '4px', cursor: 'pointer', fontSize: '14px', color: 'hsla(0,0%,100%,0.2)' }}
+                            name="minus circle"
+                        />
+                    </span>
+                ) : null}
+            </span>
         </RoleListItemUser>
     </RoleListItemUserWrapper>
 );
