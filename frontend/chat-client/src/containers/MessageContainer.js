@@ -67,11 +67,16 @@ const AvatarImage = styled.div`
 const UseStyle = () => (
     <style>
         {`
+            div.ui.comments {
+                min-width: 100em;
+            }
+
             .ui.comments .comment div.text {
                 color: hsla(0, 0%, 100%, .7);
                 font-size: 0.9375rem;
                 line-height: 1.6;
-                margin: .25em 0 0
+                margin: .25em 0 0;
+                max-width: 100em;
             }
 
             .ui.comments .comment .metadata .CreatedStamp {
