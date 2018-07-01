@@ -75,8 +75,6 @@ export default {
                         },
                     );
 
-                console.log(noSend);
-
                 if (noSend.length > 0 && !noSend.some(crData => crData.send)) {
                     return { ok: false, errors: [{ path: 'auth', message: 'You do not have a required role for sending messages here' }] };
                 }
