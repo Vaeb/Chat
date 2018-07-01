@@ -60,6 +60,8 @@ const AvatarImage = styled.div`
     border-image-source: none;
     border-image-width: 1;
     cursor: pointer;
+    min-width: 35px;
+    min-height: 35px;
 `;
 
 const UseStyle = () => (
