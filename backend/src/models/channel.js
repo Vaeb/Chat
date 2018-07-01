@@ -18,6 +18,10 @@ export default (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
         },
+        default_send: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true,
+        },
     });
 
     Channel.associate = (models) => {

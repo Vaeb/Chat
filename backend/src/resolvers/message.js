@@ -43,6 +43,44 @@ export default {
     Mutation: {
         createMessage: requiresAuth.createResolver(async (parent, { chatId, ...args }, { models, me }) => {
             try {
+                const { channelId } = args;
+
+                const isOwner =
+                    (await models.Role.sequelize.query(
+                        `select distinct owner from users as u
+                        join roleusers as ru
+                        on ru.user_id = u.id and u.id = ?
+                        join roles as r
+                        on r.id = ru.role_id and r.owner = true`,
+                        {
+                            replacements: [me.id],
+                            model: models.Role,
+                            raw: true,
+                        },
+                    )).length > 0;
+
+                const noSend = isOwner
+                    ? []
+                    : await models.Role.sequelize.query(
+                        `select distinct send from channels as c
+                        left outer join rolechannels as rc
+                        on rc.channel_id = c.id
+                        left outer join roleusers as ru
+                        on ru.role_id = rc.role_id and ru.user_id = :userId
+                        where c.id = :channelId and c.default_send = false`,
+                        {
+                            replacements: { userId: me.id, channelId },
+                            model: models.Role,
+                            raw: true,
+                        },
+                    );
+
+                console.log(noSend);
+
+                if (noSend.length > 0 && !noSend.some(crData => crData.send)) {
+                    return { ok: false, errors: [{ path: 'auth', message: 'You do not have a required role for sending messages here' }] };
+                }
+
                 const currentUserPromise = models.User.findOne({
                     where: {
                         id: me.id,
@@ -52,7 +90,7 @@ export default {
 
                 const currentChannelPromise = models.Channel.findOne({
                     where: {
-                        id: args.channelId,
+                        id: channelId,
                     },
                     raw: true,
                 });

@@ -111,5 +111,19 @@ export default {
                 keyModel: models.Channel,
                 id: channelId,
             }),
+        channelRoles: async ({ id: channelId, roles }, args, { models }) => {
+            if (roles) return roles;
+
+            roles = (await models.Role.sequelize.query(
+                'select channel_id, role_id, send from roles as u join rolechannels as m on m.role_id = u.id where m.channel_id = ?',
+                {
+                    replacements: [channelId],
+                    model: models.Role,
+                    raw: true,
+                },
+            )).map(r => ({ channelId: r.channel_id, roleId: r.role_id, send: r.send }));
+
+            return roles;
+        },
     },
 };

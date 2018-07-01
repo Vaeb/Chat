@@ -4,8 +4,10 @@ export default `
         id: Int!
         name: String!
         locked: Boolean!
+        default_send: Boolean!
         messages: [Message!]!
         roles: [Role!]!
+        channelRoles: [ChannelRole!]!
     }
 
     type CreateChannelResponse {

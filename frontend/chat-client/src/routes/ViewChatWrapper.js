@@ -108,6 +108,7 @@ class ViewChatWrapper extends React.Component {
         return nowChannel;
     };
 
+    // Change data properties from arrays of maps to just arrays
     fixDataProps = (oldData, dataProps = []) => {
         const newData = Object.assign({}, oldData);
 
@@ -119,18 +120,6 @@ class ViewChatWrapper extends React.Component {
         }
 
         return newData;
-    };
-
-    mapArrToObj = (allData, dataProps) => {
-        const { fixDataProps } = this;
-
-        // Change from array of objects to an array
-        for (let i = 0; i < allData.length; i++) {
-            allData[i] = fixDataProps(allData[i], dataProps);
-        }
-
-        // Change from Array to Object
-        return keyBy(allData, 'id');
     };
 
     addUserRoleData = (user, userRoles, allRoles) => {
@@ -169,14 +158,27 @@ class ViewChatWrapper extends React.Component {
         const { id: nowUserId, allChannels: allChannelsOrig, allRoles: allRolesOrig, allUsers: allUsersOrig } = chatData;
 
         // /////////////////////////////////////////////// PARSE GRAPHQL DATA //////////////////////////////////////////////////////////////////
+        console.log('got allchannels data', allChannelsOrig);
+        const { fixDataProps } = this;
 
         // GraphQL data is read-only
-        const allRoles = this.mapArrToObj(allRolesOrig.slice().map(r => ({ ...r, position: r.position || 0 })), [
+        const allRoles = keyBy(allRolesOrig.slice().map(r => fixDataProps({ ...r, position: r.position || 0 }, [
             { propName: 'members', valueKey: 'id' },
             { propName: 'permissions', valueKey: 'name' },
-        ]);
-        const allChannels = this.mapArrToObj(allChannelsOrig.slice(), [{ propName: 'roles', valueKey: 'id' }]);
-        const allUsers = this.mapArrToObj(allUsersOrig.slice());
+        ])), 'id');
+
+        const allChannels = keyBy(allChannelsOrig.slice().map((c) => {
+            const { channelRoles, default_send, ...props } = c;
+            const channel = {
+                roles: channelRoles.map(r => r.roleId),
+                sendRoles: channelRoles.filter(r => r.send).map(r => r.roleId),
+                defaultSend: default_send,
+                ...props,
+            };
+            return channel;
+        }), 'id');
+
+        const allUsers = keyBy(allUsersOrig.slice().map(u => fixDataProps(u)), 'id');
 
         this.linkRoles(allUsers, allRoles);
 
@@ -425,16 +427,16 @@ class ViewChatWrapper extends React.Component {
         // Current channel
         const nowChannel = this.getNowChannel(channelIdPassed, viewChannels);
 
-        nowChannel.newMessages = false;
-        allChannels[nowChannel.id].newMessages = false;
-
-        if (nowChannel == null) {
+        this.noChannel = nowChannel == null;
+        if (this.noChannel) {
             this.hasView = true;
-            this.noChannel = true;
             return;
         }
 
-        this.noChannel = false;
+        nowChannel.canSend = nowChannel.defaultSend || nowUser.owner || nowChannel.sendRoles.some(r => userRolesMap[r]);
+
+        nowChannel.newMessages = false;
+        allChannels[nowChannel.id].newMessages = false;
 
         console.log(`=== ${nowChannel.name} (${nowChannel.id}) ===`);
         console.log('Rendering ViewChatWrapper');

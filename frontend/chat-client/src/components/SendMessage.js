@@ -40,27 +40,42 @@ const UseStyle = () => (
 const ENTER_KEY = 13;
 
 const SendMessage = ({
-    channelName, values, handleChange, handleBlur, handleSubmit, isSubmitting, chatData: { selfMessage },
-}) => (
-    <SendMessageWrapper>
-        <UseStyle />
-        <Input
-            name="message"
-            value={values.message}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onKeyDown={(e) => {
-                if (e.keyCode === ENTER_KEY && !isSubmitting) {
-                    handleSubmit(e);
-                }
-            }}
-            className="SendMessageInput"
-            inverted
-            fluid
-            placeholder={`Message #${channelName}`}
-        />
-    </SendMessageWrapper>
-);
+    channelName, values, handleChange, handleBlur, handleSubmit, isSubmitting, chatData: { nowChannel },
+}) => {
+    const { canSend } = nowChannel;
+
+    return (
+        <SendMessageWrapper>
+            <UseStyle />
+            {canSend ? (
+                <Input
+                    name="message"
+                    value={values.message}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    onKeyDown={(e) => {
+                        if (e.keyCode === ENTER_KEY && !isSubmitting) {
+                            handleSubmit(e);
+                        }
+                    }}
+                    className="SendMessageInput"
+                    inverted
+                    fluid
+                    placeholder={`Message #${channelName}`}
+                />
+            ) : (
+                <Input
+                    disabled
+                    style={{ userSelect: 'none' }}
+                    className="SendMessageInput"
+                    inverted
+                    fluid
+                    placeholder="You can not send messages to this channel"
+                />
+            )}
+        </SendMessageWrapper>
+    );
+};
 
 const createMessageMutation = gql`
     mutation($channelId: Int!, $text: String!, $chatId: String) {
@@ -162,5 +177,5 @@ export default withData(
         graphql(createMessageMutation),
         withFormik(formikData),
     )(SendMessage),
-    ['selfMessage'],
+    ['selfMessage', 'nowChannel'],
 );

@@ -34,7 +34,7 @@ const createResolver = (resolver) => {
     return baseResolver;
 };
 
-export const requiresAuth = createResolver((parent, args, { me }) => {
+export const requiresAuth = createResolver(async (parent, args, { me }) => {
     if (!me || !me.id) {
         throw new Error('Not logged in');
     }

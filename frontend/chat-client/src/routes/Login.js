@@ -42,8 +42,6 @@ class Login extends React.Component {
             return;
         }
 
-        console.log(response);
-
         const { ok, errors, token, refreshToken } = response.data.login;
 
         if (ok) {

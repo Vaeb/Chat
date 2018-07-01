@@ -78,7 +78,7 @@ export default {
             }),
     },
     UserView: {
-        allChannels: (parent, args, { models }) => models.Channel.findAll({ raw: true }),
+        allChannels: async (parent, args, { models }) => models.Channel.findAll({ raw: true }),
         allRoles: (parent, args, { models }) => models.Role.findAll({ raw: true }),
         allUsers: (parent, args, { models }) => models.User.findAll({ raw: true }),
     },

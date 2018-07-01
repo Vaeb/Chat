@@ -10,8 +10,10 @@ export const viewQuery = gql`
                 id
                 name
                 locked
-                roles {
-                    id
+                default_send
+                channelRoles {
+                    roleId
+                    send
                 }
             }
             allRoles {

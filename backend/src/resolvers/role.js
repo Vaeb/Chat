@@ -224,6 +224,9 @@ export default {
                 id: roleId,
             }),
     },
+    ChannelRole: {
+        send: ({ send }) => send,
+    },
     NewRoleUser: {
         role: ({ role }) => role,
         user: ({ user }) => user,

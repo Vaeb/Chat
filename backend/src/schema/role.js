@@ -12,6 +12,12 @@ export default `
         channels: [Channel!]!
     }
 
+    type ChannelRole {
+        roleId: Int!
+        channelId: Int!
+        send: Boolean!
+    }
+
     type CreateRoleResponse {
         ok: Boolean!
         errors: [Error!]

@@ -9,10 +9,7 @@ const RoleWrapper = styled.div`
     grid-column: 3;
     grid-row: 1 / 4;
     background-color: #2f3136;
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
+    user-select: none;
     overflow-y: auto;
     overflow-x: hidden;
 `;
@@ -138,7 +135,7 @@ const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRo
                         'url("https://cdn.discordapp.com/avatars/212518810668892161/27107bf7579fa42170a9f2c2b6e1d18f.png?size=128")',
                 }}
             />
-            <span>
+            <span style={{ marginTop: '-3px' }}>
                 {username}
                 {editRoleUsers && roleId !== 1 ? (
                     <span>
