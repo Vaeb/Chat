@@ -65,7 +65,6 @@ export default {
                         { /* id: 5, */ name: 'KICK_USER' },
                         { /* id: 6, */ name: 'BAN_USER' },
                         { /* id: 7, */ name: 'ADD_ROLE' },
-                        { /* id: 8, */ name: 'OWNER' },
                     ];
 
                     const dataUser = [
@@ -80,12 +79,16 @@ export default {
                     ];
 
                     const dataChannel = [
-                        { /* id: 1, */ name: 'rules', default_send: false },
-                        { /* id: 2, */ name: 'announcements', default_send: false },
-                        { /* id: 3, */ name: 'general' },
-                        { /* id: 4, */ name: 'support' },
-                        { /* id: 5, */ name: 'staff', locked: true },
-                        { /* id: 6, */ name: 'admins', locked: true },
+                        { /* id: 1, */ name: 'how-to-buy', default_send: false },
+                        { /* id: 2, */ name: 'rules', default_send: false },
+                        { /* id: 3, */ name: 'announcements', default_send: false },
+                        { /* id: 4, */ name: 'general' },
+                        { /* id: 5, */ name: 'buyers', locked: true },
+                        { /* id: 6, */ name: 'memes' },
+                        { /* id: 7, */ name: 'support' },
+                        { /* id: 8, */ name: 'bot-commands' },
+                        { /* id: 9, */ name: 'staff', locked: true },
+                        { /* id: 10, */ name: 'developers', locked: true },
                     ];
 
                     const maxRows = Math.max(dataRole.length, dataPermission.length, dataUser.length, dataChannel.length);
@@ -111,7 +114,6 @@ export default {
                         { roleId: 9, permissionId: 5 }, // Administrator - KICK_USER
                         { roleId: 9, permissionId: 6 }, // Administrator - BAN_USER
                         { roleId: 9, permissionId: 7 }, // Administrator - ADD_ROLE
-                        { roleId: 10, permissionId: 8 }, // DEVELOPER - OWNER
                     ];
 
                     const dataRoleUser = [
@@ -142,9 +144,11 @@ export default {
 
                     const dataRoleChannel = [
                     // Which roles can access which private channels (ignored if channel locked=false)
-                        { roleId: 6, channelId: 2, send: true }, // Staff - announcements
-                        { roleId: 6, channelId: 5 }, // Staff - staff
-                        { roleId: 9, channelId: 6 }, // Administrator - admins
+                        { roleId: 6, channelId: 3, send: true }, // Staff - announcements
+                        { roleId: 4, channelId: 5 }, // Buyer - buyers
+                        { roleId: 6, channelId: 5 }, // Staff - buyers
+                        { roleId: 6, channelId: 9 }, // Staff - staff
+                        { roleId: 9, channelId: 10 }, // Administrator - developers
                     ];
 
                     // You can get all roles from rules channel

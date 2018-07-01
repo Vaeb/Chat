@@ -52,7 +52,7 @@ export default () => (
     <BrowserRouter>
         <Switch>
             {/* <Route path="/" exact component={Home} /> */}
-            <Route path="/" exact render={() => <Redirect to="/view-chat" />} />
+            <Route path="/" exact render={() => <Redirect to="/view-chat/4" />} />
             <CustomRoute path="/register" exact component={Register} />
             <CustomRoute path="/login" exact component={Login} />
             <CustomRoute isPrivate path="/view-chat/:channelId?" exact component={ViewChatWrapper} />

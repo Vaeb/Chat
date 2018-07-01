@@ -303,7 +303,7 @@ class ViewChatWrapper extends React.Component {
 
                 const user = this.fixDataProps(newUserData, [{ propName: 'roles', valueKey: 'id' }]);
 
-                if (user.roles.some(rId => allRoles[rId].owner)) user.owner = true;
+                user.owner = user.roles.some(rId => allRoles[rId].owner);
 
                 this.addUserRoleData(user, user.roles, allRoles);
 

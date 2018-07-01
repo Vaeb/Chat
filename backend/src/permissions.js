@@ -34,7 +34,7 @@ const createResolver = (resolver) => {
     return baseResolver;
 };
 
-export const requiresAuth = createResolver(async (parent, args, { me }) => {
+export const requiresAuth = createResolver((parent, args, { me }) => {
     if (!me || !me.id) {
         throw new Error('Not logged in');
     }
@@ -51,11 +51,25 @@ export const requiresPermission = permissionName =>
             midModel: models.Role,
             returnModel: models.Permission,
             returnWhere: {
-                name: {
-                    [Op.or]: [permissionName, 'OWNER'],
-                },
+                name: permissionName,
             },
         });
 
-        if (foundPermissions.length == 0) throw new Error(`This action requires the ${permissionName || 'owner'} permission`);
+        if (foundPermissions.length == 0) {
+            const isOwner =
+                (await models.Role.sequelize.query(
+                    `select distinct owner from users as u
+                    join roleusers as ru
+                    on ru.user_id = u.id and u.id = ?
+                    join roles as r
+                    on r.id = ru.role_id and r.owner = true`,
+                    {
+                        replacements: [me.id],
+                        model: models.Role,
+                        raw: true,
+                    },
+                )).length > 0;
+
+            if (!isOwner) throw new Error(`This action requires the ${permissionName || 'owner'} permission`);
+        }
     });
