@@ -21,6 +21,7 @@ const ChannelHead = styled.div`
 const ChatNameHeader = styled.h1`
     color: #fff;
     font-size: 20px;
+    margin-bottom: 0px;
 `;
 
 const ChannelList = styled.ul`
@@ -36,6 +37,10 @@ const ChannelListItem = styled.li`
     ${props => `
         padding: 8px 2px 8px 10px;
         font-size: 16px;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 35px;
         background-color: ${props.current ? 'rgba(79,84,92,.6)' : 'transparent'};
         color: #72767d;
         & > .channelName {
@@ -61,12 +66,24 @@ const ButtonListItem = styled.li`
     width: 100%;
     position: relative;
     top: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+`;
+
+const ChannelTag = styled.li`
+    position: absolute;
+`;
+
+const ChannelTitle = styled.li`
+    position: absolute;
+    margin-left: 12px;
 `;
 
 const channel = ({ id, name, newMessages }, currentChannelId) => (
     <Link key={`channel-${id}`} to={`/view-chat/${id}`}>
         <ChannelListItem newMessages={newMessages} current={id === currentChannelId}>
-            # <span className="channelName">{name}</span>
+            <ChannelTag># </ChannelTag>
+            <ChannelTitle className="channelName">{name}</ChannelTitle>
         </ChannelListItem>
     </Link>
 );
@@ -78,7 +95,7 @@ const Channels = ({
         {console.log('Rendering Channels')}
         <ChannelHead>
             <ChatNameHeader>{chatName}</ChatNameHeader>
-            {username}
+            <span>{username}</span>
         </ChannelHead>
         <div>
             <ChannelList>
@@ -86,13 +103,13 @@ const Channels = ({
                 {canCreate ? (
                     <React.Fragment>
                         <ButtonListItem onClick={onAddChannelClick}>
-                            Create Channel{' '}
+                            <span>Create Channel </span>
                             <span>
                                 <Icon name="add circle" />
                             </span>
                         </ButtonListItem>
                         <ButtonListItem onClick={onAddRoleClick}>
-                            Create Role{' '}
+                            <span>Create Role </span>
                             <span>
                                 <Icon name="add circle" />
                             </span>

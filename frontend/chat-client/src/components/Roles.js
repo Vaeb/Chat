@@ -71,7 +71,7 @@ const RoleListItemUserWrapper = styled.li`
             background-color: #36393f;
             ${props.highestViewRoleId === 1 ? 'color: #fff;' : ''};
         }
-    `};
+    `}
 `;
 
 const RoleListItemUser = styled.div`

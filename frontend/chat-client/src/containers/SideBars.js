@@ -203,6 +203,7 @@ class SideBars extends React.Component {
         const {
             username,
             channelId,
+            isSmall,
             chatData: { nowUser, pushUp },
         } = this.props;
 
@@ -215,13 +216,15 @@ class SideBars extends React.Component {
 
         return (
             <React.Fragment>
-                <Roles
-                    canAdd={canAdd}
-                    editRoleUsers={nowUser.editRoleUsers}
-                    onRoleClick={this.toggleAddUserRoleModal}
-                    onEditClick={pushUp.onRolesCheckboxClick}
-                    onUserRoleClick={this.removeUserRole}
-                />
+                {!isSmall ? (
+                    <Roles
+                        canAdd={canAdd}
+                        editRoleUsers={nowUser.editRoleUsers}
+                        onRoleClick={this.toggleAddUserRoleModal}
+                        onEditClick={pushUp.onRolesCheckboxClick}
+                        onUserRoleClick={this.removeUserRole}
+                    />
+                ) : null}
                 <Channels
                     chatName="Vashta"
                     username={username}
