@@ -11,6 +11,8 @@ const ChannelWrapper = styled.div`
     background-color: #2f3136;
     color: #72767d;
     user-select: none;
+    overflow-y: auto;
+    overflow-x: hidden;
 `;
 
 const ChannelHead = styled.div`
