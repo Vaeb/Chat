@@ -158,7 +158,6 @@ export default {
                     { roleId: 9, userId: 1 }, // Administrator - Vaeb
                     { roleId: 9, userId: 8 }, // Administrator - DevUser1
                     { roleId: 10, userId: 1 }, // Developer - Vaeb
-                    // { roleId: 10, userId: 8 }, // Developer - DevUser1
                 ];
 
                 // You can get all users from User role

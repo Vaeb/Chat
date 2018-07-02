@@ -158,7 +158,6 @@ class ViewChatWrapper extends React.Component {
         const { id: nowUserId, allChannels: allChannelsOrig, allRoles: allRolesOrig, allUsers: allUsersOrig } = chatData;
 
         // /////////////////////////////////////////////// PARSE GRAPHQL DATA //////////////////////////////////////////////////////////////////
-        console.log('got allchannels data', allChannelsOrig);
         const { fixDataProps } = this;
 
         // GraphQL data is read-only
