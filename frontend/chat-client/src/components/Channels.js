@@ -70,11 +70,11 @@ const ButtonListItem = styled.li`
     white-space: nowrap;
 `;
 
-const ChannelTag = styled.li`
+const ChannelTag = styled.span`
     position: absolute;
 `;
 
-const ChannelTitle = styled.li`
+const ChannelTitle = styled.span`
     position: absolute;
     margin-left: 12px;
 `;

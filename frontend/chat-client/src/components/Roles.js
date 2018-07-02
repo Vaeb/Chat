@@ -16,6 +16,7 @@ const RoleWrapper = styled.div`
 
 const RoleList = styled.ul`
     width: 100%;
+    position: relative;
     padding-left: 0px;
     list-style: none;
     margin-left: 8px;
@@ -71,7 +72,7 @@ const RoleListItemUserWrapper = styled.li`
             background-color: #36393f;
             ${props.highestViewRoleId === 1 ? 'color: #fff;' : ''};
         }
-    `}
+    `};
 `;
 
 const RoleListItemUser = styled.div`
@@ -117,7 +118,7 @@ const styles = {
         transform: 'rotate(90deg)',
         // top: '17px',
         // marginTop: '25px',
-        marginTop: '5px',
+        // marginTop: '5px',
     },
 };
 
