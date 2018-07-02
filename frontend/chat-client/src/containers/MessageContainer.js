@@ -68,7 +68,7 @@ const UseStyle = () => (
     <style>
         {`
             div.ui.comments {
-                min-width: 100em;
+                min-width: 100%;
             }
 
             .ui.comments .comment div.text {
@@ -76,7 +76,7 @@ const UseStyle = () => (
                 font-size: 0.9375rem;
                 line-height: 1.6;
                 margin: .25em 0 0;
-                max-width: 100em;
+                max-width: 100%;
             }
 
             .ui.comments .comment .metadata .CreatedStamp {
@@ -95,6 +95,10 @@ const UseStyle = () => (
 
             .ui.comments .comment:last-child {
                 margin-bottom: 11px;
+            }
+
+            .ui.comments .comment>div.content {
+                width: calc(100% - 75px);
             }
 
             .ui.comments .comment div.avatar img, .ui.comments .comment img.avatar {
