@@ -420,6 +420,7 @@ class ViewChatWrapper extends React.Component {
         const userRolesMap = toObj(nowUser.roles);
         nowUser.permissions = toObj(flatten(nowUser.roles.map(roleId => allRoles[roleId].permissions)));
         if (nowUser.owner) nowUser.permissions.OWNER = true;
+        nowUser.editRoleUsers = nowUser.editRoleUsers && (nowUser.permissions.ADD_ROLE || nowUser.permissions.OWNER);
 
         // Channels the current user can access
         const viewChannels = this.parseViewChannels(allChannels, userRolesMap, nowUser.owner);

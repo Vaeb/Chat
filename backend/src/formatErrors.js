@@ -7,8 +7,8 @@ export default (e, models) => {
     }
 
     if (e instanceof Error) {
-        return [{ path: e.name, message: e.message }];
+        return [{ path: 'general', message: `${e.name}: ${e.message}` }];
     }
 
-    return [{ path: 'unknown', message: `Unknown error: ${nodeUtils.format(e)}` }];
+    return [{ path: 'general', message: `Unknown error: ${nodeUtils.format(e)}` }];
 };

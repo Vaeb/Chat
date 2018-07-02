@@ -72,6 +72,8 @@ class Login extends React.Component {
         if (emailError) errorList.push(emailError);
         if (passwordError) errorList.push(passwordError);
 
+        const signUpMessage = "Haven't signed up yet?";
+
         return (
             <Container text style={styles.Container}>
                 <Header as="h2">Login</Header>
@@ -87,7 +89,7 @@ class Login extends React.Component {
                         <Button style={{ marginRight: 'auto' }} onClick={this.onSubmit}>
                             Submit
                         </Button>
-                        <div style={{ marginRight: '10px' }}>Haven't signed up yet?</div>
+                        <div style={{ marginRight: '10px' }}>{signUpMessage}</div>
                         <Button onClick={() => this.props.history.push('/register')}>Register</Button>
                     </div>
                 </Form>

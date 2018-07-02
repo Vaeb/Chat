@@ -11,7 +11,6 @@ class SetData extends React.Component {
             response = await this.props.mutate();
         } catch (err) {
             console.log('ERROR:', err);
-            this.props.history.push('/login');
             return;
         }
 
@@ -20,7 +19,7 @@ class SetData extends React.Component {
         const { ok, errors } = response.data.setData;
 
         if (ok) {
-            this.props.history.push('/');
+            console.log('/login');
         } else {
             const err = {};
 

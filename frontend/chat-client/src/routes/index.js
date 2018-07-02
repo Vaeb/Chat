@@ -11,6 +11,7 @@ import AddUsersToRoles from './AddUsersToRoles';
 import AddRolesToChannels from './AddRolesToChannels';
 import ViewChatWrapper from './ViewChatWrapper';
 import SetData from './SetData';
+import RunSeq from './RunSequelize';
 import AllPages from '../components/AllPages';
 
 const isAuthenticated = () => {
@@ -61,6 +62,7 @@ export default () => (
             <CustomRoute isPrivate path="/add-user-to-role" exact component={AddUsersToRoles} />
             <CustomRoute isPrivate path="/add-role-to-channel" exact component={AddRolesToChannels} />
             <CustomRoute path="/set-data" exact component={SetData} />
+            <CustomRoute path="/run-seq" exact component={RunSeq} />
         </Switch>
     </BrowserRouter>
 );

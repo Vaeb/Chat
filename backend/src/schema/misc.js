@@ -11,12 +11,19 @@ export default `
         errors: [Error!]
     }
 
+    type RunSeqResponse {
+        ok: Boolean!
+        errors: [Error!]
+        output: String
+    }
+
     type Subscription {
         heartbeat: String!
     }
 
     type Mutation {
         setData: SetDataResponse!
+        runSeq(text: String!): RunSeqResponse!
     }
 
 `;

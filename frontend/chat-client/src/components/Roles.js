@@ -122,7 +122,7 @@ const styles = {
     },
 };
 
-const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRoleUsers, onUserRoleClick) => (
+const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, canAddNow, onUserRoleClick) => (
     <RoleListItemUserWrapper
         className="roleListItemUserClassWrapper"
         highestViewRoleId={highestViewRoleId}
@@ -138,7 +138,7 @@ const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRo
             />
             <span style={{ marginTop: '-3px' }}>
                 {username}
-                {editRoleUsers && roleId !== 1 ? (
+                {canAddNow ? (
                     <span>
                         <Icon
                             onClick={() => onUserRoleClick({ roleId, userId: id })}
@@ -152,11 +152,20 @@ const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, editRo
     </RoleListItemUserWrapper>
 );
 
-const role = ({
-    id, name, title, members, position, color,
-}, onRoleClick, editRoleUsers, viewUsers, highestRolePos, onUserRoleClick) => {
+const role = (
+    {
+        id, name, title, members, position, color,
+    },
+    onRoleClick,
+    editRoleUsers,
+    viewUsers,
+    highestRolePos,
+    onUserRoleClick,
+    userOwner,
+) => {
     members = members.map(mId => find(viewUsers, ['id', mId]));
     members.sort((a, b) => b.position - a.position);
+    const canAddNow = editRoleUsers && id !== 1 && (position < highestRolePos || userOwner);
 
     return (
         <React.Fragment key={`role-frag-${id}`}>
@@ -173,7 +182,7 @@ const role = ({
                     </span>
                 ) : null}
                 {`${title}`}
-                {editRoleUsers && id !== 1 && position < highestRolePos ? (
+                {canAddNow ? (
                     <span>
                         <Icon
                             onClick={() => onRoleClick({ roleId: id, roleName: name })}
@@ -187,7 +196,7 @@ const role = ({
                     </span>
                 ) : null}
             </RoleListItemName>
-            {members.map(member => roleUser(member, { roleId: id }, editRoleUsers && position < highestRolePos, onUserRoleClick))}
+            {members.map(member => roleUser(member, { roleId: id }, canAddNow, onUserRoleClick))}
         </React.Fragment>
     );
 };
@@ -201,7 +210,7 @@ const Roles = ({
         <RoleList>
             {/* <RoleTitle>Online</RoleTitle> */}
             {canAdd ? <Checkbox style={styles.Checkbox} onChange={(e, { checked }) => onEditClick(checked)} toggle /> : null}
-            {viewRoles.map(r => role(r, onRoleClick, editRoleUsers, viewUsers, nowUser.position, onUserRoleClick))}
+            {viewRoles.map(r => role(r, onRoleClick, editRoleUsers, viewUsers, nowUser.position, onUserRoleClick, nowUser.owner))}
         </RoleList>
     </RoleWrapper>
 );

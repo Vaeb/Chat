@@ -194,11 +194,6 @@ class SideBars extends React.Component {
             });
     };
 
-    onRolesCheckboxClick = (checked) => {
-        console.log('toggled', checked);
-        this.setState(state => ({ editRoleUsers: !state.editRoleUsers }));
-    };
-
     render() {
         const {
             username,

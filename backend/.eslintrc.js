@@ -17,7 +17,7 @@ module.exports = {
         'no-console': 'off',
         // "no-continue": "off",
         // "no-control-regex": "off",
-        // "no-eval": "off",
+        'no-eval': 'off',
         // "no-irregular-whitespace": "off",
         // "no-lonely-if": "off",
         // "no-mixed-operators": "off",
