@@ -17,7 +17,7 @@ const ChannelWrapper = styled.div`
 
 const ChannelHead = styled.div`
     margin-top: 12px;
-    padding-left: 10px;
+    padding-left: 16px;
 `;
 
 const ChatNameHeader = styled.h1`
@@ -33,16 +33,22 @@ const ChannelList = styled.ul`
     position: relative;
 `;
 
+// padding: 8px 2px 8px 10px;
 // eslint-disable-next-line
 // prettier-ignore
 const ChannelListItem = styled.li`
     ${props => `
-        padding: 8px 2px 8px 10px;
         font-size: 16px;
         position: relative;
         overflow: hidden;
         white-space: nowrap;
-        height: 35px;
+        height: 34px;
+        margin: 1px 10px 1px 8px;
+        padding: 0 8px;
+        display: flex;
+        align-items: center;
+        text-rendering: optimizeLegibility;
+        border-radius: 3px;
         background-color: ${props.current ? 'rgba(79,84,92,.6)' : 'transparent'};
         color: #72767d;
         & > .channelName {
@@ -59,8 +65,11 @@ const ChannelListItem = styled.li`
     `};
 `;
 
+// margin: 1px 0 9px 8px;
+// padding: 8px 8px 8px 8px;
+// border-radius: 3px;
 const ButtonListItem = styled.li`
-    padding: 8px 2px 8px 10px;
+    padding: 8px 2px 8px 16px;
     margin-bottom: 9px;
     font-size: 14px;
     background-color: #151515;
