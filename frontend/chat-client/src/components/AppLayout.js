@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 const AppLayoutDiv = styled.div`
     ${props => `
-        position: fixed;
         display: grid;
         height: 100vh;
         width: 100vw;

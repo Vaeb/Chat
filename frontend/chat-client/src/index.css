@@ -1,5 +1,7 @@
 html, body {
     overflow-y: hidden;
+    overflow-x: hidden;
+    position: relative;
     margin: 0;
     padding: 0;
 }
