@@ -4,6 +4,8 @@ import { requiresAuth } from '../permissions';
 import { linkedQueryId } from '../linkedQueries';
 import { pubsub, NEW_USER } from '../pubsub';
 
+const registerLocked = true;
+
 /*
 
     -chatData GraphQL query request
@@ -32,6 +34,8 @@ export default {
         login: async (parent, { email, password }, { models, SECRET, SECRET2 }) => tryLogin(email, password, models, SECRET, SECRET2),
         register: async (parent, args, { models }) => {
             try {
+                if (registerLocked) return { ok: false, errors: [{ path: 'email', message: 'Registrations are still closed.' }] };
+
                 let user;
                 const rolePromise = models.Role.findOne({ where: { id: 1 }, raw: true });
 

@@ -5,6 +5,8 @@ import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-rea
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
+const registerLocked = true;
+
 const styles = {
     Container: {
         marginTop: '50px',
@@ -69,6 +71,7 @@ class Register extends React.Component {
 
         const errorList = [];
 
+        if (registerLocked) errorList.push('Registrations are closed right now.');
         if (usernameError) errorList.push(usernameError);
         if (emailError) errorList.push(emailError);
         if (passwordError) errorList.push(passwordError);
