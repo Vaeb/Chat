@@ -38,7 +38,6 @@ const messageWrapperStyle = {
     gridRow: 2,
     backgroundColor: '#36393e',
     color: 'hsla(0, 0%, 100%, 0.7)',
-    fontFamily: 'Open Sans, Lato, Helvetica Neue, Arial, Helvetica, sans-serif',
     paddingLeft: '20px',
     display: 'flex',
     overflowY: 'auto',
@@ -72,6 +71,7 @@ const UseStyle = () => (
             }
 
             .ui.comments .comment div.text {
+                font-family: "Open Sans", Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
                 color: hsla(0, 0%, 100%, .7);
                 font-size: 0.9375rem;
                 line-height: 1.6;
@@ -80,12 +80,15 @@ const UseStyle = () => (
             }
 
             .ui.comments .comment .metadata .CreatedStamp {
+                font-family: "Open Sans", Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
                 color: hsla(0,0%,100%,.2);
                 font-size: 0.75rem;
             }
 
             .ui.comments div.comment a.author {
+                font-family: "Open Sans", Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
                 font-size: 1rem;
+                font-weight: 700;
             }
 
             .ui.comments div.comment {
@@ -306,7 +309,7 @@ class MessageContainer extends React.Component {
                                     }}
                                 />
                                 <Comment.Content>
-                                    <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#B9BBBE' }}>
+                                    <Comment.Author as="a" style={{ color: allUsers[m.user.id] ? allUsers[m.user.id].color : '#fff' }}>
                                         {m.user.username}
                                     </Comment.Author>
                                     <Comment.Metadata>

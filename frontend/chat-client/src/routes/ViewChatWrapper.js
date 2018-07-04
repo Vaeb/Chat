@@ -23,6 +23,9 @@ import {
     selfMessageContext,
 } from '../context/dataContexts';
 
+const defChannelIdx = 3;
+const defColor = '#B9BBBE';
+
 const sortRoles = roles => roles.sort((a, b) => (a.id === 1 ? 1 : b.position - a.position));
 const sortRoleIds = (roles, allRoles) => roles.sort((a, b) => (a === 1 ? 1 : allRoles[b].position - allRoles[a].position));
 const sortChannels = channels => channels.sort((a, b) => a.id - b.id);
@@ -104,8 +107,8 @@ class ViewChatWrapper extends React.Component {
 
     getNowChannel = (channelId, viewChannels) => {
         channelId = parseInt(channelId, 10);
-        const nowChannel = viewChannels[Math.max(channelId ? findIndex(viewChannels, ['id', channelId]) : 0, 0)];
-        return nowChannel;
+        const channelIdx = channelId ? findIndex(viewChannels, ['id', channelId]) : defChannelIdx;
+        return viewChannels[channelIdx === -1 ? defChannelIdx : channelIdx];
     };
 
     // Change data properties from arrays of maps to just arrays
@@ -134,7 +137,7 @@ class ViewChatWrapper extends React.Component {
         user.highestRoleId = highestRoleId;
         user.highestViewRoleId = highestViewRoleId;
         user.position = highestRole.position;
-        user.color = highestViewRole.color;
+        user.color = highestViewRole.color === defColor ? '#fff' : highestViewRole.color;
     };
 
     linkRoles = (allUsers, allRoles) => {

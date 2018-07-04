@@ -122,11 +122,11 @@ const styles = {
     },
 };
 
-const roleUser = ({ id, username, color, highestViewRoleId }, { roleId }, canAddNow, onUserRoleClick) => (
+const roleUser = ({ id, username, highestViewRoleId }, { roleId, roleColor }, canAddNow, onUserRoleClick) => (
     <RoleListItemUserWrapper
         className="roleListItemUserClassWrapper"
         highestViewRoleId={highestViewRoleId}
-        color={color}
+        color={roleColor}
         key={`role-user-${id}`}
     >
         <RoleListItemUser className="roleListItemUserClass">
@@ -196,7 +196,7 @@ const role = (
                     </span>
                 ) : null}
             </RoleListItemName>
-            {members.map(member => roleUser(member, { roleId: id }, canAddNow, onUserRoleClick))}
+            {members.map(member => roleUser(member, { roleId: id, roleColor: color }, canAddNow, onUserRoleClick))}
         </React.Fragment>
     );
 };

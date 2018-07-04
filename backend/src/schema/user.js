@@ -22,6 +22,11 @@ export default `
         allUsers: [User!]!
     }
 
+    type VashtaUser {
+        id: Int!
+        username: String!
+    }
+
     type RegisterResponse {
         ok: Boolean!
         user: User
@@ -33,6 +38,12 @@ export default `
         token: String
         refreshToken: String
         errors: [Error!]
+    }
+
+    type LinkVashtaResponse {
+        ok: Boolean!
+        errors: [Error!]
+        vashtaUser: VashtaUser
     }
 
     type Query {
@@ -48,6 +59,7 @@ export default `
     type Mutation {
         register(username: String!, email: String!, password: String!): RegisterResponse!
         login(email: String!, password: String!): LoginResponse!
+        linkVashta(username: String!, password: String!): LinkVashtaResponse!
     }
 
 `;

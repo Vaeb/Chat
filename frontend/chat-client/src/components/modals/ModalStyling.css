@@ -1,0 +1,25 @@
+.custom-overlay {
+    background: rgba(0, 0, 0, .85);
+}
+
+.custom-modal {
+    width: 950px;
+    max-width: 950px;
+    border-radius: .28571429rem;
+    padding: 0;
+}
+
+.modalHeader {
+    font-size: 1.42857143rem;
+    line-height: 1.28571429em;
+    font-weight: 700;
+    border-top-left-radius: .28571429rem;
+    border-top-right-radius: .28571429rem;
+    margin: 0;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+.modalContent {
+    padding: 1.2rem;
+}

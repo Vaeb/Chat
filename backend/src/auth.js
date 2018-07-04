@@ -3,6 +3,10 @@
 import jwt from 'jsonwebtoken';
 import pick from 'lodash/pick';
 import bcrypt from 'bcryptjs';
+import request from 'request-promise-native';
+
+const CLIENT_ID = 'localhost';
+const CLIENT_SECRET = 'notReallySecret';
 
 export const createTokens = async (user, secret, secret2) => {
     const createToken = jwt.sign(
@@ -123,4 +127,39 @@ export const tryLogin = async (email, password, models, SECRET, SECRET2) => {
         token,
         refreshToken,
     };
+};
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const doAuth = (path, json, bearer) =>
+    request[typeof json === 'object' ? 'post' : 'get'](
+        `https://api.vashta.io/auth/${path}`,
+        { json, auth: bearer && { bearer } },
+        (error, response, body) => {
+            if (error) throw new Error(error);
+            if (!body) throw new Error('No body');
+            if (body.error) throw new Error(body.error === 'invalid_grant' ? 'Invalid credentials' : body.error_description);
+
+            return body;
+        },
+    );
+
+export const tryVashtaAuth = async (username, password) => {
+    try {
+        const token = (await doAuth('token', {
+            username,
+            password,
+            grant_type: 'password',
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+        })).access_token;
+        if (!token) throw new Error('Wrong email/password');
+        const user = await doAuth('user/@me', true, token);
+        if (user && user.username) return user;
+        throw new Error("Couldn't fetch user data");
+    } catch (e) {
+        const err = new Error('Something went wrong while logging in');
+        err.cause = e;
+        throw err;
+    }
 };

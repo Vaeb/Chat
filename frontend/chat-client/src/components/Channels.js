@@ -13,9 +13,11 @@ const ChannelWrapper = styled.div`
     user-select: none;
     overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 `;
 
-const ChannelHead = styled.div`
+const ChannelHeadWrapper = styled.div`
     margin-top: 12px;
     padding-left: 16px;
 `;
@@ -24,6 +26,11 @@ const ChatNameHeader = styled.h1`
     color: #fff;
     font-size: 20px;
     margin-bottom: 0px;
+`;
+
+const ChannelBodyWrapper = styled.div`
+    position: relative;
+    flex: 1;
 `;
 
 const ChannelList = styled.ul`
@@ -65,11 +72,22 @@ const ChannelListItem = styled.li`
     `};
 `;
 
+const ChannelTag = styled.span`
+    position: absolute;
+`;
+
+const ChannelTitle = styled.span`
+    position: absolute;
+    margin-left: 12px;
+`;
+
 // margin: 1px 0 9px 8px;
 // padding: 8px 8px 8px 8px;
 // border-radius: 3px;
 const ButtonListItem = styled.li`
-    padding: 8px 2px 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px 8px 16px;
     margin-bottom: 9px;
     font-size: 14px;
     background-color: #151515;
@@ -81,13 +99,19 @@ const ButtonListItem = styled.li`
     white-space: nowrap;
 `;
 
-const ChannelTag = styled.span`
-    position: absolute;
-`;
-
-const ChannelTitle = styled.span`
-    position: absolute;
-    margin-left: 12px;
+const LinkVashtaListItem = styled.li`
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px 8px 16px;
+    margin-bottom: 9px;
+    font-size: 14px;
+    background-color: #151515;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    top: 14px;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 
 const channel = ({ id, name, newMessages }, currentChannelId) => (
@@ -100,35 +124,51 @@ const channel = ({ id, name, newMessages }, currentChannelId) => (
 );
 
 const Channels = ({
-    chatName, username, onAddChannelClick, onAddRoleClick, canCreate, currentChannelId, chatData: { viewChannels },
+    chatName,
+    username,
+    onAddChannelClick,
+    onAddRoleClick,
+    onLinkVashtaClick,
+    canCreate,
+    currentChannelId,
+    chatData: { viewChannels },
 }) => (
     <ChannelWrapper>
         {console.log('Rendering Channels')}
-        <ChannelHead>
+        <ChannelHeadWrapper>
             <ChatNameHeader>{chatName}</ChatNameHeader>
             <span>{username}</span>
-        </ChannelHead>
-        <div>
+        </ChannelHeadWrapper>
+        <ChannelBodyWrapper>
             <ChannelList>
                 {viewChannels.map(c => channel(c, currentChannelId))}
                 {canCreate ? (
                     <React.Fragment>
                         <ButtonListItem onClick={onAddChannelClick}>
-                            <span>Create Channel </span>
                             <span>
-                                <Icon name="add circle" />
+                                <span>Create Channel </span>
+                            </span>
+                            {/* <span style={{ fontSize: '14px', color: '#FF851B' }}>•</span> */}
+                            <span>
+                                <Icon name="add circle" style={{ margin: '0 0 0 7px', width: '100%' }} />
                             </span>
                         </ButtonListItem>
                         <ButtonListItem onClick={onAddRoleClick}>
-                            <span>Create Role </span>
                             <span>
-                                <Icon name="add circle" />
+                                <span>Create Role </span>
+                            </span>
+                            <span>
+                                <Icon name="add circle" style={{ margin: '0 0 0 7px', width: '100%' }} />
                             </span>
                         </ButtonListItem>
                     </React.Fragment>
                 ) : null}
+                <LinkVashtaListItem onClick={onLinkVashtaClick}>
+                    <span>Link Vashta Account</span>
+                    <span style={{ fontSize: '14px', color: '#7289da' }}>•</span>
+                </LinkVashtaListItem>
             </ChannelList>
-        </div>
+        </ChannelBodyWrapper>
     </ChannelWrapper>
 );
 

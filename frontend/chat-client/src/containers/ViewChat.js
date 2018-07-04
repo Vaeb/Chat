@@ -12,20 +12,21 @@ class ViewChat extends React.Component {
         super(props);
 
         this.state = {
-            isSmall: window.innerWidth <= 760,
+            isNarrow: window.innerWidth <= 760,
+            // isShort: window.innerHeight <= 560,
         };
 
         window.addEventListener('resize', this.onResize);
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.channelId !== this.props.channelId || nextState.isSmall !== this.state.isSmall;
+        return nextProps.channelId !== this.props.channelId || nextState.isNarrow !== this.state.isNarrow;
     }
 
     onResize = () => {
         const newHide = window.innerWidth <= 760;
-        if (newHide !== this.state.isSmall) {
-            this.setState({ isSmall: newHide });
+        if (newHide !== this.state.isNarrow) {
+            this.setState({ isNarrow: newHide });
         }
     };
 
@@ -36,11 +37,11 @@ class ViewChat extends React.Component {
             channelId, userId, username, channelName, chatId,
         } = this.props;
 
-        const { isSmall } = this.state;
+        const { isNarrow } = this.state;
 
         return (
-            <AppLayout isSmall={isSmall}>
-                <SideBars channelId={channelId} username={username} isSmall={isSmall} />
+            <AppLayout isNarrow={isNarrow}>
+                <SideBars channelId={channelId} username={username} isNarrow={isNarrow} />
                 <Header channelName={channelName} />
                 <MessageContainer channelId={channelId} userId={userId} chatId={chatId} />
                 <SendMessage channelId={channelId} userId={userId} username={username} channelName={channelName} chatId={chatId} />

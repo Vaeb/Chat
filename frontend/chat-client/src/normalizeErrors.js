@@ -5,7 +5,7 @@ export const normalizeErrors = errors =>
         return acc;
     }, {});
 
-export const chooseError = (touched, errors, priority) => {
+export const pickError = (touched, errors, priority) => {
     let errorPath;
 
     if (priority) {

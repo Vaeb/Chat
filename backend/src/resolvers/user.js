@@ -1,4 +1,4 @@
-import { tryLogin } from '../auth';
+import { tryLogin, tryVashtaAuth } from '../auth';
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
 import { linkedQueryId } from '../linkedQueries';
@@ -70,6 +70,23 @@ export default {
                 };
             }
         },
+        linkVashta: requiresAuth.createResolver(async (parent, { username, password }, { models, me }) => {
+            try {
+                console.log('trying');
+                const vashtaUser = await tryVashtaAuth(username, password);
+
+                return {
+                    ok: true,
+                    vashtaUser,
+                };
+            } catch (err) {
+                console.log(err);
+                return {
+                    ok: false,
+                    errors: formatErrors(err, models),
+                };
+            }
+        }),
     },
     User: {
         roles: ({ id: userId, roles }, args, { models }) =>

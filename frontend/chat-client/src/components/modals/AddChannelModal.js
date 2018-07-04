@@ -3,9 +3,9 @@ import { Form, Button, Modal, Input, Checkbox } from 'semantic-ui-react';
 import { withFormik } from 'formik';
 import gql from 'graphql-tag';
 import { compose, graphql } from 'react-apollo';
-import { withData } from '../context/dataContexts';
+import { withData } from '../../context/dataContexts';
 
-import MultiSelectUsers from './MultiSelectRoles';
+import MultiSelectUsers from '../MultiSelectRoles';
 
 const AddChannelModal = ({
     /* errors, touched, */
