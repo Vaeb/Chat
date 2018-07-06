@@ -172,3 +172,24 @@ export const tryVashtaAuth = async (email, password) => {
         throw err;
     }
 };
+
+let cachedToken = null;
+const getClientToken = async () => {
+    if (cachedToken) return cachedToken;
+    const result = (await doAuth('token', {
+        grant_type: 'client_credentials',
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+    }));
+    if (!result) throw new Error('No data received');
+    if (result.token_type !== 'Bearer') throw new Error(`Expected token_type to be 'Bearer'`);
+    if (result.token_type !== 'Bearer') throw new Error(`No 'access_token' field in returned data`);
+    return cachedToken = result.access_token;
+}
+
+export const fetchUserProfile = async (userId) => {
+    const clientToken = await getClientToken();
+    const result = (await doAuth(`user/${userId}`, undefined, clientToken));
+    return result;
+};
+
