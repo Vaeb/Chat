@@ -1,5 +1,11 @@
 import bcrypt from 'bcryptjs';
 
+const toObj = arr =>
+    arr.reduce((o, val) => {
+        o[val] = true;
+        return o;
+    }, {});
+
 export default (sequelize, DataTypes) => {
     const User = sequelize.define(
         'user',
@@ -37,12 +43,27 @@ export default (sequelize, DataTypes) => {
                     },
                 },
             },
+            vashtaId: {
+                type: DataTypes.INTEGER,
+            },
+            vashtaUsername: {
+                type: DataTypes.STRING,
+            },
         },
         {
             hooks: {
                 afterValidate: async (user) => {
-                    const hashedPassword = await bcrypt.hash(user.password, 5);
-                    user.password = hashedPassword;
+                    const changedCols = toObj(user.changed());
+
+                    if (changedCols.password) {
+                        const hashedPassword = await bcrypt.hash(user.password, 5);
+                        user.password = hashedPassword;
+                    }
+
+                    if (changedCols.vashtaPass) {
+                        const hashedPasswordVashta = await bcrypt.hash(user.vashtaPass, 5);
+                        user.vashtaPass = hashedPasswordVashta;
+                    }
                 },
             },
         },

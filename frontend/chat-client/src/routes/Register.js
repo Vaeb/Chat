@@ -5,7 +5,7 @@ import { Form, Container, Header, Input, Button, Message } from 'semantic-ui-rea
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
-const registerLocked = true;
+const registerLocked = false;
 
 const styles = {
     Container: {

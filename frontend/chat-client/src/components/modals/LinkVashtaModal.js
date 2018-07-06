@@ -52,16 +52,28 @@ class LinkVashtaModal extends React.Component {
                         <Form>
                             <Form.Field>
                                 <Input
-                                    name="vashtaU"
-                                    value={values.vashtaU}
+                                    name="vashtaE"
+                                    value={values.vashtaE}
                                     onChange={this.changeHandler}
                                     onBlur={handleBlur}
-                                    label="Vashta Username"
+                                    label="Vashta Email"
                                     inverted
                                     autoComplete="off"
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') handleSubmit(e);
+                                    }}
                                     fluid
                                     focus
-                                    placeholder="Vashta Dashboard Username"
+                                    placeholder="Vashta Dashboard Email"
+                                    readOnly
+                                    onFocus={(e) => {
+                                        const inp = e.target;
+                                        if (inp.hasAttribute('readonly')) {
+                                            inp.removeAttribute('readonly');
+                                            inp.blur();
+                                            inp.focus();
+                                        }
+                                    }}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -72,14 +84,26 @@ class LinkVashtaModal extends React.Component {
                                     onBlur={handleBlur}
                                     label="Vashta Password"
                                     inverted
-                                    autoComplete="off"
+                                    autoComplete="new-password"
                                     type="password"
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') handleSubmit(e);
+                                    }}
                                     fluid
                                     focus
                                     placeholder="Vashta Dashboard Password"
+                                    readOnly
+                                    onFocus={(e) => {
+                                        const inp = e.target;
+                                        if (inp.hasAttribute('readonly')) {
+                                            inp.removeAttribute('readonly');
+                                            inp.blur();
+                                            inp.focus();
+                                        }
+                                    }}
                                 />
                             </Form.Field>
-                            {pickError(touched, errors, ['username', 'password'])}
+                            {pickError(touched, errors, ['email', 'password'])}
                             <Form.Group widths="equal">
                                 <Form.Field>
                                     <Button disabled={isSubmitting} onClick={e => onClose({ e, resetForm })} fluid>
@@ -101,8 +125,8 @@ class LinkVashtaModal extends React.Component {
 }
 
 const linkVashtaMutation = gql`
-    mutation($username: String!, $password: String!) {
-        linkVashta(username: $username, password: $password) {
+    mutation($email: String!, $password: String!) {
+        linkVashta(email: $email, password: $password) {
             ok
             errors {
                 path
@@ -116,14 +140,14 @@ const linkVashtaMutation = gql`
 `;
 
 const formikData = {
-    mapPropsToValues: () => ({ vashtaU: '', vashtaP: '' }),
+    mapPropsToValues: () => ({ vashtaE: '', vashtaP: '' }),
     handleSubmit: async (values, { props: { mutate, onClose }, setSubmitting, resetForm, setErrors /* setValues, setStatus, etc. */ }) => {
-        console.log('Submitting...', values.vashtaU, values.vashtaP);
+        console.log('Submitting...', values.vashtaE, values.vashtaP);
         let response;
 
         try {
             response = await mutate({
-                variables: { username: values.vashtaU, password: values.vashtaP },
+                variables: { email: values.vashtaE, password: values.vashtaP },
             });
         } catch (err) {
             console.log('Mutation failed:', err);

@@ -284,6 +284,7 @@ class ViewChatWrapper extends React.Component {
 
                 if (!role || !user) {
                     console.log('remRoleUser error', '| role:', role, '| user:', user);
+                    return;
                 }
 
                 console.log(typeof userId, typeof role.members[0], typeof roleId, typeof user.roles[0]);
@@ -313,6 +314,24 @@ class ViewChatWrapper extends React.Component {
 
                 this.setupView(this.props, { allRoles, allUsers });
                 // }, 4000);
+            },
+            changeUser: (newUserData) => {
+                console.log('Updating for changeUser', newUserData);
+
+                const { allUsers } = this.allStorage(['allUsers']);
+
+                const user = allUsers[newUserData.id];
+
+                if (!user) {
+                    console.log('changeUser error', '| user:', user);
+                    return;
+                }
+
+                Object.keys(newUserData).forEach((key) => {
+                    user[key] = newUserData[key];
+                });
+
+                this.setupView(this.props, { allUsers });
             },
             newMessage: ({ channel: { id: channelId } }) => {
                 if (!this.state.allChannels[channelId].newMessages && channelId !== this.nowChannelId) {

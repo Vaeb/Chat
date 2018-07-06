@@ -17,3 +17,4 @@ export const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 export const NEW_ROLE_USER = 'NEW_ROLE_USER';
 export const REM_ROLE_USER = 'REM_ROLE_USER';
 export const NEW_USER = 'NEW_USER';
+export const CHANGE_USER = 'CHANGE_USER';

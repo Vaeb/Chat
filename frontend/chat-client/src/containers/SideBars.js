@@ -9,73 +9,15 @@ import AddUserToRoleModal from '../components/modals/AddUserToRoleModal';
 import AddRoleModal from '../components/modals/AddRoleModal';
 import LinkVashtaModal from '../components/modals/LinkVashtaModal';
 import { withData } from '../context/dataContexts';
+import { newChannel, newRole, newRoleUser, remRoleUser, newUser, changeUser } from '../graphql/chat';
 
 const subscriptions = {
-    newChannel: gql`
-        subscription {
-            newChannel {
-                id
-                name
-                locked
-                roles {
-                    id
-                }
-            }
-        }
-    `,
-    newRole: gql`
-        subscription {
-            newRole {
-                id
-                name
-                color
-                position
-                view
-                owner
-                members {
-                    id
-                }
-                permissions {
-                    name
-                }
-            }
-        }
-    `,
-    newRoleUser: gql`
-        subscription {
-            newRoleUser {
-                role {
-                    id
-                }
-                user {
-                    id
-                }
-            }
-        }
-    `,
-    remRoleUser: gql`
-        subscription {
-            remRoleUser {
-                role {
-                    id
-                }
-                user {
-                    id
-                }
-            }
-        }
-    `,
-    newUser: gql`
-        subscription {
-            newUser {
-                id
-                username
-                roles {
-                    id
-                }
-            }
-        }
-    `,
+    newChannel,
+    newRole,
+    newRoleUser,
+    remRoleUser,
+    newUser,
+    changeUser,
 };
 
 const remUserFromRoleMutation = gql`
@@ -114,6 +56,7 @@ class SideBars extends React.Component {
             this.makeSubscription('New role user', 'newRoleUser', pushUpMethods),
             this.makeSubscription('Remove role user', 'remRoleUser', pushUpMethods),
             this.makeSubscription('New user', 'newUser', pushUpMethods),
+            this.makeSubscription('Change user', 'changeUser', pushUpMethods),
         ];
     }
 

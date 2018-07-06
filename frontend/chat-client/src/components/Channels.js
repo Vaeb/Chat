@@ -131,7 +131,10 @@ const Channels = ({
     onLinkVashtaClick,
     canCreate,
     currentChannelId,
-    chatData: { viewChannels },
+    chatData: {
+        viewChannels,
+        nowUser: { vashtaUsername },
+    },
 }) => (
     <ChannelWrapper>
         {console.log('Rendering Channels')}
@@ -163,13 +166,26 @@ const Channels = ({
                         </ButtonListItem>
                     </React.Fragment>
                 ) : null}
-                <LinkVashtaListItem onClick={onLinkVashtaClick}>
-                    <span>Link Vashta Account</span>
-                    <span style={{ fontSize: '14px', color: '#7289da' }}>•</span>
-                </LinkVashtaListItem>
+                {vashtaUsername == null ? (
+                    <LinkVashtaListItem onClick={onLinkVashtaClick}>
+                        <span>Link Vashta Account</span>
+                        <span style={{ fontSize: '14px', color: '#7289da' }}>•</span>
+                    </LinkVashtaListItem>
+                ) : (
+                    <LinkVashtaListItem>
+                        <span>Connected to Vashta</span>
+                        <span style={{ fontSize: '14px', color: '#4caf50' }}>•</span>
+                    </LinkVashtaListItem>
+                )}
             </ChannelList>
         </ChannelBodyWrapper>
     </ChannelWrapper>
 );
 
-export default withData(Channels, ['viewChannels']);
+/*
+    Purple: #7289da
+    Green: #4caf50
+    Red: #ef5350
+*/
+
+export default withData(Channels, ['viewChannels', 'nowUser']);

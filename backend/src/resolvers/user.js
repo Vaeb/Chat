@@ -2,9 +2,11 @@ import { tryLogin, tryVashtaAuth } from '../auth';
 import formatErrors from '../formatErrors';
 import { requiresAuth } from '../permissions';
 import { linkedQueryId } from '../linkedQueries';
-import { pubsub, NEW_USER } from '../pubsub';
+import { pubsub, NEW_USER, CHANGE_USER } from '../pubsub';
+import mutate from '../mutate';
 
-const registerLocked = true;
+const registerLocked = false;
+const buyerId = 4;
 
 /*
 
@@ -22,6 +24,10 @@ export default {
         newUser: {
             resolve: payload => payload.newUser,
             subscribe: () => pubsub.asyncIterator(NEW_USER),
+        },
+        changeUser: {
+            resolve: payload => payload.changeUser,
+            subscribe: () => pubsub.asyncIterator(CHANGE_USER),
         },
     },
     Query: {
@@ -70,14 +76,25 @@ export default {
                 };
             }
         },
-        linkVashta: requiresAuth.createResolver(async (parent, { username, password }, { models, me }) => {
+        linkVashta: requiresAuth.createResolver(async (parent, { email, password }, { models, me }) => {
             try {
-                console.log('trying');
-                const vashtaUser = await tryVashtaAuth(username, password);
+                const vashtaUserData = await tryVashtaAuth(email, password);
+                const vashtaUser = { id: vashtaUserData.id, username: vashtaUserData.username, email: vashtaUserData.email };
+
+                await models.sequelize.transaction(async (transaction) => {
+                    const updateData = await models.User.update(
+                        { vashtaId: vashtaUser.id, vashtaUsername: vashtaUser.username },
+                        { where: { id: me.id }, returning: true, transaction },
+                    );
+
+                    const user = updateData[1][0];
+
+                    await mutate.addUserToRole({ roleId: buyerId, userId: me.id, user: { ...user.dataValues }, transaction });
+                });
 
                 return {
                     ok: true,
-                    vashtaUser,
+                    vashtaUserData,
                 };
             } catch (err) {
                 console.log(err);

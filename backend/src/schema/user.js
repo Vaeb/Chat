@@ -10,6 +10,8 @@ export default `
         id: Int!
         username: String!
         email: String!
+        vashtaId: Int
+        vashtaUsername: String
         roles: [Role!]!
     }
 
@@ -17,6 +19,8 @@ export default `
         id: Int!
         username: String!
         email: String!
+        vashtaId: Int
+        vashtaUsername: String
         allChannels: [Channel!]!
         allRoles: [Role!]!
         allUsers: [User!]!
@@ -25,6 +29,7 @@ export default `
     type VashtaUser {
         id: Int!
         username: String!
+        email: String!
     }
 
     type RegisterResponse {
@@ -54,12 +59,13 @@ export default `
 
     type Subscription {
         newUser: User!
+        changeUser: User!
     }
 
     type Mutation {
         register(username: String!, email: String!, password: String!): RegisterResponse!
         login(email: String!, password: String!): LoginResponse!
-        linkVashta(username: String!, password: String!): LinkVashtaResponse!
+        linkVashta(email: String!, password: String!): LinkVashtaResponse!
     }
 
 `;

@@ -2,6 +2,7 @@ import formatErrors from '../formatErrors';
 import { requiresAuth, requiresPermission } from '../permissions';
 import { linkedQuery, linkedQueryId } from '../linkedQueries';
 import { pubsub, NEW_ROLE, NEW_ROLE_USER, REM_ROLE_USER } from '../pubsub';
+import mutate from '../mutate';
 
 const canAffectRole = (meRoles, role) => {
     let meOwner = false;
@@ -116,18 +117,7 @@ export default {
                         return { ok: false, errors: [{ path: 'username', message: 'You are not allowed to give this role' }] };
                     }
 
-                    await models.RoleUser.create({ roleId, userId: user.id });
-
-                    const asyncFunc = async () => {
-                        pubsub.publish(NEW_ROLE_USER, {
-                            newRoleUser: {
-                                role,
-                                user,
-                            },
-                        });
-                    };
-
-                    asyncFunc();
+                    await mutate.addUserToRole({ roleId, userId: user.id, role, user });
 
                     return {
                         ok: true,
