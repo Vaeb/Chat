@@ -133,7 +133,7 @@ const roleUser = ({ id, username, highestViewRoleId }, { roleId, roleColor }, ca
             <RoleListItemImg
                 style={{
                     backgroundImage:
-                        'url("https://cdn.discordapp.com/avatars/212518810668892161/27107bf7579fa42170a9f2c2b6e1d18f.png?size=128")',
+                        'url("https://cdn.discordapp.com/avatars/183610928107880448/82e530effa8271f6e09bc13d4cb9c637.png?size=128")',
                 }}
             />
             <span style={{ marginTop: '-3px' }}>

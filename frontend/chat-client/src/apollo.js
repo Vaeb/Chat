@@ -8,8 +8,8 @@ import { getMainDefinition } from 'apollo-utilities';
 
 const debugging = false;
 
-const uri = debugging ? 'http://localhost:8080/graphql' : 'https://chat.vashta.io/graphql';
-const uriWs = debugging ? 'ws://localhost:8080/subscriptions' : 'wss://chat.vashta.io/subscriptions';
+const uri = debugging ? 'http://localhost:8080/graphql' : 'http://vaeb.io:8080/graphql';
+const uriWs = debugging ? 'ws://localhost:8080/subscriptions' : 'ws://vaeb.io:8080/subscriptions';
 
 const httpLink = createHttpLink({ uri });
 
